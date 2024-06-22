@@ -4,9 +4,9 @@
     "genome_indexing": false,
     "alignment": false,
     "BAM_sorting": false,
-    "mark_duplicates": true,
-    "BAM_filtering": true,
-    "BAM_indexing": true,
+    "mark_duplicates": false,
+    "BAM_filtering": false,
+    "BAM_indexing": false,
     "BAM_stats": false,
     "gene_counts": true,
     "sum_results": false
@@ -19,7 +19,6 @@
     "bam_dir": "/scratch/ttarchi/pipeline/data/BAM",
     "bam_files": ["/scratch/ttarchi/pipeline/data/BAM/*.bam"],
     "gene_counts_dir": "/scratch/ttarchi/pipeline/data/counts",
-    "data_dirs": ["/scratch/ttarchi/pipeline/data"],
     "report_dir": "/scratch/ttarchi/pipeline/data/reports"
   },
   "additional_bindings": "",

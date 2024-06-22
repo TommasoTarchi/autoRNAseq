@@ -10,28 +10,28 @@ def helpMessage() {
 	This program can be used to run a RNAseq analysis pipeline, consisting of the following
 	steps (also called "processes" in the following):
 
-	1. Genome Indexing: Preprocess the genome for alignment.
-	2. Alignment: Properly align reads to the reference genome.
-	3. BAM Sorting: Sort BAM files (redundant if the previous step was run).
-	4. Duplicates Marking: Mark, but DO NOT remove, duplicates in BAM files.
-	5. BAM Filtering: Quality filtering of aligned reads.
-	6. BAM Indexing: Index the alignment files.
-	7. BAM Stats: Generate a statistical summary of the alignment.
-	8. Gene Counts: Count the genes.
-	9. Results Summary: Summarize the results.
+	1. Genome Indexing: preprocess the genome for alignment.
+	2. Alignment: properly align reads to the reference genome.
+	3. BAM Sorting: sort BAM files (redundant if the previous step was run).
+	4. Mark duplicates: mark, but DO NOT remove, duplicates in BAM files.
+	5. BAM Filtering: quality filtering of aligned reads.
+	6. BAM Indexing: index the alignment files.
+	7. BAM Stats: generate a statistical summary of the alignment.
+	8. Gene Counts: quantify gene expression.
+	9. Results Summary: summarize the results.
 
 
 	Any step of the pipeline can be run (multiple steps can be run together), see
 	'ARGUMENTS' and 'HOW TO RUN A PIPELINE' below for instructions.
 
 
-	The program is designed to bu run on a cluster using SLURM as job scheduler: each
+	The program is designed to run on a cluster using SLURM as job scheduler: each
 	step is run as an independent (and parallel, when no data dependency occurs)
 	multithreaded job.
 
-	Optionally, it can also be run locally. However, for most demanding pipelines (in
-	particular for pipelines including genome indexing and alignment steps) we suggest to
-	use a cluster).
+	Optionally, it can also be run locally. However, we strongly recommend to run it on a
+	cluster, especially for more demanding pipelines (like those including genome indexing
+	and/or alignment).
 
 	______________________________________________________________________________________
 
@@ -102,9 +102,6 @@ def helpMessage() {
 	- "gene_counts_dir": path to directory to store gene counts files, required by:
 	  8. gene counts
 
-	- "data_dirs": list of paths to directories containg data for reports, required by:
-	  9. summarize results
-
 	- "report_dir": path to directory to store produced reports and plots, required by:
 	  9. summarize results
 
@@ -126,11 +123,14 @@ def helpMessage() {
 	     - For "fastq_files", provide one path per fastq pair without the "*_R#_001.fastq.gz" suffix.
 	     - For "bam_files", include complete file paths including extensions.
 
-	   - If files are located outside the current directory or its subdirectories, specify them in
-	     the "additional_bindings" variable as a comma-separated list of full paths (for instance:
-	     "additional_bindings": "/path/to/dir1,/path/to/dir2")
+	   - By default, only the current directory (and its subdirectories) are mounted to containers.
+	     If files are located outside the current directory, specify them in the "additional_bindings"
+	     variable as a string of comma-separated full paths; for instance:
+	     "path/to/extdir1,path/to/extdir2".
+	     Otherwise, pass an empty string.
 
 	   - Set "run_locally" variable to true if you want to run the pipeline on your local machine
+	     (not recommended for most applications).
 
 	   - Customize settings for each process under the "processes" section in "config.json". Refer to
 	     your cluster's specifications for SLURM settings, especially for the "queue" variable.
@@ -141,6 +141,7 @@ def helpMessage() {
 	   ---
 
 	Ensure all dependencies are properly configured and accessible before running the pipeline.
+	See "NOTES" section below for details.
 
         _____________________________________________________________________________________
 
@@ -375,10 +376,25 @@ process runSumResults {
 
     script:
     """
-    multiqc $params.data_dirs \
-    --force \
-    --export \
-    --outdir $params.report_dir
+    # set available directories
+    dirs=()
+    if [[ -n "$params.index_dir" ]]; then
+	dirs+=("$params.index_dir")
+    fi
+    if [[ -n "$params.bam_dir" ]]; then
+	dirs+=("$params.bam_dir")
+    fi
+    if [[ -n "$params.gene_counts_dir" ]]; then
+	dirs+=("$params.gene_counts_dir")
+    fi
+
+    # run multiQC if any directory available
+    if [[ -z "\${dirs[@]}" ]]; then
+	multiqc "\${dirs[@]}" \
+	--force \
+	--export \
+	--outdir $params.report_dir
+    fi
     """
 }
 
