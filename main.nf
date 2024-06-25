@@ -13,7 +13,7 @@ def helpMessage() {
 	1. Genome Indexing: preprocess the genome for alignment.
 	2. Alignment: properly align reads to the reference genome.
 	3. BAM Sorting: sort BAM files (redundant if the previous step was run).
-	4. Mark duplicates: mark, but DO NOT remove, duplicates in BAM files.
+	4. Remove duplicates: remove duplicates in BAM files.
 	5. BAM Filtering: quality filtering of aligned reads.
 	6. BAM Indexing: index the alignment files.
 	7. BAM Stats: generate a statistical summary of the alignment.
@@ -21,17 +21,16 @@ def helpMessage() {
 	9. Results Summary: summarize the results.
 
 
-	Any step of the pipeline can be run (multiple steps can be run together), see
-	'ARGUMENTS' and 'HOW TO RUN A PIPELINE' below for instructions.
+	Any step of the pipeline can be run (multiple steps can be run together), see 'ARGUMENTS'
+    and 'HOW TO RUN A PIPELINE' below for instructions.
 
 
-	The program is designed to run on a cluster using SLURM as job scheduler: each
-	step is run as an independent (and parallel, when no data dependency occurs)
-	multithreaded job.
+	The program is designed to run on a cluster using SLURM as job scheduler: each step is run
+    as an independent (and parallel, when no data dependency occurs) multithreaded job.
 
 	Optionally, it can also be run locally. However, we strongly recommend to run it on a
-	cluster, especially for more demanding pipelines (like those including genome indexing
-	and/or alignment).
+    cluster, especially for more demanding pipelines (like those including genome indexing
+    and/or alignment).
 
 	______________________________________________________________________________________
 
@@ -52,7 +51,6 @@ def helpMessage() {
 	  "data_paths": {
 	    ... path variables to data ...
 	  },
-	  "additional_bindings": ...,
 	  "run_locally": ...,
 	  "processes": {
 	    ...
@@ -67,7 +65,7 @@ def helpMessage() {
 
 	The following describes path variables and lists all processes each variable
 	is required for. If at least one step of your pipeline is included in one list,
-	the corresponding path variable NEED to be specified.
+	the corresponding path variable NEEDS to be specified.
 
 	- "index_dir": path to directory for genome index files, required by:
 	  1. genome indexing
@@ -86,18 +84,19 @@ def helpMessage() {
 	- "bam_dir": path to directory to store output alignment files, required by:
 	  2. alignment
 	  3. BAM sorting
-	  4. mark duplicates
+	  4. remove duplicates
 	  5. BAM filtering
 	  7. BAM stats
 	  8. gene counts
 
 	- "bam_files": list of complete paths to input alignment files, required by:
 	  3. BAM sorting
-	  4. mark duplicates
+	  4. remove duplicates
 	  5. BAM filtering
 	  6. BAM indexing
 	  7. BAM stats
 	  8. gene counts
+	(NOTICE: this variable is NEVER needed when your pipeline contains alignment step)
 
 	- "gene_counts_dir": path to directory to store gene counts files, required by:
 	  8. gene counts
@@ -111,31 +110,27 @@ def helpMessage() {
 	HOW TO RUN A PIPELINE:
 
 
-	1. Prepare Singularity images for required functions if not already available.
+	1. Prepare a directory with Singularity images for required functions if not already available.
 
 	2. Edit the "config.json" file as follows:
 
-	   - Set "run_processes" to true for the processes you wish to execute.
+	   2a. Set variables in "run_processes" section to true for the processes you wish to execute.
 
-	   - Configure "data_paths" to specify paths to your data. Remember:
-	     - Use lists for "fastq_files" and "bam_files". Each path should be complete and include
-	       necessary glob patterns.
-	     - For "fastq_files", provide one path per fastq pair without the "*_R#_001.fastq.gz" suffix.
-	     - For "bam_files", include complete file paths including extensions.
+	   2b. Configure "data_paths" to specify paths to your data. Remember to use lists for "fastq_files"
+	       and "bam_files". Each path should be complete, in particular:
+	         - for "fastq_files", only the common prefix of reads pair should be passed, i.e. one
+		   full path without the "_R#_001.fastq.gz" suffix (glob patterns are allowed);
+	         - for "bam_files", include complete file paths including extensions (glob patterns are
+	           allowed);
+	         - if you don't need a path variable set it to an empty string.
 
-	   - By default, only the current directory (and its subdirectories) are mounted to containers.
-	     If files are located outside the current directory, specify them in the "additional_bindings"
-	     variable as a string of comma-separated full paths; for instance:
-	     "path/to/extdir1,path/to/extdir2".
-	     Otherwise, pass an empty string.
+	   2c. Set "run_locally" variable to true if you want to run the pipeline on your local machine
+	       (not recommended for most applications).
 
-	   - Set "run_locally" variable to true if you want to run the pipeline on your local machine
-	     (not recommended for most applications).
+	   2d. Customize settings for each process under the "processes" section in "config.json". Refer to
+	       your cluster's specifications for SLURM settings, especially for the "queue" variable.
 
-	   - Customize settings for each process under the "processes" section in "config.json". Refer to
-	     your cluster's specifications for SLURM settings, especially for the "queue" variable.
-
-	4. Run the pipeline on your cluster using the command:
+	3. Run the pipeline using the command:
 	   ---
 	   nextflow run main.nf
 	   ---
@@ -143,13 +138,23 @@ def helpMessage() {
 	Ensure all dependencies are properly configured and accessible before running the pipeline.
 	See "NOTES" section below for details.
 
+	Also, be sure to have "main.nf", "nextflow.config" and "config.json" in the same directory.
+
         _____________________________________________________________________________________
 
 
 	NOTES:
 	
 
+	- The alignment step is designed for paired-end reads; however, subsequent steps can
+	  process both paired and single-end reads.
+
 	- Ensure complete paths are provided for "data_paths" variables in "config.json".
+
+	- Fastq files should be in ".gz" format, matching the pattern "*_R#_001.fastq.gz" or
+	  "*_R#_001.fq.gz".
+
+	- Input alignment files must always be in BAM format.
 
 	- "bam_files" is a list of input BAM files, "bam_dir" is the directory where all BAM
 	  file produced by the pipeline will be stored. Hence, files in "bam_files" do not need
@@ -162,24 +167,12 @@ def helpMessage() {
 	  - invalid: "COV362-TREATED-replica1.Tot_S11.Aligned.sortedByCoord.out.bam"
 	  - valid: "COV362-TREATED-replica1-Tot_S11.Aligned.sortedByCoord.out.bam"
 
-	- The alignment step is designed for paired-end reads; however, subsequent steps can
-	   process both paired and single-end reads.
+	- Remove duplicates step overwrites BAM files if "bam_files" are contained in "bam_dir".
 
-	- Fastq files should be in ".gz" format, matching the pattern "*_R#_001.fastq.gz" or
-	  "*_R#_001.fq.gz".
-
-	- Alignment files must be in BAM format if the alignment step is skipped.
-
-	- Mark duplicates step overwrites BAM files without data loss, if "bam_files" are contained
-	  "bam_dir".
-
-	- The BAM directory must contain the following subdirectories:
+	- "bam_dir" directory must contain the following subdirectories:
 	  - "logs/": For log files needed for quality control.
 	  - "stats/": For statistics summaries from SAMtools and metrics reports from Picard.
 	  - "tabs/": For tab files produced by STAR in alignment.
-	
-	- If running the "gene counts" step alone, ensure only one BAM file per sample is present.
-	  Remove duplicate BAM files (e.g., filtered and unfiltered reads from the same sample).
     """
 }
 
@@ -262,7 +255,7 @@ process runBAMSorting {
     """
 }
 
-process runMarkDuplicates {
+process runRemoveDuplicates {
     publishDir "${params.bam_dir}", mode: 'copy', overwrite: false
 
     input:
@@ -277,9 +270,10 @@ process runMarkDuplicates {
 
     """
     picard MarkDuplicates \
-    I=${bam} \
-    O=temp.bam \
-    M="${params.bam_dir}/stats/${metrics}"
+    --INPUT ${bam} \
+    --OUTPUT temp.bam \
+    --REMOVE_SEQUENCING_DUPLICATES true \
+    --METRICS_FILE "${params.bam_dir}/stats/${metrics}"
 
     mv temp.bam ${bam_marked}
     """
@@ -435,11 +429,11 @@ workflow {
     }
 
 
-    // run mark duplicates of BAM
+    // run remove duplicates of BAM
     def bam_ch_marked = false
-    if (params.run_mark_duplicates || params.run_all) {
+    if (params.run_remove_duplicates || params.run_all) {
 
-	bam_ch_marked = runMarkDuplicates(bam_ch)
+	bam_ch_marked = runRemoveDuplicates(bam_ch)
 
     } else {
 
@@ -499,7 +493,7 @@ workflow {
 
 
     // run results summary
-    if (params.run_sum_results || params.run_all) {
+    if (params.run_summarize_results || params.run_all) {
 
 	// make sure all data have been processed before going on
 	if (!BAMindex_ready) {

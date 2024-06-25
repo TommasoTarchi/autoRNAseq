@@ -4,12 +4,12 @@
     "genome_indexing": false,
     "alignment": false,
     "BAM_sorting": false,
-    "mark_duplicates": false,
+    "remove_duplicates": true,
     "BAM_filtering": false,
     "BAM_indexing": false,
     "BAM_stats": false,
-    "gene_counts": true,
-    "sum_results": false
+    "gene_counts": false,
+    "summurize_results": false
   },
   "data_paths": {
     "index_dir": "/scratch/ttarchi/pipeline/data/star_index",
@@ -21,7 +21,6 @@
     "gene_counts_dir": "/scratch/ttarchi/pipeline/data/counts",
     "report_dir": "/scratch/ttarchi/pipeline/data/reports"
   },
-  "additional_bindings": "",
   "run_locally": false,
   "processes": {
     "genome_indexing": {
@@ -46,7 +45,7 @@
       "container_path": "/scratch/ttarchi/pipeline/container_images/SAMtools.sif",
       "num_threads": 10
     },
-    "mark_duplicates": {
+    "remove_duplicates": {
       "queue": "regular1",
       "time": "1h",
       "memory": "20GB",
@@ -82,7 +81,7 @@
       "container_path": "/scratch/ttarchi/pipeline/container_images/featureCounts.sif",
       "num_threads": 10
     },
-    "sum_results": {
+    "summarize_results": {
       "queue": "regular1",
       "time": "1h",
       "memory": "2GB",
