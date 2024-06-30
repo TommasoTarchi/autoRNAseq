@@ -29,6 +29,7 @@ related documentation [here][nextflow] and [here][singularity] for instructions.
 
 - You need to build, or download, containers with the following functions installed (each point
 of the list describes the function needed by the corresponding step in the pipeline):
+
 1. *STAR* ([docs][STAR])
 2. *STAR* ([docs][STAR])
 3. *SAMtools* ([docs][SAMtools])
@@ -40,11 +41,6 @@ of the list describes the function needed by the corresponding step in the pipel
 9. *multiQC* ([docs][multiQC])
 
 (Remember that you need **only** the containers corresponding to the steps you want to run).
-
-- You need to download the three files in the [pipeline directory](./gene_expression_count/).
-Make sure to have **all three files in the same directory**. However, notice that the location of
-the directory containing these files is not relevant, as the pipeline can work on data located in
-any directory of the filesystem, assumed needed permissions for the user.
 
 
 ## Parameters
@@ -122,6 +118,44 @@ suggest to set them to an empty string (or an empty list if the variable is of t
 
 For more details on supported file names see [this section](#how-to-run-your-pipeline).
 
+
+## Processes specific parameters
+
+As mentioned previously, inside the "processes" scope, each process has its own scope for parameter setting.
+
+Common to all processes are the following variables:
+
+````
+"queue" -> string: name of cluster partition to run job on
+"time" -> string: maximum time for job (example: "2h")
+"memory" -> string: RAM used for the job (example: "2GB")
+"container_path" -> string: full path to singularity image for the process
+"num_threads" -> integer: number of threads (not supported for "remove_duplicates" and "summarize_results")
+````
+
+Other process-specific parameteres are:
+
+````
+"genome_indexing": {
+  "max_RAM" -> string: maximum RAM for STAR indexing (should be equal to "memory")
+}
+
+"BAM_filtering": {
+  "quality_thres" -> integer: threshold for quality filtering
+}
+
+"gene_counts": {
+  "algo": "featureCounts" -> string: algorithm for gene expression quantification
+                                     (allowed algorithms: "featureCounts","HTSeq")
+}
+````
+
+Notice that in `config.json` some of the parameters are set to a default value. However, the value set is **not**
+guaranteed to work.
+
+**All** process-specific parameters of te processes you intend to run must be set to some value.
+
+
 ## Output files
 
 The following is a list of output files of each step of the pipeline. If not specified, the output
@@ -169,13 +203,15 @@ file is always saved, independently of which steps are run after.
 
 1. Make sure you satisfy all requirements listed in [this section](#requirements).
 
-2. Edit the "config.json" file as follows:
+2. Clone this repository.
 
-    2a. Set variables in "run_processes" section to true for the processes you wish to execute
+3. Navigate to the `gene_count-pipeline` directory and edit the "config.json" file as follows:
+
+    3a. Set variables in "run_processes" section to true for the processes you wish to execute
     (if you set `all` to true, then all steps will be run regardless of the values of the following
     variables).
 
-    2b. Configure `data_paths` to specify paths to your data. Remember to use lists for `fastq_files`
+    3b. Configure `data_paths` to specify paths to your data. Remember to use lists for `fastq_files`
     and `bam_files`. Each path should be complete, in particular:
 
    - for `fastq_files`, only the common prefix of reads pair should be passed, i.e. one
@@ -186,14 +222,15 @@ file is always saved, independently of which steps are run after.
    
    - if you don't need a path variable set it to an empty string/list.
 
-    2c. Customize settings for each process under the `processes` section in `config.json`. Refer to
-    your cluster's specifications for SLURM settings, especially for the `queue` variable.
+    3c. Customize settings for each process under the `processes` section in `config.json`. Refer to
+    your cluster's specifications for SLURM settings, especially for the `queue` variable. Set the
+    `container_path` variable as the full path to the container image needed by the corresponding process.
+    Notice that most processes can be multithreaded.
 
-    2d. Set `run_locally` variable to true if you want to run the pipeline on your local machine
+    3d. Set `run_locally` variable to true if you want to run the pipeline on your local machine
     (not recommended for most applications).
 
-4. Run the pipeline using (make sure you have `main.nf`, `nextflow.config` and `config.json` in the same
-directory):
+4. Run the pipeline using:
 
 ````
 $ nextflow run main.nf
