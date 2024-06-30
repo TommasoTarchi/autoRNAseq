@@ -4,7 +4,7 @@
     "genome_indexing": false,
     "alignment": false,
     "BAM_sorting": false,
-    "remove_duplicates": true,
+    "remove_duplicates": false,
     "BAM_filtering": false,
     "BAM_indexing": false,
     "BAM_stats": false,
@@ -14,14 +14,13 @@
   "data_paths": {
     "index_dir": "/scratch/ttarchi/pipeline/data/star_index",
     "fasta_file": "/scratch/ttarchi/pipeline/data/fasta/GRCh38.p14.genome.fa",
-    "annotation_file": "/scratch/ttarchi/pipeline/data/annotation/gencode.v44.annotation.gtf",
-    "fastq_files": ["/scratch/ttarchi/pipeline/data/fastq/*"] ,
+    "annotation_file": "",
+    "fastq_files": [] ,
     "bam_dir": "/scratch/ttarchi/pipeline/data/BAM",
-    "bam_files": ["/scratch/ttarchi/pipeline/data/BAM/*.bam"],
+    "bam_files": ["/scratch/ttarchi/pipeline/data/BAM/COV362-PAR-PT-TREATED-replica1-RNASeq-Tot_S11_prova.pippo.Aligned.sortedByCoord.out.bam"],
     "gene_counts_dir": "/scratch/ttarchi/pipeline/data/counts",
     "report_dir": "/scratch/ttarchi/pipeline/data/reports"
   },
-  "run_locally": false,
   "processes": {
     "genome_indexing": {
       "max_RAM": "180GB",
@@ -87,5 +86,6 @@
       "memory": "2GB",
       "container_path": "/scratch/ttarchi/pipeline/container_images/multiQC.sif"
     }
-  }
+  },
+  "run_locally": false
 }

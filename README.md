@@ -109,7 +109,7 @@ All parameters can be set from the `config.json` file. We strongly suggest to **
 }
 ````
 
-#### Data paths
+### Data paths
 
 Particular care must be taken in setting the `data_path` variables.
 
@@ -127,23 +127,27 @@ need to set that variable.
 - `fastq_files`: list of complete paths to input (**zipped**) read files, required by: 2. alignment.
 
 - `bam_dir`: path to directory to store output alignment files, required by: 2. alignment, 3. BAM sorting,
-  4. remove duplicates, 5. BAM filtering, 7. BAM stats, 8. gene counts (**Notice**: this directory should contain
-  three subdirectories, called "logs/", "stats/" and "tabs/").
+  4. remove duplicates, 5. BAM filtering, 7. BAM stats, 8. gene counts.
 
 - `bam_files`: list of complete paths to input alignment files, required by: 3. BAM sorting, 4. remove duplicates,
   5. BAM filtering, 6. BAM indexing, 7. BAM stats, 8. gene counts (**Notice**: this variable is **never** needed when
-  your pipeline contains the alignment step i.e. number 2.).
+  your pipeline contains the alignment step, i.e. number 2.).
 
 - `gene_counts_dir`: path to directory to store gene counts files, required by: 8. gene counts.
 
 - `report_dir`: path to directory to store produced reports and plots, required by: 9. summarize results.
 
+`fastq_files` should be passed in couples of paired-end zipped read files, and should end in `_R#_001.fastq.gz` or
+`_R#_001.fq.gz`, with `#` equal to 1 and 2 (de facto standard).
+
 Variables you don't need should be ignored by the program. However, to avoid any possible bug we
 suggest to set them to an empty string (or an empty list if the variable is of type list).
 
+`bam_dir` should contain three subdirectories, called "logs/", "stats/" and "tabs/".
+
 For more details on supported file names see [this section](#how-to-run-your-pipeline).
 
-#### Output files
+### Output files
 
 The following is a list of output files of each step of the pipeline. If not specified, the output
 file is always saved, independently of which steps are run after.
@@ -154,7 +158,7 @@ file is always saved, independently of which steps are run after.
 2. Alignment:
     - BAM files with alignment (one per paired-end pair of fastq file), sorted by coordinates and saved
     into `bam_dir`. The name of the file will have all the relevant information contained in the fastq
-    names followed by the extention: `.Aligned.sortedByCoord.out.bam`.
+    names followed by the suffix: `.Aligned.sortedByCoord.out.bam`.
     - Alignment log files, saved into "`bam_dir`/logs/".
     - Alignment tab files, saved into "`bam_dir`/tabs/".
 
@@ -199,10 +203,10 @@ file is always saved, independently of which steps are run after.
     and `bam_files`. Each path should be complete, in particular:
 
    - for `fastq_files`, only the common prefix of reads pair should be passed, i.e. one
-        full path without the `_R#_001.fastq.gz` suffix (**glob patterns are allowed**);
+        full path **without** the `_R#_001.fastq.gz` suffix (**glob patterns are allowed** - see
+        [here](#example-of-input-fastq-files) for more details);
     
-   - for `bam_files`, include complete file paths including extensions (**glob patterns are
-        allowed**);
+   - for `bam_files`, include full paths (**glob patterns are allowed**);
    
    - if you don't need a path variable set it to an empty string/list.
 
@@ -219,6 +223,45 @@ directory):
 $ nextflow run main.nf
 ````
 
+**Notice** that all the information contained in the name of input FastQ and BAM files after the first dot
+will be lost. If some relevant information is placed after dots, please change these dots with other separators.
+Examples:
+- invalid file name: `COV362-TREATED-replica1.Tot_S11.Aligned.sortedByCoord.out.bam`;
+- valid file name: `COV362-TREATED-replica1-Tot_S11.Aligned.sortedByCoord.out.bam`.
+
+#### Example of input FastQ files
+
+Suppose you want to run reads alignment and suppose you have a directory containing the following files:
+
+- `TREATED-replica1-Tot_S11_R1_001.fastq.gz`
+- `TREATED-replica1-Tot_S11_R2_001.fastq.gz`
+- `TREATED-replica2-Tot_S22_R1_001.fastq.gz`
+- `TREATED-replica3-Tot_S34_R1_001.fq.gz`
+- `TREATED-replica3-Tot_S34_R2_001.fq.gz`
+- `TREATED-replica4-Tot_S25_R1_001.fastq`
+- `TREATED-replica4-Tot_S25_R2_001.fastq`
+- `RES_PT-replica1-Tot_S12_R1_001.fq.gz`
+- `RES_PT-replica1-Tot_S12_R2_001.fq.gz`
+- `RES_PT-replica2-Tot_S24_R1_001.fq.gz`
+- `RES_PT-replica2-Tot_S24_R2_001.fq.gz`
+
+Now, for instance if you set `fastq_files` to the list: [`TREATED-replica*`, `RES_PT-replica1-Tot_S12`,
+`RES_PT-replica2-Tot_S24_R?_001.fq.gz`], the files in the directory will be treated in the following way:
+
+- `TREATED-replica1-Tot_S11_R1_001.fastq.gz` and `TREATED-replica1-Tot_S11_R2_001.fastq.gz` (processed)
+- `TREATED-replica2-Tot_S22_R1_001.fastq.gz` (not processed, since it does not have a pair read file)
+- `TREATED-replica3-Tot_S34_R1_001.fq.gz` and `TREATED-replica3-Tot_S34_R2_001.fq.gz` (processed)
+- `TREATED-replica4-Tot_S25_R1_001.fastq` and `TREATED-replica4-Tot_S25_R2_001.fastq` (not processed, since
+they do not match the expected format)
+- `RES_PT-replica1-Tot_S12_R1_001.fq.gz` and `RES_PT-replica1-Tot_S12_R2_001.fq.gz` (processed)
+- `RES_PT-replica2-Tot_S24_R1_001.fq.gz` and `RES_PT-replica2-Tot_S24_R2_001.fq.gz` (not processed, since the
+provided pattern wrongly includes the suffix `_R#_001.fq.gz`)
+
+The output of alignment will therefore be:
+
+- `TREATED-replica1-Tot_S11.Aligned.sortedByCoord.out.bam`
+- `TREATED-replica3-Tot_S34.Aligned.sortedByCoord.out.bam`
+- `RES_PT-replica1-Tot_S12.Aligned.sortedByCoord.out.bam`
 
 
 

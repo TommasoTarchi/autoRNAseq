@@ -51,14 +51,14 @@ def helpMessage() {
 	  "data_paths": {
 	    ... path variables to data ...
 	  },
-	  "run_locally": ...,
 	  "processes": {
 	    ...
 	    process_name: {
 	      ... variables specific to process (both SLURM and function call variables) ...
 	    },
 	    ...
-	  }
+	  },
+	  "run_locally": ...
 	}
 	---
 
@@ -114,7 +114,9 @@ def helpMessage() {
 
 	2. Edit the "config.json" file as follows:
 
-	   2a. Set variables in "run_processes" section to true for the processes you wish to execute.
+	   2a. Set variables in "run_processes" section to true for the processes you wish to execute
+	       (if you set "all": true, then all steps will be run regardless of following variables'
+	       values).
 
 	   2b. Configure "data_paths" to specify paths to your data. Remember to use lists for "fastq_files"
 	       and "bam_files". Each path should be complete, in particular:
@@ -122,7 +124,7 @@ def helpMessage() {
 		   full path without the "_R#_001.fastq.gz" suffix (glob patterns are allowed);
 	         - for "bam_files", include complete file paths including extensions (glob patterns are
 	           allowed);
-	         - if you don't need a path variable set it to an empty string.
+	         - if you don't need a path variable set it to an empty string/list.
 
 	   2c. Set "run_locally" variable to true if you want to run the pipeline on your local machine
 	       (not recommended for most applications).
@@ -251,7 +253,13 @@ process runBAMSorting {
     bam_sorted = bam.toString().split("\\.")[0] + ".Aligned.sortedByCoord.out.bam"
  
     """
-    samtools sort -@ $params.BAM_sorting_nt -o ${bam_sorted} ${bam}
+    if samtools view -H ${bam} | grep -q '@HD.*SO:coordinate'; then
+        cp ${bam} ${bam_sorted}
+	echo "already sorted" > sorted.txt
+    else
+        samtools sort -@ $params.BAM_sorting_nt -o ${bam_sorted} ${bam}
+	echo "to be sorted" > sorted.txt
+    fi
     """
 }
 
