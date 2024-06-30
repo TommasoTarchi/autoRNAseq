@@ -2,7 +2,7 @@
 
 In this repository you can find the following automated pipelines:
 
-1. Gene expression count: from **paired-end reads** to gene expression.
+1. Gene expression count: from paired-end reads to gene expression.
 
 All pipelines use *Nextflow* as automation tool and *Singularity* for containerization.
 If you are new to these tools, you can find the documentation, respectively, [here][nextflow]
@@ -19,8 +19,7 @@ Each step of each pipeline runs on a different container, so that you can just i
 functions needed by the pipeline steps you intend to run.
 
 Pipelines support both *SLURM* (default) and local run. However, the second one is not recommended
-for most demanding pipelines (in particular for gene expression count when the first two steps are
-included).
+for most demanding pipelines.
 
 When run with SLURM, each process is launched as a different job on the cluster. Resources
 parameters can be adjusted differently for each step of the pipeline.
@@ -55,27 +54,27 @@ bla bla bla
 
 ### Requirements
 
-1. You need to have Nextflow and Singularity installed on your machine. You can look at the
+- You need to have Nextflow and Singularity installed on your machine. You can look at the
 related documentation [here][nextflow] and [here][singularity] for instructions.
 
-2. You need to build, or download, containers with the following functions installed (each point
+- You need to build, or download, containers with the following functions installed (each point
 of the list describes the function needed by the corresponding step in the pipeline):
-    1. *STAR* ([docs][STAR])
-    2. *STAR* ([docs][STAR])
-    3. *SAMtools* ([docs][SAMtools])
-    4. *picard* ([docs][picard])
-    5. *SAMtools* ([docs][SAMtools])
-    6. *SAMtools* ([docs][SAMtools])
-    7. *SAMtools* ([docs][SAMtools])
-    8. *featureCounts* ([docs][featureCounts]) **or** *HTSeq* ([docs][HTSeq])
-    9. *multiQC* ([docs][multiQC])
+1. *STAR* ([docs][STAR])
+2. *STAR* ([docs][STAR])
+3. *SAMtools* ([docs][SAMtools])
+4. *picard* ([docs][picard])
+5. *SAMtools* ([docs][SAMtools])
+6. *SAMtools* ([docs][SAMtools])
+7. *SAMtools* ([docs][SAMtools])
+8. *featureCounts* ([docs][featureCounts]) **or** *HTSeq* ([docs][HTSeq])
+9. *multiQC* ([docs][multiQC])
 
 Remember that you need **only** the containers corresponding to the steps you want to run.
 
-3. You need to download the three files in the [pipeline directory](./gene_expression_count/).
-**Notice** that the location of the directory containing these files is not relevant, as the
-pipeline can work on data located in any directory of the filesystem, assumed needed permissions
-for the user. However, make sure to have **all three files in the same directory**.
+- You need to download the three files in the [pipeline directory](./gene_expression_count/).
+Make sure to have **all three files in the same directory**. However, notice that the location of
+the directory containing these files is not relevant, as the pipeline can work on data located in
+any directory of the filesystem, assumed needed permissions for the user.
 
 ### Parameters
 
@@ -122,45 +121,25 @@ these variables. The following list shows for each data path variable which step
 it to be set. If **at least one** of the steps you intend to run is listed under a variable, then you
 need to set that variable.
 
-- `index_dir`: path to directory for genome index files, required by:
-    1. genome indexing
-    2. alignment
+- `index_dir`: path to directory for genome index files, required by: 1. genome indexing, 2. alignment.
 
-- `fasta_file`: complete path to fasta file with reference genome, required by:
-    1. genome indexing
+- `fasta_file`: complete path to fasta file with reference genome, required by: 1. genome indexing.
 
-- `annotation_file`: complete path to GTF/GFF files, required by:
-    1. genome indexing
-    8. gene counts
+- `annotation_file`: complete path to GTF/GFF files, required by: 1. genome indexing, 8. gene counts.
 
-- `fastq_files`: list of complete paths to input (**zipped**) read files, required by:
-    2. alignment
+- `fastq_files`: list of complete paths to input (**zipped**) read files, required by: 2. alignment.
 
-- `bam_dir`: path to directory to store output alignment files, required by:
-    2. alignment
-    3. BAM sorting
-    4. remove duplicates
-    5. BAM filtering
-    7. BAM stats
-    8. gene counts
-    (**Notice**: this directory should contain three subdirectories, called "logs/", "stats/"
-    and "tabs/")
+- `bam_dir`: path to directory to store output alignment files, required by: 2. alignment, 3. BAM sorting,
+  4. remove duplicates, 5. BAM filtering, 7. BAM stats, 8. gene counts (**Notice**: this directory should contain
+  three subdirectories, called "logs/", "stats/" and "tabs/").
 
-- `bam_files`: list of complete paths to input alignment files, required by:
-    3. BAM sorting
-    4. remove duplicates
-    5. BAM filtering
-    6. BAM indexing
-    7. BAM stats
-    8. gene counts
-    (**Notice**: this variable is **never** needed when your pipeline contains the alignment step
-    i.e. number 2.)
+- `bam_files`: list of complete paths to input alignment files, required by: 3. BAM sorting, 4. remove duplicates,
+  5. BAM filtering, 6. BAM indexing, 7. BAM stats, 8. gene counts (**Notice**: this variable is **never** needed when
+  your pipeline contains the alignment step i.e. number 2.).
 
-- `gene_counts_dir`: path to directory to store gene counts files, required by:
-    8. gene counts
+- `gene_counts_dir`: path to directory to store gene counts files, required by: 8. gene counts.
 
-- `report_dir`: path to directory to store produced reports and plots, required by:
-    9. summarize results
+- `report_dir`: path to directory to store produced reports and plots, required by: 9. summarize results.
 
 Variables you don't need should be ignored by the program. However, to avoid any possible bug we
 suggest to set them to an empty string (or an empty list if the variable is of type list).
@@ -224,11 +203,14 @@ file is always saved, independently of which steps are run after.
 
     2b. Configure `data_paths` to specify paths to your data. Remember to use lists for `fastq_files`
     and `bam_files`. Each path should be complete, in particular:
-        - for `fastq_files`, only the common prefix of reads pair should be passed, i.e. one
+
+   - for `fastq_files`, only the common prefix of reads pair should be passed, i.e. one
         full path without the `_R#_001.fastq.gz` suffix (**glob patterns are allowed**);
-        - for `bam_files`, include complete file paths including extensions (**glob patterns are
+    
+   - for `bam_files`, include complete file paths including extensions (**glob patterns are
         allowed**);
-        - if you don't need a path variable set it to an empty string/list.
+   
+   - if you don't need a path variable set it to an empty string/list.
 
     2c. Customize settings for each process under the `processes` section in `config.json`. Refer to
     your cluster's specifications for SLURM settings, especially for the `queue` variable.
@@ -236,7 +218,7 @@ file is always saved, independently of which steps are run after.
     2d. Set `run_locally` variable to true if you want to run the pipeline on your local machine
     (not recommended for most applications).
 
-3. Run the pipeline using (make sure you have `main.nf`, `nextflow.config` and `config.json` in the same
+4. Run the pipeline using (make sure you have `main.nf`, `nextflow.config` and `config.json` in the same
 directory):
 
 ````
