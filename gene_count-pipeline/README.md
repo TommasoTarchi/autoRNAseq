@@ -6,7 +6,16 @@ read files (*FastQ*).
 
 ## Outline
 
-To be done ...
+In this file you will find:
+
+- [Pipeline steps](#pipeline-steps)
+- [Requirements](#requirements)
+- [Parameters description](#parameters-description)
+  - [Data paths](#data-paths)
+  - [Process specific parameters](#process-specific-parameters)
+  - [Output files](#output-files)
+- [How to run your pipeline](#how-to-run-your-pipeline)
+  - [Example of input FastQ files](#example-of-input-fastq-files)
 
 
 ## Pipeline steps
@@ -43,7 +52,7 @@ of the list describes the function needed by the corresponding step in the pipel
 (Remember that you need **only** the containers corresponding to the steps you want to run).
 
 
-## Parameters
+## Parameters description
 
 All parameters can be set from the `config.json` file. We strongly suggest to **not modify** either
 `main.nf` nor `nextflow.config`.
@@ -116,7 +125,7 @@ need to set that variable.
 
 ### Process specific parameters
 
-As mentioned previously, inside the "processes" scope, each process has its own scope for parameter setting.
+As mentioned previously, inside the `processes` scope, each process has its own scope for parameter setting.
 
 Common to all processes are the following variables:
 
@@ -198,12 +207,11 @@ file is always saved, independently of which steps are run after.
 1. Make sure you satisfy all requirements listed in [this section](#requirements).
 
 2. Clone this repository, using:
+   ````
+   $ git clone git@github.com:TommasoTarchi/autoRNAseq.git
+   ````
 
-````
-$ git clone git@github.com:TommasoTarchi/autoRNAseq.git
-````
-
-3. Navigate to the `gene_count-pipeline` directory and edit the "config.json" file as follows:
+3. Navigate to the `gene_count-pipeline` directory and edit the `config.json` file as follows:
 
     3a. Set variables in "run_processes" section to true for the processes you wish to execute
     (if you set `all` to true, then all steps will be run regardless of the values of the following
@@ -227,10 +235,9 @@ $ git clone git@github.com:TommasoTarchi/autoRNAseq.git
     (not recommended for most applications).
 
 4. Run the pipeline using:
-
-````
-$ nextflow run main.nf
-````
+   ````
+   $ nextflow run main.nf
+   ````
 
 **Notice** that all the information contained in the name of input FastQ and BAM files after the first dot
 will be lost. If some relevant information is placed after dots, please change these dots with other separators.
