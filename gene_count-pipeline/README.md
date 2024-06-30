@@ -39,17 +39,17 @@ related documentation [here][nextflow] and [here][singularity] for instructions.
 - You need to build, or download, containers with the following functions installed (each point
 of the list describes the function needed by the corresponding step in the pipeline):
 
-1. *STAR* ([docs][STAR])
-2. *STAR* ([docs][STAR])
-3. *SAMtools* ([docs][SAMtools])
-4. *picard* ([docs][picard])
-5. *SAMtools* ([docs][SAMtools])
-6. *SAMtools* ([docs][SAMtools])
-7. *SAMtools* ([docs][SAMtools])
-8. *featureCounts* ([docs][featureCounts]) **or** *HTSeq* ([docs][HTSeq])
-9. *multiQC* ([docs][multiQC])
+1. Genome Indexing: *STAR* ([docs][STAR]).
+2. Alignment: *STAR* ([docs][STAR]).
+3. BAM Sorting: *SAMtools* ([docs][SAMtools]).
+4. Remove duplicates: *picard* ([docs][picard]).
+5. BAM Filtering: *SAMtools* ([docs][SAMtools]).
+6. BAM Indexing: *SAMtools* ([docs][SAMtools]).
+7. BAM Stats: *SAMtools* ([docs][SAMtools]).
+8. Gene Counts: *featureCounts* ([docs][featureCounts]) **or** *HTSeq* ([docs][HTSeq]).
+9. Results Summary: *multiQC* ([docs][multiQC]).
 
-(Remember that you need **only** the containers corresponding to the steps you want to run).
+Remember that you need **only** the containers corresponding to the steps you want to run.
 
 
 ## Parameters description
