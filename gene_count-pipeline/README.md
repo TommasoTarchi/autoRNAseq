@@ -80,7 +80,7 @@ All parameters can be set from the `config.json` file. We strongly suggest to **
 ````
 
 
-## Data paths
+### Data paths
 
 Particular care must be taken in setting the `data_path` variables.
 
@@ -111,15 +111,12 @@ need to set that variable.
 `fastq_files` should be passed in couples of paired-end zipped read files, and should end in `_R#_001.fastq.gz` or
 `_R#_001.fq.gz`, with `#` equal to 1 and 2 (de facto standard).
 
-Variables you don't need should be ignored by the program. However, to avoid any possible bug we
-suggest to set them to an empty string (or an empty list if the variable is of type list).
-
 `bam_dir` should contain three subdirectories, called "logs/", "stats/" and "tabs/".
 
 For more details on supported file names see [this section](#how-to-run-your-pipeline).
 
 
-## Processes specific parameters
+### Process specific parameters
 
 As mentioned previously, inside the "processes" scope, each process has its own scope for parameter setting.
 
@@ -145,8 +142,7 @@ Other process-specific parameteres are:
 }
 
 "gene_counts": {
-  "algo": "featureCounts" -> string: algorithm for gene expression quantification
-                                     (allowed algorithms: "featureCounts","HTSeq")
+  "algo" -> string: algorithm for gene expression quantification (allowed options: "featureCounts","HTSeq")
 }
 ````
 
@@ -156,7 +152,7 @@ guaranteed to work.
 **All** process-specific parameters of te processes you intend to run must be set to some value.
 
 
-## Output files
+### Output files
 
 The following is a list of output files of each step of the pipeline. If not specified, the output
 file is always saved, independently of which steps are run after.
@@ -203,7 +199,11 @@ file is always saved, independently of which steps are run after.
 
 1. Make sure you satisfy all requirements listed in [this section](#requirements).
 
-2. Clone this repository.
+2. Clone this repository, using:
+
+````
+$ git clone git@github.com:TommasoTarchi/autoRNAseq.git
+````
 
 3. Navigate to the `gene_count-pipeline` directory and edit the "config.json" file as follows:
 
@@ -223,9 +223,7 @@ file is always saved, independently of which steps are run after.
    - if you don't need a path variable set it to an empty string/list.
 
     3c. Customize settings for each process under the `processes` section in `config.json`. Refer to
-    your cluster's specifications for SLURM settings, especially for the `queue` variable. Set the
-    `container_path` variable as the full path to the container image needed by the corresponding process.
-    Notice that most processes can be multithreaded.
+    your cluster's specifications for SLURM settings. See [here](#process-specific-parameters) for details.
 
     3d. Set `run_locally` variable to true if you want to run the pipeline on your local machine
     (not recommended for most applications).
@@ -243,7 +241,7 @@ Examples:
 - valid file name: `COV362-TREATED-replica1-Tot_S11.Aligned.sortedByCoord.out.bam`.
 
 
-## Example of input FastQ files
+### Example of input FastQ files
 
 Suppose you want to run reads alignment and suppose you have a directory containing the following files:
 
