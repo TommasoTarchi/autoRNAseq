@@ -252,12 +252,12 @@ The output of alignment will therefore be:
     (if you set `all` to true, then all steps will be run regardless of the values of the following
     variables).
 
-    3b. Configure `data_paths` to specify paths to your data. Remember to use lists for `fastq_files`
-    and `bam_files`. Each path should be complete, in particular:
+    3b. Configure `data_paths` to specify paths to your data following the descriptions in [this section](#data-paths).
+    Remember to use lists for `fastq_files` and `bam_files`. Each path should be complete, in particular:
 
    - for `fastq_files`, only the common prefix of reads pair should be passed, i.e. one
-        full path **without** the `_R#_001.fastq.gz` suffix (**glob patterns are allowed** - see
-        [here](#example-of-input-fastq-files) for more details);
+     full path **without** the `_R#_001.fastq.gz` suffix (**glob patterns are allowed** - see
+     [here](#example-of-input-fastq-files) for more details);
     
    - for `bam_files`, include full paths (**glob patterns are allowed**);
    
@@ -269,7 +269,7 @@ The output of alignment will therefore be:
     3d. Set `run_locally` variable to true if you want to run the pipeline on your local machine
     (not recommended for most applications).
 
-4. Run the pipeline using:
+5. Run the pipeline using:
    ````
    $ nextflow run main.nf
    ````
