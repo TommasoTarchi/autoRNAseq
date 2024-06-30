@@ -202,6 +202,41 @@ file is always saved, independently of which steps are run after.
     - html reports of all steps run, saved into `report_dir`.
 
 
+### Example of input FastQ files
+
+Suppose you want to run reads alignment and suppose you have a directory containing the following files:
+
+- `TREATED-replica1-Tot_S11_R1_001.fastq.gz`
+- `TREATED-replica1-Tot_S11_R2_001.fastq.gz`
+- `TREATED-replica2-Tot_S22_R1_001.fastq.gz`
+- `TREATED-replica3-Tot_S34_R1_001.fq.gz`
+- `TREATED-replica3-Tot_S34_R2_001.fq.gz`
+- `TREATED-replica4-Tot_S25_R1_001.fastq`
+- `TREATED-replica4-Tot_S25_R2_001.fastq`
+- `RES_PT-replica1-Tot_S12_R1_001.fq.gz`
+- `RES_PT-replica1-Tot_S12_R2_001.fq.gz`
+- `RES_PT-replica2-Tot_S24_R1_001.fq.gz`
+- `RES_PT-replica2-Tot_S24_R2_001.fq.gz`
+
+Now, for instance if you set `fastq_files` to the list: [`TREATED-replica*`, `RES_PT-replica1-Tot_S12`,
+`RES_PT-replica2-Tot_S24_R?_001.fq.gz`], the files in the directory will be treated in the following way:
+
+- `TREATED-replica1-Tot_S11_R1_001.fastq.gz` and `TREATED-replica1-Tot_S11_R2_001.fastq.gz` (processed)
+- `TREATED-replica2-Tot_S22_R1_001.fastq.gz` (not processed, since it does not have a corresponding paired read file)
+- `TREATED-replica3-Tot_S34_R1_001.fq.gz` and `TREATED-replica3-Tot_S34_R2_001.fq.gz` (processed)
+- `TREATED-replica4-Tot_S25_R1_001.fastq` and `TREATED-replica4-Tot_S25_R2_001.fastq` (not processed, since
+they do not match the expected format)
+- `RES_PT-replica1-Tot_S12_R1_001.fq.gz` and `RES_PT-replica1-Tot_S12_R2_001.fq.gz` (processed)
+- `RES_PT-replica2-Tot_S24_R1_001.fq.gz` and `RES_PT-replica2-Tot_S24_R2_001.fq.gz` (not processed, since the
+provided pattern wrongly includes the suffix `_R#_001.fq.gz`)
+
+The output of alignment will therefore be:
+
+- `TREATED-replica1-Tot_S11.Aligned.sortedByCoord.out.bam`
+- `TREATED-replica3-Tot_S34.Aligned.sortedByCoord.out.bam`
+- `RES_PT-replica1-Tot_S12.Aligned.sortedByCoord.out.bam`
+
+
 ## How to run your pipeline
 
 1. Make sure you satisfy all requirements listed in [this section](#requirements).
@@ -244,42 +279,6 @@ will be lost. If some relevant information is placed after dots, please change t
 Examples:
 - invalid file name: `COV362-TREATED-replica1.Tot_S11.Aligned.sortedByCoord.out.bam`;
 - valid file name: `COV362-TREATED-replica1-Tot_S11.Aligned.sortedByCoord.out.bam`.
-
-
-### Example of input FastQ files
-
-Suppose you want to run reads alignment and suppose you have a directory containing the following files:
-
-- `TREATED-replica1-Tot_S11_R1_001.fastq.gz`
-- `TREATED-replica1-Tot_S11_R2_001.fastq.gz`
-- `TREATED-replica2-Tot_S22_R1_001.fastq.gz`
-- `TREATED-replica3-Tot_S34_R1_001.fq.gz`
-- `TREATED-replica3-Tot_S34_R2_001.fq.gz`
-- `TREATED-replica4-Tot_S25_R1_001.fastq`
-- `TREATED-replica4-Tot_S25_R2_001.fastq`
-- `RES_PT-replica1-Tot_S12_R1_001.fq.gz`
-- `RES_PT-replica1-Tot_S12_R2_001.fq.gz`
-- `RES_PT-replica2-Tot_S24_R1_001.fq.gz`
-- `RES_PT-replica2-Tot_S24_R2_001.fq.gz`
-
-Now, for instance if you set `fastq_files` to the list: [`TREATED-replica*`, `RES_PT-replica1-Tot_S12`,
-`RES_PT-replica2-Tot_S24_R?_001.fq.gz`], the files in the directory will be treated in the following way:
-
-- `TREATED-replica1-Tot_S11_R1_001.fastq.gz` and `TREATED-replica1-Tot_S11_R2_001.fastq.gz` (processed)
-- `TREATED-replica2-Tot_S22_R1_001.fastq.gz` (not processed, since it does not have a corresponding paired read file)
-- `TREATED-replica3-Tot_S34_R1_001.fq.gz` and `TREATED-replica3-Tot_S34_R2_001.fq.gz` (processed)
-- `TREATED-replica4-Tot_S25_R1_001.fastq` and `TREATED-replica4-Tot_S25_R2_001.fastq` (not processed, since
-they do not match the expected format)
-- `RES_PT-replica1-Tot_S12_R1_001.fq.gz` and `RES_PT-replica1-Tot_S12_R2_001.fq.gz` (processed)
-- `RES_PT-replica2-Tot_S24_R1_001.fq.gz` and `RES_PT-replica2-Tot_S24_R2_001.fq.gz` (not processed, since the
-provided pattern wrongly includes the suffix `_R#_001.fq.gz`)
-
-The output of alignment will therefore be:
-
-- `TREATED-replica1-Tot_S11.Aligned.sortedByCoord.out.bam`
-- `TREATED-replica3-Tot_S34.Aligned.sortedByCoord.out.bam`
-- `RES_PT-replica1-Tot_S12.Aligned.sortedByCoord.out.bam`
-
 
 
 
