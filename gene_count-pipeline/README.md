@@ -125,10 +125,9 @@ equal to 1 and 2 (de facto standard).
 - `bam_dir` should contain three subdirectories, called "logs/", "stats/" and "tabs/".
 
 - All the information contained in the name of input FastQ and BAM files after the first dot will be lost. If some relevant
-information is placed after dots, please change these dots with other separators.
-Examples:
-- invalid file name: `COV362-TREATED-replica1.Tot_S11.Aligned.sortedByCoord.out.bam`;
-- valid file name: `COV362-TREATED-replica1-Tot_S11.Aligned.sortedByCoord.out.bam`.
+  information is placed after dots, please change these dots with other separators. Examples:
+  - invalid file name: `COV362-TREATED-replica1.Tot_S11.Aligned.sortedByCoord.out.bam`;
+  - valid file name: `COV362-TREATED-replica1-Tot_S11.Aligned.sortedByCoord.out.bam`.
 
 
 ### Process specific parameters
