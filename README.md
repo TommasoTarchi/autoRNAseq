@@ -48,7 +48,7 @@ It is composed of the following steps:
 9. Results Summary: summarize the results.
 
 A more detailed description of the pipeline and instruction on how to run it can be found in the
-corresponding [README.md](./gene_count-pipeline/README.md).
+[related README.md](./gene_count-pipeline/README.md).
 
 
 
