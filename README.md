@@ -187,7 +187,7 @@ file is always saved, independently of which steps are run after.
 
 ### How to run your pipeline
 
-1. Make sure you satisfy all requirements listed in [this section](#prerequisites).
+1. Make sure you satisfy all requirements listed in [this section](#requirements).
 
 2. Edit the "config.json" file as follows:
 
