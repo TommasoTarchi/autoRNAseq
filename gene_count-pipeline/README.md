@@ -14,8 +14,8 @@ In this file you will find:
   - [Data paths](#data-paths)
   - [Process specific parameters](#process-specific-parameters)
   - [Output files](#output-files)
-- [How to run your pipeline](#how-to-run-your-pipeline)
   - [Example of input FastQ files](#example-of-input-fastq-files)
+- [How to run your pipeline](#how-to-run-your-pipeline)
 
 
 ## Pipeline steps
