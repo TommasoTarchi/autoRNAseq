@@ -49,9 +49,6 @@ bla bla bla
 8. Gene Counts: quantify gene expression.
 9. Results Summary: summarize the results.
 
-<a name="requirements">
-</a>
-
 ### Requirements
 
 - You need to have Nextflow and Singularity installed on your machine. You can look at the
@@ -144,7 +141,7 @@ need to set that variable.
 Variables you don't need should be ignored by the program. However, to avoid any possible bug we
 suggest to set them to an empty string (or an empty list if the variable is of type list).
 
-For more details on supported file names see [this section](#how_to_pipeline).
+For more details on supported file names see [this section](#how-to-run-your-pipeline).
 
 #### Output files
 
@@ -188,12 +185,9 @@ file is always saved, independently of which steps are run after.
 9. Results Summary:
     - html reports of all steps run, saved into `report_dir`.
 
-<a name="how_to_pipeline">
-</a>
-
 ### How to run your pipeline
 
-1. Make sure you satisfy all requirements listed in [this section](#requirementso).
+1. Make sure you satisfy all requirements listed in [this section](#prerequisites).
 
 2. Edit the "config.json" file as follows:
 
