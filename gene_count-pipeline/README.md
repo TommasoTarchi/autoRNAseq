@@ -117,10 +117,18 @@ need to set that variable.
 
 - `report_dir`: path to directory to store produced reports and plots, required by: 9. summarize results.
 
-`fastq_files` should be passed in couples of paired-end zipped read files, and should end in `_R#_001.fastq.gz` or
-`_R#_001.fq.gz`, with `#` equal to 1 and 2 (de facto standard).
+**Please notice**:
 
-`bam_dir` should contain three subdirectories, called "logs/", "stats/" and "tabs/".
+- `fastq_files` should be zipped pired-end read files, and should end in `_R#_001.fastq.gz` or `_R#_001.fq.gz`, with `#`
+equal to 1 and 2 (de facto standard).
+
+- `bam_dir` should contain three subdirectories, called "logs/", "stats/" and "tabs/".
+
+- All the information contained in the name of input FastQ and BAM files after the first dot will be lost. If some relevant
+information is placed after dots, please change these dots with other separators.
+Examples:
+- invalid file name: `COV362-TREATED-replica1.Tot_S11.Aligned.sortedByCoord.out.bam`;
+- valid file name: `COV362-TREATED-replica1-Tot_S11.Aligned.sortedByCoord.out.bam`.
 
 
 ### Process specific parameters
@@ -156,7 +164,7 @@ Other process-specific parameteres are:
 Notice that in `config.json` some of the parameters are set to a default value. However, the value set is **not**
 guaranteed to work.
 
-**All** process-specific parameters of te processes you intend to run must be set to some value.
+**All** process-specific parameters of the processes you intend to run must be set to some value.
 
 
 ### Output files
@@ -221,14 +229,14 @@ Suppose you want to run reads alignment and suppose you have a directory contain
 Now, for instance if you set `fastq_files` to the list: [`TREATED-replica*`, `RES_PT-replica1-Tot_S12`,
 `RES_PT-replica2-Tot_S24_R?_001.fq.gz`], the files in the directory will be treated in the following way:
 
-- `TREATED-replica1-Tot_S11_R1_001.fastq.gz` and `TREATED-replica1-Tot_S11_R2_001.fastq.gz` (processed)
-- `TREATED-replica2-Tot_S22_R1_001.fastq.gz` (not processed, since it does not have a corresponding paired read file)
-- `TREATED-replica3-Tot_S34_R1_001.fq.gz` and `TREATED-replica3-Tot_S34_R2_001.fq.gz` (processed)
-- `TREATED-replica4-Tot_S25_R1_001.fastq` and `TREATED-replica4-Tot_S25_R2_001.fastq` (not processed, since
-they do not match the expected format)
-- `RES_PT-replica1-Tot_S12_R1_001.fq.gz` and `RES_PT-replica1-Tot_S12_R2_001.fq.gz` (processed)
-- `RES_PT-replica2-Tot_S24_R1_001.fq.gz` and `RES_PT-replica2-Tot_S24_R2_001.fq.gz` (not processed, since the
-provided pattern wrongly includes the suffix `_R#_001.fq.gz`)
+- `TREATED-replica1-Tot_S11_R1_001.fastq.gz` and `TREATED-replica1-Tot_S11_R2_001.fastq.gz`: processed
+- `TREATED-replica2-Tot_S22_R1_001.fastq.gz`: not processed, since it does not have a corresponding paired read file
+- `TREATED-replica3-Tot_S34_R1_001.fq.gz` and `TREATED-replica3-Tot_S34_R2_001.fq.gz`: processed
+- `TREATED-replica4-Tot_S25_R1_001.fastq` and `TREATED-replica4-Tot_S25_R2_001.fastq`: not processed, since
+they do not match the expected format
+- `RES_PT-replica1-Tot_S12_R1_001.fq.gz` and `RES_PT-replica1-Tot_S12_R2_001.fq.gz`: processed
+- `RES_PT-replica2-Tot_S24_R1_001.fq.gz` and `RES_PT-replica2-Tot_S24_R2_001.fq.gz`: not processed, since the
+provided pattern wrongly includes the suffix `_R#_001.fq.gz`
 
 The output of alignment will therefore be:
 
@@ -270,12 +278,6 @@ The output of alignment will therefore be:
    ````
    $ nextflow run main.nf
    ````
-
-**Notice** that all the information contained in the name of input FastQ and BAM files after the first dot
-will be lost. If some relevant information is placed after dots, please change these dots with other separators.
-Examples:
-- invalid file name: `COV362-TREATED-replica1.Tot_S11.Aligned.sortedByCoord.out.bam`;
-- valid file name: `COV362-TREATED-replica1-Tot_S11.Aligned.sortedByCoord.out.bam`.
 
 
 
