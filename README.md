@@ -1,4 +1,4 @@
-# AutoRNAseq: an automated pipeline for paired-end RNAseq data analysis
+# AutoRNAseq: automated pipelines for paired-end RNAseq data analysis
 
 In this repository you can find the following automated pipelines:
 
@@ -30,7 +30,7 @@ parameters can be adjusted differently for each step of the pipeline.
 To be done ...
 
 
-## Gene expression count
+## Gene expression count pipeline
 
 This pipeline can be used to produce compressed alignment files (*BAM*) from "raw" read files
 (*FastQ*).
