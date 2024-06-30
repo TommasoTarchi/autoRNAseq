@@ -248,26 +248,23 @@ The output of alignment will therefore be:
 
 3. Navigate to the `gene_count-pipeline` directory and edit the `config.json` file as follows:
 
-    3a. Set variables in `run_processes` section to true for the processes you wish to execute
-    (if you set `all` to true, then all steps will be run regardless of the values of the following
-    variables).
+    - Set variables in `run_processes` section to true for the processes you wish to execute
+      (if you set `all` to true, then all steps will be run regardless of the values of the following
+      variables).
 
-    3b. Configure `data_paths` to specify paths to your data following the descriptions in [this section](#data-paths).
-    Remember to use lists for `fastq_files` and `bam_files`. Each path should be complete, in particular:
-
-   - for `fastq_files`, only the common prefix of reads pair should be passed, i.e. one
-     full path **without** the `_R#_001.fastq.gz` suffix (**glob patterns are allowed** - see
-     [here](#example-of-input-fastq-files) for more details);
+    - Configure `data_paths` to specify paths to your data following the descriptions in [this section](#data-paths).
+      Remember to use lists for `fastq_files` and `bam_files`. Each path should be complete, in particular:
+      - for `fastq_files`, only the common prefix of reads pair should be passed, i.e. one full path **without** the
+        `_R#_001.fastq.gz` suffix (**glob patterns are allowed** - see [here](#example-of-input-fastq-files) for more
+        details);
+      - for `bam_files`, include full paths (**glob patterns are allowed**);
+      - if you don't need a path variable set it to an empty string/list.
+      
+    - Customize settings for each process under the `processes` section in `config.json`. Refer toyour cluster's
+      specifications for SLURM settings. See [here](#process-specific-parameters) for details.
     
-   - for `bam_files`, include full paths (**glob patterns are allowed**);
-   
-   - if you don't need a path variable set it to an empty string/list.
-
-    3c. Customize settings for each process under the `processes` section in `config.json`. Refer to
-    your cluster's specifications for SLURM settings. See [here](#process-specific-parameters) for details.
-
-    3d. Set `run_locally` variable to true if you want to run the pipeline on your local machine
-    (not recommended for most applications).
+    - Set `run_locally` variable to true if you want to run the pipeline on your local machine (not recommended for
+       most applications).
 
 5. Run the pipeline using:
    ````
