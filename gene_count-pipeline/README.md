@@ -1,7 +1,7 @@
-# Gene expression count
+# Gene expression count pipeline
 
-This pipeline can be used to produce compressed alignment files (*BAM*) from "raw" read files
-(*FastQ*).
+This pipeline can be used to produce compressed alignment files (*BAM*) from "raw" paired-end
+read files (*FastQ*).
 
 
 ## Outline
@@ -39,7 +39,7 @@ of the list describes the function needed by the corresponding step in the pipel
 8. *featureCounts* ([docs][featureCounts]) **or** *HTSeq* ([docs][HTSeq])
 9. *multiQC* ([docs][multiQC])
 
-Remember that you need **only** the containers corresponding to the steps you want to run.
+(Remember that you need **only** the containers corresponding to the steps you want to run).
 
 - You need to download the three files in the [pipeline directory](./gene_expression_count/).
 Make sure to have **all three files in the same directory**. However, notice that the location of
@@ -226,7 +226,7 @@ Now, for instance if you set `fastq_files` to the list: [`TREATED-replica*`, `RE
 `RES_PT-replica2-Tot_S24_R?_001.fq.gz`], the files in the directory will be treated in the following way:
 
 - `TREATED-replica1-Tot_S11_R1_001.fastq.gz` and `TREATED-replica1-Tot_S11_R2_001.fastq.gz` (processed)
-- `TREATED-replica2-Tot_S22_R1_001.fastq.gz` (not processed, since it does not have a pair read file)
+- `TREATED-replica2-Tot_S22_R1_001.fastq.gz` (not processed, since it does not have a corresponding paired read file)
 - `TREATED-replica3-Tot_S34_R1_001.fq.gz` and `TREATED-replica3-Tot_S34_R2_001.fq.gz` (processed)
 - `TREATED-replica4-Tot_S25_R1_001.fastq` and `TREATED-replica4-Tot_S25_R2_001.fastq` (not processed, since
 they do not match the expected format)
