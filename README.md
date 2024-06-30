@@ -2,7 +2,7 @@
 
 In this repository you can find the following automated pipelines:
 
-1. Gene expression count: from paired-end reads to gene expression.
+1. Gene expression count: from paired-end reads to gene expression counts.
 
 All pipelines use *Nextflow* as automation tool and *Singularity* for containerization.
 If you are new to these tools, you can find the documentation, respectively, [here][nextflow]
