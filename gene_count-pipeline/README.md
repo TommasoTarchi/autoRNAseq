@@ -113,8 +113,6 @@ need to set that variable.
 
 `bam_dir` should contain three subdirectories, called "logs/", "stats/" and "tabs/".
 
-For more details on supported file names see [this section](#how-to-run-your-pipeline).
-
 
 ### Process specific parameters
 
