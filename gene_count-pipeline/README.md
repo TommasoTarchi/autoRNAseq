@@ -248,7 +248,7 @@ The output of alignment will therefore be:
 
 3. Navigate to the `gene_count-pipeline` directory and edit the `config.json` file as follows:
 
-    3a. Set variables in "run_processes" section to true for the processes you wish to execute
+    3a. Set variables in `run_processes` section to true for the processes you wish to execute
     (if you set `all` to true, then all steps will be run regardless of the values of the following
     variables).
 
