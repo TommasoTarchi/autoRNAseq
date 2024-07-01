@@ -414,8 +414,8 @@ workflow {
     def bam_ch = false
     if (params.run_alignment || params.run_all) {
 
-	// extract complete fastq files
-	def fastq_files_complete = params.fastq_files.collect{ path -> return (path.toString() + "_R{1,2}_001.f*q.gz") }
+        // extract complete fastq files
+        def fastq_files_complete = params.fastq_files.collect{ path -> return (path.toString() + "_R{1,2}_001.f*q.gz") }
 
         def fastq_ch = channel.fromFilePairs(fastq_files_complete, checkIfExists: true).map{baseName, fileList -> fileList}
 
