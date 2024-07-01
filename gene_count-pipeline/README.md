@@ -105,7 +105,7 @@ need to set that variable.
 
 - `fasta_file`: complete path to fasta file with reference genome, required by: 1. genome indexing.
 
-- `annotation_file`: complete path to GTF/GFF files, required by: 1. genome indexing, 8. gene counts.
+- `annotation_file`: complete path to GTF/GFF file, required by: 1. genome indexing, 8. gene counts.
 
 - `fastq_files`: list of complete paths to input (**zipped**) read files, required by: 2. alignment.
 
@@ -141,6 +141,8 @@ Common to all processes are the following variables:
 "container_path" -> string: full path to singularity image for the process
 "num_threads" -> integer: number of threads (not supported for "remove_duplicates" and "summarize_results")
 ````
+
+For `container_path` setting refer to the [requirements](#requirements).
 
 Other process-specific parameteres are:
 
@@ -266,11 +268,12 @@ The output of alignment will therefore be:
       - `bam_dir` should contain three subdirectories called "logs/", "stats/" and "tabs/"
       - if you don't need a path variable set it to an empty string/list.
       
-    - Customize settings for each process under the `processes` section in `config.json`. Refer toyour cluster's
-      specifications for SLURM settings. See [here](#process-specific-parameters) for details.
+    - Customize settings for each process you are running under the corresponding `processes` section in `config.json`. Refer
+      to your cluster's specifications for SLURM settings. See [here](#process-specific-parameters) for details. Parameters of
+      processes you are not running will be ignored (you can leave them as they are).
     
     - Set `run_locally` variable to true if you want to run the pipeline on your local machine (not recommended for
-       most applications).
+      most applications).
 
 5. Run the pipeline using:
    ````
