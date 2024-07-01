@@ -414,11 +414,14 @@ workflow {
     def bam_ch = false
     if (params.run_alignment || params.run_all) {
 
-        def fastq_ch = channel.fromFilePairs("$params.fastq_files_R{1,2}_001.f*q.gz", checkIfExists: true).map{baseName, fileList -> fileList}
+	// extract complete fastq files
+	def fastq_files_complete = params.fastq_files.collect{ path -> return (path.toString() + "_R{1,2}_001.f*q.gz") }
+
+        def fastq_ch = channel.fromFilePairs(fastq_files_complete, checkIfExists: true).map{baseName, fileList -> fileList}
 
         bam_ch = runAlignment(ready: index_ready, fastq_ch)[0]
 
-    } else {
+    } else if (params.run_BAM_sorting || params.run_remove_duplicates || params.run_BAM_filtering || params.run_BAM_indexing || params.run_BAM_stats || params.run_gene_counts){
 
         bam_ch = channel.fromPath(params.bam_files, checkIfExists: true)
     }

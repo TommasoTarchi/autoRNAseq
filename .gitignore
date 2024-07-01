@@ -1,5 +1,6 @@
-# nextflow work directories
+# nextflow work directories and logs
 **/work/
+**/.nextflow*
 
 # container images
 **/*.sif
