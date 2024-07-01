@@ -148,7 +148,7 @@ Other process-specific parameteres are:
 
 ````
 "genome_indexing": {
-  "max_RAM" -> string: maximum RAM for STAR indexing (should be equal to "memory")
+  "max_RAM" -> string: maximum RAM for STAR indexing **in bytes** (should be same amount as in "memory")
 }
 
 "BAM_filtering": {

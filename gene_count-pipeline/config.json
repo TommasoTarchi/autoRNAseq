@@ -23,17 +23,17 @@
   },
   "processes": {
     "genome_indexing": {
-      "max_RAM": "180GB",
+      "max_RAM": "10000000000",
       "queue": "",
       "time": "2h",
-      "memory": "180GB",
+      "memory": "10GB",
       "container_path": "",
       "num_threads": 1
     },
     "alignment": {
       "queue": "",
       "time": "2h",
-      "memory": "180GB",
+      "memory": "20GB",
       "container_path": "",
       "num_threads": 1
     },
