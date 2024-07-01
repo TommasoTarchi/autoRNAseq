@@ -51,6 +51,9 @@ of the list describes the function needed by the corresponding step in the pipel
 
 Remember that you need **only** the containers corresponding to the steps you want to run.
 
+- If your pipelines uses FastQ files, please make sure they are **paired-end**, **zipped**, and
+ending in `_R#_001.fastq.gz` or `_R#_001.fq.gz`, with `#` equal to 1 and 2 (de facto standard).
+
 
 ## Parameters description
 
@@ -118,11 +121,6 @@ need to set that variable.
 - `report_dir`: path to directory to store produced reports and plots, required by: 9. summarize results.
 
 **Please notice**:
-
-- `fastq_files` should be zipped pired-end read files, and should end in `_R#_001.fastq.gz` or `_R#_001.fq.gz`, with `#`
-equal to 1 and 2 (de facto standard).
-
-- `bam_dir` should contain three subdirectories, called "logs/", "stats/" and "tabs/".
 
 - All the information contained in the name of input FastQ and BAM files after the first dot will be lost. If some relevant
   information is placed after dots, please change these dots with other separators. Example:
@@ -261,10 +259,11 @@ The output of alignment will therefore be:
 
     - Configure `data_paths` to specify paths to your data following the descriptions in [this section](#data-paths).
       Remember to use lists for `fastq_files` and `bam_files`. Each path should be complete, in particular:
-      - for `fastq_files`, only the common prefix of reads pair should be passed, i.e. one full path **without** the
-        `_R#_001.fastq.gz` suffix (**glob patterns are allowed** - see [here](#example-of-input-fastq-files) for more
-        details);
+      - for `fastq_files`, only the common prefix of reads pair should be passed, i.e. one full path per read pair
+        **without** the `_R#_001.fastq.gz` suffix (**glob patterns are allowed** - see [here](#example-of-input-fastq-files)
+        for more details);
       - for `bam_files`, include full paths (**glob patterns are allowed**);
+      - `bam_dir` should contain three subdirectories called "logs/", "stats/" and "tabs/"
       - if you don't need a path variable set it to an empty string/list.
       
     - Customize settings for each process under the `processes` section in `config.json`. Refer toyour cluster's
@@ -277,7 +276,6 @@ The output of alignment will therefore be:
    ````
    $ nextflow run main.nf
    ````
-
 
 
 
