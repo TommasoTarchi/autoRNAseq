@@ -57,8 +57,8 @@ ending in `_R#_001.fastq.gz` or `_R#_001.fq.gz`, with `#` equal to 1 and 2 (de f
 - Make sure that in all input files **all relevant information is placed after dots**. If this is
 not the case, you can replace these dots with other seprators.
 Example:
-  - file name with information loss: `COV362-TREATED-replica1.Tot_S11.Aligned.sortedByCoord.out.bam`;
-  - file name without information loss: `COV362-TREATED-replica1-Tot_S11.Aligned.sortedByCoord.out.bam`.
+  - file name with information loss: `COV362-TREATED-replica1.Tot_S11.Aligned.out.bam`;
+  - file name without information loss: `COV362-TREATED-replica1-Tot_S11.Aligned.out.bam`.
 
 
 ## Parameters description
@@ -188,16 +188,15 @@ the related variable in `config.json`.
     - Alignment tab files, saved into "`bam_dir`/tabs/".
 
 3. BAM Sorting:
-    - BAM files sorted by coordinates, saved into `bam_dir` with extention `.Aligned.sortedByCoord.out.bam`.
+    - BAM files sorted by coordinates, saved into `bam_dir` with extention `.Aligned.sortedByCoord.bam`.
 
 4. Remove duplicates:
-    - BAM files with duplicates removed, saved into `bam_dir` with same name as the input BAM. Notice that
-    the input BAM will be overwritten by this step if contained in `bam_dir`.
+    - BAM files with duplicates removed, saved into `bam_dir` with extention `.Aligned.noDuplicates.bam`.
     - Duplicate metrics report, saved in "`bam_dir`/stats/" with extention `.dup_metrics.txt`.
 
 5. BAM Filtering:
     - BAM files filtered according to some threshold on quality score, saved into `bam_dir` with extention
-    `.Aligned.sortedByCoord.filtered.bam`.
+    `.Aligned.filtered.bam`.
 
 6. BAM Indexing:
     - Index files of input BAM files (one for each BAM), saved into `bam_dir` with same name as input BAM plus
