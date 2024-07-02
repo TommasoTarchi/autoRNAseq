@@ -261,7 +261,7 @@ process runBAMSorting {
 }
 
 process runRemoveDuplicates {
-    publishDir "${params.bam_dir}", mode: 'copy', overwrite: false
+    publishDir "${params.bam_dir}", mode: 'copy', overwrite: true
 
     input:
     path bam

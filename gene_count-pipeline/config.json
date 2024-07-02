@@ -47,7 +47,7 @@
     "remove_duplicates": {
       "queue": "regular1",
       "time": "1h",
-      "memory": "20GB",
+      "memory": "40GB",
       "container_path": "/scratch/ttarchi/container_images/picard.sif"
     },
     "BAM_filtering": {
