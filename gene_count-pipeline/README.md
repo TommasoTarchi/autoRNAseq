@@ -269,7 +269,8 @@ The output of alignment will therefore be:
         **without** the `_R#_001.fastq.gz` suffix (**glob patterns are allowed** - see [here](#example-of-input-fastq-files)
         for more details);
       - for `bam_files`, include full paths (**glob patterns are allowed**);
-      - `bam_dir` should contain three subdirectories called "logs/", "stats/" and "tabs/"
+      Also:
+      - `bam_dir` should contain three subdirectories called "logs/", "stats/" and "tabs/";
       - if you don't need a path variable set it to an empty string/list.
       
     - Customize settings for each process you are running under the corresponding `processes` section in `config.json`. Refer
