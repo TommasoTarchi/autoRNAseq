@@ -1,6 +1,6 @@
 # Gene expression count pipeline
 
-This pipeline can be used to produce compressed alignment files (BAM) and gene expression count files from "raw" pired-end read files (FastQ).
+This pipeline can be used to produce compressed alignment files (BAM) and gene expression count files from "raw" paired-end read files (FastQ).
 
 
 ## Outline
