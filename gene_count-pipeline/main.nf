@@ -12,7 +12,7 @@ def helpMessage() {
 
         1. Genome Indexing: preprocess the genome for alignment.
         2. Alignment: properly align reads to the reference genome.
-        3. BAM Sorting: sort BAM files (redundant if the previous step was run).
+        3. BAM Sorting: sort BAM files.
         4. Remove duplicates: remove duplicates in BAM files.
         5. BAM Filtering: quality filtering of aligned reads.
         6. BAM Indexing: index the alignment files.
@@ -224,7 +224,6 @@ process runAlignment {
     script:
     fastq_name = fastq1.toString().split("\\.")[0]
     core_name = fastq_name.substring(0, fastq_name.length() - 7)
-    //bam = core_name + ".Aligned.sortedByCoord.out.bam"
     bam = core_name + ".Aligned.out.bam"
 
     """
@@ -428,7 +427,7 @@ workflow {
 
     // run BAM sorting
     def bam_ch_sorted = false
-    if (params.run_BAM_sorting) {
+    if (params.run_BAM_sorting || params.run_all) {
 
         bam_ch_sorted = runBAMSorting(bam_ch)
 

@@ -22,7 +22,7 @@ In this file you will find:
 
 1. Genome Indexing: preprocess the genome for alignment.
 2. Alignment: properly align reads to the reference genome.
-3. BAM Sorting: sort alignment files (redundant if the previous step was run).
+3. BAM Sorting: sort alignment files.
 4. Remove duplicates: remove duplicates in alignment files.
 5. BAM Filtering: quality filtering of aligned reads.
 6. BAM Indexing: index the alignment files.
@@ -54,6 +54,12 @@ Remember that you need **only** the containers corresponding to the steps you wa
 - If your pipelines uses FastQ files, please make sure they are **paired-end**, **zipped**, and
 ending in `_R#_001.fastq.gz` or `_R#_001.fq.gz`, with `#` equal to 1 and 2 (de facto standard).
 
+- Make sure that in all input files **all relevant information is placed after dots**. If this is
+not the case, you can replace these dots with other seprators.
+Example:
+  - file name with information loss: `COV362-TREATED-replica1.Tot_S11.Aligned.sortedByCoord.out.bam`;
+  - file name without information loss: `COV362-TREATED-replica1-Tot_S11.Aligned.sortedByCoord.out.bam`.
+
 
 ## Parameters description
 
@@ -66,7 +72,7 @@ All parameters can be set from the `config.json` file. We strongly suggest to **
 {
   "run_processes": {
     ... boolean variables indicating whether each process should be run or not
-    ("all" is to run all pipeline from first to last step (BAM sorting excluded)) ...
+        ("all" is to run all pipeline from first to last step ...
   },
   
   "data_paths": {
@@ -98,7 +104,7 @@ Particular care must be taken in setting the `data_path` variables.
 
 If you run only some of the pipeline steps (as it is usually the case), you will only need some of
 these variables. The following list shows for each data path variable which steps of the pipeline need
-it to be set. If **at least one** of the steps you intend to run is listed under a variable, then you
+it to be set. If **at least one** of the steps you intend to run is listed for a variable, then you
 need to set that variable.
 
 - `index_dir`: path to directory for genome index files, required by: 1. genome indexing, 2. alignment.
@@ -119,13 +125,6 @@ need to set that variable.
 - `gene_counts_dir`: path to directory to store gene counts files, required by: 8. gene counts.
 
 - `report_dir`: path to directory to store produced reports and plots, required by: 9. summarize results.
-
-**Please notice**:
-
-- All the information contained in the name of input FastQ and BAM files after the first dot will be lost. If some relevant
-  information is placed after dots, please change these dots with other separators. Example:
-  - file name with information loss: `COV362-TREATED-replica1.Tot_S11.Aligned.sortedByCoord.out.bam`;
-  - file name without information loss: `COV362-TREATED-replica1-Tot_S11.Aligned.sortedByCoord.out.bam`.
 
 
 ### Process specific parameters
@@ -160,10 +159,10 @@ Other process-specific parameteres are:
 }
 ````
 
+**All** process-specific parameters of the processes you intend to run must be set to some value.
+
 Notice that in `config.json` some of the parameters are set to a default value. However, the value set is **not**
 guaranteed to work.
-
-**All** process-specific parameters of the processes you intend to run must be set to some value.
 
 
 ### Output files
@@ -175,9 +174,9 @@ file is always saved, independently of which steps are run after.
     - Various files with indexed and preprocessed genome, saved into `inded_dir`.
 
 2. Alignment:
-    - BAM files with alignment (one per paired-end pair of fastq file), sorted by coordinates and saved
+    - BAM files with alignment (one per paired-end pair of fastq file), **unsorted** and saved
     into `bam_dir`. The name of the file will have all the relevant information contained in the fastq
-    names followed by the suffix: `.Aligned.sortedByCoord.out.bam`.
+    names followed by the suffix: `.Aligned.out.bam`.
     - Alignment log files, saved into "`bam_dir`/logs/".
     - Alignment tab files, saved into "`bam_dir`/tabs/".
 
@@ -224,24 +223,29 @@ Suppose you want to run reads alignment and suppose you have a directory contain
 - `RES_PT-replica1-Tot_S12_R2_001.fq.gz`
 - `RES_PT-replica2-Tot_S24_R1_001.fq.gz`
 - `RES_PT-replica2-Tot_S24_R2_001.fq.gz`
+- `RES_PT-replica3-Tot_S24_R1_001.fq.gz`
+- `RES_PT-replica3-Tot_S24_R2_001.fq.gz`
 
 Now, for instance if you set `fastq_files` to the list: [`TREATED-replica*`, `RES_PT-replica1-Tot_S12`,
 `RES_PT-replica2-Tot_S24_R?_001.fq.gz`], the files in the directory will be treated in the following way:
 
 - `TREATED-replica1-Tot_S11_R1_001.fastq.gz` and `TREATED-replica1-Tot_S11_R2_001.fastq.gz`: processed
 - `TREATED-replica2-Tot_S22_R1_001.fastq.gz`: not processed, since it does not have a corresponding paired read file
+(notice that the file matches one of the glob pattern passed).
 - `TREATED-replica3-Tot_S34_R1_001.fq.gz` and `TREATED-replica3-Tot_S34_R2_001.fq.gz`: processed
 - `TREATED-replica4-Tot_S25_R1_001.fastq` and `TREATED-replica4-Tot_S25_R2_001.fastq`: not processed, since
 they do not match the expected format
 - `RES_PT-replica1-Tot_S12_R1_001.fq.gz` and `RES_PT-replica1-Tot_S12_R2_001.fq.gz`: processed
 - `RES_PT-replica2-Tot_S24_R1_001.fq.gz` and `RES_PT-replica2-Tot_S24_R2_001.fq.gz`: not processed, since the
 provided pattern wrongly includes the suffix `_R#_001.fq.gz`
+- `RES_PT-replica3-Tot_S24_R1_001.fq.gz` and `RES_PT-replica3-Tot_S24_R2_001.fq.gz`: not processed, since it does
+not match any glob pattern passed.
 
 The output of alignment will therefore be:
 
-- `TREATED-replica1-Tot_S11.Aligned.sortedByCoord.out.bam`
-- `TREATED-replica3-Tot_S34.Aligned.sortedByCoord.out.bam`
-- `RES_PT-replica1-Tot_S12.Aligned.sortedByCoord.out.bam`
+- `TREATED-replica1-Tot_S11.Aligned.out.bam`
+- `TREATED-replica3-Tot_S34.Aligned.out.bam`
+- `RES_PT-replica1-Tot_S12.Aligned.out.bam`
 
 
 ## How to run your pipeline

@@ -39,7 +39,7 @@ It is composed of the following steps:
 
 1. Genome Indexing: preprocess the genome for alignment.
 2. Alignment: properly align reads to the reference genome.
-3. BAM Sorting: sort alignment files (redundant if the previous step was run).
+3. BAM Sorting: sort alignment files.
 4. Remove duplicates: remove duplicates in alignment files.
 5. BAM Filtering: quality filtering of aligned reads.
 6. BAM Indexing: index the alignment files.
