@@ -27,9 +27,7 @@ parameters can be adjusted differently for each step of the pipeline.
 
 ## What you will find in this repository
 
-Code for each pipeline is contained in a dedicated directory in this repository.
-
-In particular this repo contains:
+Content of the repository (each pipeline has a dedicated directory):
 
 - This README file: general description of the repo.
 - [`gene_count-pipeline`](./gene_count-pipeline/): gene expression count pipeline, containing:
