@@ -31,7 +31,7 @@ parameters can be adjusted differently for each step of the pipeline.
 Content of the repository (each pipeline has a dedicated directory):
 
 - This README file: general description of the repo.
-- [`gene_count-pipeline`](./gene_count-pipeline/): gene expression count pipeline, containing:
+- [`gene_count-pipeline/`](./gene_count-pipeline/): gene expression count pipeline, containing:
   - source code for pipeline (`main.nf`, `nextflow.config`, `config.json`);
   - [README.md](./gene_count-pipeline/README.md), with instruction for running it.
 
