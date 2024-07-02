@@ -39,7 +39,7 @@ Content of the repository (each pipeline has a dedicated directory):
 ## Gene expression count pipeline
 
 This pipeline can be used to produce compressed alignment files (*BAM*) and gene expression count files
-from "raw" pired-end read files (*FastQ*).
+from "raw" paired-end read files (*FastQ*).
 
 It is composed of the following steps:
 
