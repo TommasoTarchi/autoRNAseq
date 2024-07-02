@@ -283,8 +283,11 @@ The output of alignment will therefore be:
       to your cluster's specifications for SLURM settings. See [here](#process-specific-parameters) for details. Parameters of
       processes you are not running will be ignored (you can leave them as they are).
     
-    - Set `run_locally` variable to true if you want to run the pipeline on your local machine (not recommended for
+    - Change `run_locally` variable to true if you want to run the pipeline on your local machine (**not recommended** for
       most applications).
+
+    - Change `save_all_bams` variable to true if you want to keep all BAM files produced along the pipeline (usually **not
+      recommended**, especially when working with many files). If you only want the final result, leave it to false.
 
 5. Run the pipeline using:
    ````
