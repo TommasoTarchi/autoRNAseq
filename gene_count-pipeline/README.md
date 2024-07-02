@@ -93,7 +93,11 @@ All parameters can be set from the `config.json` file. We strongly suggest to **
   
   },
   
-  "run_locally": boolean (default "false")
+  "run_locally": boolean variable indicating whether the code should be run locally
+                 (default "false")
+
+  "save_all_bams": boolean variable indicating whether BAM files should be saved at
+                   each step (default "false", i.e. only final BAMs are saved)
 }
 ````
 
@@ -167,8 +171,11 @@ guaranteed to work.
 
 ### Output files
 
-The following is a list of output files of each step of the pipeline. If not specified, the output
-file is always saved, independently of which steps are run after.
+The following is a list of output files of each step of the pipeline.
+
+If not specified, the output file is always saved, independently of which steps are run after. Exeption are
+BAM file: by default only the last version is saved, but they can optionally be saved at each step by setting
+the related variable in `config.json`.
 
 1. Genome Indexing:
     - Various files with indexed and preprocessed genome, saved into `inded_dir`.

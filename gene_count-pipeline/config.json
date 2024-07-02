@@ -87,5 +87,6 @@
       "container_path": ""
     }
   },
-  "run_locally": false
+  "run_locally": false,
+  "save_all_bams": false
 }

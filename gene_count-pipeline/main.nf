@@ -208,7 +208,9 @@ process runGenomeIndexing {
 }
 
 process runAlignment {
-    publishDir "${params.bam_dir}", mode: 'copy', overwrite: false, pattern: "${bam}"
+    if (save_all_BAM || last_BAM_output == "alignment") {
+        publishDir "${params.bam_dir}", mode: 'copy', overwrite: false, pattern: "${bam}"
+    }
     publishDir "${params.bam_dir}/logs/", mode: 'copy', overwrite: false, pattern: "*.Log.final.out"
     publishDir "${params.bam_dir}/tabs/", mode: 'copy', overwrite: false, pattern: "*.tab"
 
@@ -240,7 +242,9 @@ process runAlignment {
 }
 
 process runBAMSorting {
-    publishDir "${params.bam_dir}", mode: 'copy', overwrite: false
+    if (save_all_BAM || last_BAM_output == "sorting") {
+        publishDir "${params.bam_dir}", mode: 'copy', overwrite: false
+    }
 
     input:
     path bam
@@ -261,7 +265,9 @@ process runBAMSorting {
 }
 
 process runRemoveDuplicates {
-    publishDir "${params.bam_dir}", mode: 'copy', overwrite: true
+    if (save_all_BAM || last_BAM_output == "duplicates") {
+        publishDir "${params.bam_dir}", mode: 'copy', overwrite: true
+    }
 
     input:
     path bam
@@ -285,7 +291,9 @@ process runRemoveDuplicates {
 }
 
 process runBAMFiltering {
-    publishDir "${params.bam_dir}", mode: 'copy', overwrite: false
+    if (save_all_BAM || last_BAM_output == "filtering") {
+        publishDir "${params.bam_dir}", mode: 'copy', overwrite: false
+    }
 
     input:
     path bam
