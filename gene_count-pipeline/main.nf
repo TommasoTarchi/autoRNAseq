@@ -224,7 +224,8 @@ process runAlignment {
     script:
     fastq_name = fastq1.toString().split("\\.")[0]
     core_name = fastq_name.substring(0, fastq_name.length() - 7)
-    bam = core_name + ".Aligned.sortedByCoord.out.bam"
+    //bam = core_name + ".Aligned.sortedByCoord.out.bam"
+    bam = core_name + ".Aligned.out.bam"
 
     """
     STAR \
@@ -232,7 +233,7 @@ process runAlignment {
     --readFilesCommand "gunzip -c" \
     --genomeDir $params.index_dir \
     --readFilesIn ${fastq1} ${fastq2} \
-    --outSAMtype BAM SortedByCoordinate \
+    --outSAMtype BAM Unsorted \
     --outFileNamePrefix "${core_name}." \
     --quantMode GeneCounts \
     --runThreadN $params.alignment_nt
@@ -254,10 +255,8 @@ process runBAMSorting {
     """
     if samtools view -H ${bam} | grep -q '@HD.*SO:coordinate'; then
         cp ${bam} ${bam_sorted}
-        echo "already sorted" > sorted.txt
     else
         samtools sort -@ $params.BAM_sorting_nt -o ${bam_sorted} ${bam}
-        echo "to be sorted" > sorted.txt
     fi
     """
 }
