@@ -32,9 +32,9 @@ Code for each pipeline is contained in a dedicated directory in this repository.
 In particular this repo contains:
 
 - This README file: general description of the repo.
-- `gene_count-pipeline`: gene expression count pipeline, containing:
+- [`gene_count-pipeline`](./gene_count-pipeline/): gene expression count pipeline, containing:
   - source code for pipeline (`main.nf`, `nextflow.config`, `config.json`);
-  - [README.md](./gene_count-pipeline/README.md), with instruction for running it;
+  - [README.md](./gene_count-pipeline/README.md), with instruction for running it.
 
 
 ## Gene expression count pipeline
