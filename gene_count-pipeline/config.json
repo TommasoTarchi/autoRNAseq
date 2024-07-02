@@ -2,12 +2,12 @@
   "run_processes": {
     "all": false,
     "genome_indexing": false,
-    "alignment": true,
-    "BAM_sorting": true,
-    "remove_duplicates": false,
-    "BAM_filtering": false,
-    "BAM_indexing": false,
-    "BAM_stats": false,
+    "alignment": false,
+    "BAM_sorting": false,
+    "remove_duplicates": true,
+    "BAM_filtering": true,
+    "BAM_indexing": true,
+    "BAM_stats": true,
     "gene_counts": false,
     "summurize_results": false
   },
@@ -17,7 +17,7 @@
     "annotation_file": "/scratch/ttarchi/data_test/genome_annotations/gencode.v44.annotation.gtf",
     "fastq_files": ["/scratch/ttarchi/data_test/fastq/OVCAR8-PAR-PT-TREATED*", "/scratch/ttarchi/data_test/fastq/OVCAR8-PAR-SR4835-TREATED*"],
     "bam_dir": "/scratch/ttarchi/data_test/BAM",
-    "bam_files": [],
+    "bam_files": ["/scratch/ttarchi/data_test/BAM/*"],
     "gene_counts_dir": "",
     "report_dir": ""
   },
