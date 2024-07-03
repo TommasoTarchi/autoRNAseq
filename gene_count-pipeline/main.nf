@@ -168,8 +168,6 @@ def helpMessage() {
           - invalid: "COV362-TREATED-replica1.Tot_S11.Aligned.sortedByCoord.out.bam"
           - valid: "COV362-TREATED-replica1-Tot_S11.Aligned.sortedByCoord.out.bam"
 
-        - Remove duplicates step overwrites BAM files if "bam_files" are contained in "bam_dir".
-
         - "bam_dir" directory must contain the following subdirectories:
           - "logs/": For log files needed for quality control.
           - "stats/": For statistics summaries from SAMtools and metrics reports from Picard.
@@ -208,11 +206,11 @@ process runGenomeIndexing {
 }
 
 process runAlignment {
-    if (save_all_BAM || last_BAM_output == "alignment") {
-        publishDir "${params.bam_dir}", mode: 'copy', overwrite: false, pattern: "${bam}"
+    if (params.save_all_BAM || params.last_BAM_output == "alignment") {
+        publishDir "${params.bam_dir}", mode: 'copy', pattern: "${bam}"
     }
-    publishDir "${params.bam_dir}/logs/", mode: 'copy', overwrite: false, pattern: "*.Log.final.out"
-    publishDir "${params.bam_dir}/tabs/", mode: 'copy', overwrite: false, pattern: "*.tab"
+    publishDir "${params.bam_dir}/logs/", mode: 'copy', pattern: "*.Log.final.out"
+    publishDir "${params.bam_dir}/tabs/", mode: 'copy', pattern: "*.tab"
 
     input:
     val ready  // for state dependency
@@ -242,8 +240,8 @@ process runAlignment {
 }
 
 process runBAMSorting {
-    if (save_all_BAM || last_BAM_output == "sorting") {
-        publishDir "${params.bam_dir}", mode: 'copy', overwrite: false
+    if (params.save_all_BAM || params.last_BAM_output == "sorting") {
+        publishDir "${params.bam_dir}", mode: 'copy'
     }
 
     input:
@@ -253,7 +251,7 @@ process runBAMSorting {
     path bam_sorted
 
     script:
-    bam_sorted = bam.toString().split("\\.")[0] + ".Aligned.sortedByCoord.out.bam"
+    bam_sorted = bam.toString().split("\\.")[0] + ".Aligned.sortedByCoord.bam"
 
     """
     if samtools view -H ${bam} | grep -q '@HD.*SO:coordinate'; then
@@ -265,8 +263,8 @@ process runBAMSorting {
 }
 
 process runRemoveDuplicates {
-    if (save_all_BAM || last_BAM_output == "duplicates") {
-        publishDir "${params.bam_dir}", mode: 'copy', overwrite: true
+    if (params.save_all_BAM || params.last_BAM_output == "duplicates") {
+        publishDir "${params.bam_dir}", mode: 'copy'
     }
 
     input:
@@ -276,23 +274,21 @@ process runRemoveDuplicates {
     path bam_marked
 
     script:
-    bam_marked = bam.toString()  // just copy the name (we overwrite the BAM)
+    bam_marked = bam.toString().split("\\.")[0] + ".Aligned.noDuplicates.bam"
     metrics = bam.toString().split("\\.")[0] + ".dup_metrics.txt"
 
     """
     picard MarkDuplicates \
     --INPUT ${bam} \
-    --OUTPUT temp.bam \
+    --OUTPUT ${bam_marked} \
     --REMOVE_SEQUENCING_DUPLICATES true \
     --METRICS_FILE "${params.bam_dir}/stats/${metrics}"
-
-    mv temp.bam ${bam_marked}
     """
 }
 
 process runBAMFiltering {
-    if (save_all_BAM || last_BAM_output == "filtering") {
-        publishDir "${params.bam_dir}", mode: 'copy', overwrite: false
+    if (params.save_all_BAM || params.last_BAM_output == "filtering") {
+        publishDir "${params.bam_dir}", mode: 'copy'
     }
 
     input:
@@ -302,7 +298,7 @@ process runBAMFiltering {
     path bam_filtered
 
     script:
-    bam_filtered = bam.toString().split("\\.")[0] + ".Aligned.sortedByCoord.filtered.bam"
+    bam_filtered = bam.toString().split("\\.")[0] + ".Aligned.filtered.bam"
 
     """
     samtools view --threads $params.BAM_filtering_nt -b -q $params.quality_thres ${bam} > ${bam_filtered}
@@ -310,13 +306,18 @@ process runBAMFiltering {
 }
 
 process runBAMIndexing {
+    publishDir "${params.bam_dir}", mode: 'copy'
+
     input:
     path bam
 
     output:
     val true  // for state depencency
+    path bam_index
 
     script:
+    bam_index = bam.toString() + ".bai"
+
     """
     samtools index -@ $params.BAM_indexing_nt "${bam}"
     """
@@ -474,7 +475,7 @@ workflow {
     def BAMindex_ready = false
     if (params.run_BAM_indexing || params.run_all) {
 
-        BAMindex_ch = runBAMIndexing(bam_ch_filtered)
+        BAMindex_ch = runBAMIndexing(bam_ch_filtered)[0]
 
         BAMindex_ready = BAMindex_ch.collect()
     }

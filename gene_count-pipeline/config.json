@@ -5,8 +5,8 @@
     "alignment": false,
     "BAM_sorting": false,
     "remove_duplicates": true,
-    "BAM_filtering": true,
-    "BAM_indexing": true,
+    "BAM_filtering": false,
+    "BAM_indexing": false,
     "BAM_stats": true,
     "gene_counts": false,
     "summurize_results": false
@@ -18,7 +18,7 @@
     "fastq_files": ["/scratch/ttarchi/data_test/fastq/OVCAR8-PAR-PT-TREATED*", "/scratch/ttarchi/data_test/fastq/OVCAR8-PAR-SR4835-TREATED*"],
     "bam_dir": "/scratch/ttarchi/data_test/BAM",
     "bam_files": ["/scratch/ttarchi/data_test/BAM/*"],
-    "gene_counts_dir": "",
+    "gene_counts_dir": "/scratch/ttarchi/data_test/counts",
     "report_dir": ""
   },
   "processes": {
@@ -46,7 +46,7 @@
     },
     "remove_duplicates": {
       "queue": "regular1",
-      "time": "1h",
+      "time": "2h",
       "memory": "40GB",
       "container_path": "/scratch/ttarchi/container_images/picard.sif"
     },
@@ -74,10 +74,10 @@
     },
     "gene_counts": {
       "algo": "featureCounts",
-      "queue": "",
+      "queue": "regular1",
       "time": "1h",
       "memory": "2GB",
-      "container_path": "",
+      "container_path": "/scratch/ttarchi/container_images/featureCounts.sif",
       "num_threads": 10
     },
     "summarize_results": {
@@ -88,5 +88,5 @@
     }
   },
   "run_locally": false,
-  "save_all_bams": false
+  "save_all_BAM": false
 }

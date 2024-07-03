@@ -57,6 +57,9 @@ Example:
   - file name with information loss: `COV362-TREATED-replica1.Tot_S11.Aligned.out.bam`;
   - file name without information loss: `COV362-TREATED-replica1-Tot_S11.Aligned.out.bam`.
 
+- If you want to use the pipeline only to remove duplicates (without running previous steps), please
+make sure that input BAM files are sorted.
+
 
 ## Parameters description
 
