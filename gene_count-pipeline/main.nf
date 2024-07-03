@@ -281,7 +281,7 @@ process runRemoveDuplicates {
     picard MarkDuplicates \
     --INPUT ${bam} \
     --OUTPUT ${bam_marked} \
-    --REMOVE_SEQUENCING_DUPLICATES true \
+    --REMOVE_DUPLICATES true \
     --METRICS_FILE "${params.bam_dir}/stats/${metrics}"
     """
 }
