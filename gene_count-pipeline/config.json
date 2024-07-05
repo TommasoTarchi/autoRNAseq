@@ -8,77 +8,77 @@
     "BAM_filtering": false,
     "BAM_indexing": false,
     "BAM_stats": false,
-    "gene_counts": false,
+    "gene_counts": true,
     "summurize_results": false
   },
   "data_paths": {
-    "index_dir": "",
-    "fasta_file": "",
-    "annotation_file": "",
-    "fastq_files": [],
-    "bam_dir": "",
-    "bam_files": [],
-    "gene_counts_dir": "",
+    "index_dir": "/scratch/ttarchi/data_test/STAR_indexing",
+    "fasta_file": "/scratch/ttarchi/data_test/genome_annotations/GRCh38.p14.genome.fa",
+    "annotation_file": "/scratch/ttarchi/data_test/genome_annotations/gencode.v44.annotation.gtf",
+    "fastq_files": ["/scratch/ttarchi/data_test/fastq/OVCAR8-PAR-PT-TREATED*", "/scratch/ttarchi/data_test/fastq/OVCAR8-PAR-SR4835-TREATED*"],
+    "bam_dir": "/scratch/ttarchi/data_test/BAM",
+    "bam_files": ["/scratch/ttarchi/data_test/BAM/*.filtered.bam"],
+    "gene_counts_dir": "/scratch/ttarchi/data_test/counts_hts",
     "report_dir": ""
   },
   "processes": {
     "genome_indexing": {
       "max_RAM": "180000000000",
-      "queue": "",
-      "time": "",
+      "queue": "wide1",
+      "time": "2h",
       "memory": "180GB",
-      "container_path": "",
-      "num_threads": 1
+      "container_path": "/scratch/ttarchi/container_images/STAR-2.7.11b.sif",
+      "num_threads": 20
     },
     "alignment": {
-      "queue": "",
+      "queue": "wide1",
       "time": "2h",
       "memory": "180GB",
-      "container_path": "",
-      "num_threads": 1
+      "container_path": "/scratch/ttarchi/container_images/STAR-2.7.11b.sif",
+      "num_threads": 20
     },
     "BAM_sorting": {
-      "queue": "",
+      "queue": "regular1",
       "time": "2h",
       "memory": "16GB",
-      "container_path": "",
-      "num_threads": 1
+      "container_path": "/scratch/ttarchi/container_images/SAMtools-v1.3.1.sif",
+      "num_threads": 10
     },
     "remove_duplicates": {
-      "queue": "",
+      "queue": "regular1",
       "time": "2h",
       "memory": "40GB",
-      "container_path": ""
+      "container_path": "/scratch/ttarchi/container_images/picard-v3.1.1.sif"
     },
     "BAM_filtering": {
       "quality_thres": 30,
-      "queue": "",
+      "queue": "regular1",
       "time": "1h",
       "memory": "2GB",
-      "container_path": "",
-      "num_threads": 1
+      "container_path": "/scratch/ttarchi/container_images/SAMtools-v1.3.1.sif",
+      "num_threads": 10
     },
     "BAM_indexing": {
-      "queue": "",
+      "queue": "regular1",
       "time": "1h",
       "memory": "2GB",
-      "container_path": "",
-      "num_threads": 1
+      "container_path": "/scratch/ttarchi/container_images/SAMtools-v1.3.1.sif",
+      "num_threads": 10
     },
     "BAM_stats": {
-      "queue": "",
+      "queue": "regular1",
       "time": "1h",
       "memory": "2GB",
-      "container_path": "",
-      "num_threads": 1
+      "container_path": "/scratch/ttarchi/container_images/SAMtools-v1.3.1.sif",
+      "num_threads": 10
     },
     "gene_counts": {
-      "algo": "featureCounts",
-      "queue": "",
-      "time": "1h",
+      "algo": "HTSeq",
+      "queue": "regular1",
+      "time": "2h",
       "memory": "2GB",
-      "container_path": "",
-      "num_threads": 1
+      "container_path": "/scratch/ttarchi/container_images/HTSeq-v2.0.2.sif",
+      "num_threads": 10
     },
     "summarize_results": {
       "queue": "",

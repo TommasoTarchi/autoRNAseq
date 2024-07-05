@@ -306,17 +306,16 @@ process runBAMFiltering {
 }
 
 process runBAMIndexing {
-    publishDir "${params.bam_dir}", mode: 'copy'
+    publishDir "${params.bam_dir}", mode: 'copy', pattern: "${bai}"
 
     input:
     path bam
 
     output:
-    val true  // for state depencency
-    path bam_index
+    tuple path(bam), path(bai)
 
     script:
-    bam_index = bam.toString() + ".bai"
+    bai = bam.toString() + ".bai"
 
     """
     samtools index -@ $params.BAM_indexing_nt "${bam}"
@@ -340,7 +339,7 @@ process runBAMStats {
 
 process runFeatureCounts {
     input:
-    path bam
+    tuple path(bam), path(bai)
 
     output:
     val true  // for state depencency
@@ -360,7 +359,7 @@ process runFeatureCounts {
 
 process runHTSeq {
     input:
-    path bam
+    tuple path(bam), path(bai)
 
     output:
     val true  // for state depencency
@@ -370,11 +369,12 @@ process runHTSeq {
     bam_name=\$(basename "${bam}")
     core_name="\${bam_name%%.*}"
 
-    HTSeq-count \
-    --format="bam" \
+    htseq-count \
+    -f "bam" \
+    -r pos \
+    -o "$params.gene_counts_dir/\${core_name}.counts.txt" \
     ${bam} \
-    $params.gene_counts_nt \
-    > "$params.gene_counts_dir/\${core_name}.counts.txt"
+    $params.annotation_file
     """
 }
 
@@ -421,9 +421,8 @@ workflow {
     def bam_ch = false
     if (params.run_alignment || params.run_all) {
 
-        // extract complete fastq files
+        // extract complete fastq files and define channel
         def fastq_files_complete = params.fastq_files.collect{ path -> return (path.toString() + "_R{1,2}_001.f*q.gz") }
-
         def fastq_ch = channel.fromFilePairs(fastq_files_complete, checkIfExists: true).map{baseName, fileList -> fileList}
 
         bam_ch = runAlignment(ready: index_ready, fastq_ch)[0]
@@ -471,24 +470,21 @@ workflow {
 
 
     // run BAM files indexing
-    def BAMindex_ch = false
-    def BAMindex_ready = false
+    def bam_ch_indexed = false
     if (params.run_BAM_indexing || params.run_all) {
 
-        BAMindex_ch = runBAMIndexing(bam_ch_filtered)[0]
-
-        BAMindex_ready = BAMindex_ch.collect()
+        bam_ch_indexed = runBAMIndexing(bam_ch_filtered)
     }
 
 
     // run alignment stats summary
-    def BAMstats_ch = false
-    def BAMstats_ready = false
+    def bam_stats_ch = false
+    def bam_stats_ready = false
     if (params.run_BAM_stats || params.run_all) {
 
-        BAMstats_ch = runBAMStats(bam_ch_filtered)
+        bam_stats_ch = runBAMStats(bam_ch_filtered)
 
-        BAMstats_ready = BAMstats_ch.collect()
+        bam_stats_ready = bam_stats_ch.collect()
     }
 
 
@@ -496,15 +492,21 @@ workflow {
     def counts_ready = false
     if (params.run_gene_counts || params.run_all) {
 
+        // if indexing not run, extract BAM and corresponding index file and define channel
+	if (!bam_ch_indexed) {
+            def bam_bai_pairs = params.bam_files.collect{ path -> return (path.toString() + "{,.bai}") }
+            bam_ch_indexed = channel.fromFilePairs(bam_bai_pairs, checkIfExists: true).map{baseName, fileList -> fileList}
+	}
+
         // run featureCounts
         if (params.count_algo == 'featureCounts') {
 
-            counts_ready = runFeatureCounts(bam_ch_filtered)
+            counts_ready = runFeatureCounts(bam_ch_indexed)
 
         // run HTSeq
         } else if (params.count_algo == 'HTSeq') {
 
-            counts_ready = runHTSeq(bam_ch_filtered)
+            counts_ready = runHTSeq(bam_ch_indexed)
         }
     }
 
@@ -513,19 +515,15 @@ workflow {
     if (params.run_summarize_results || params.run_all) {
 
         // make sure all data have been processed before going on
-        if (!BAMindex_ready) {
-            BAMindex_ready = channel.of(1, 2)  // "dummy" channel
-        }
-
-        if (!BAMstats_ready) {
-            BAMstats_ready = channel.of(1, 2)  // "dummy" channel
+        if (!bam_stats_ready) {
+            bam_stats_ready = channel.of(1)  // "dummy" channel
         }
 
         if (!counts_ready) {
-            counts_ready = channel.of(1, 2)  // "dummy" channel
+            counts_ready = channel.of(1)  // "dummy" channel
         }
 
-        def ready_for_sum = Channel.mix(BAMindex_ready, BAMstats_ready, counts_ready)
+        def ready_for_sum = Channel.mix(bam_stats_ready, counts_ready)
 
         runSumResults(ready: ready_for_sum)
     }
