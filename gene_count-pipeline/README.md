@@ -17,27 +17,18 @@ This pipeline can be used to produce compressed alignment files (BAM) and gene e
 
 ## Pipeline steps
 
-1. Genome Indexing: preprocess the genome for alignment.
-2. Alignment: properly align reads to the reference genome.
-3. BAM Sorting: sort alignment files.
-4. Remove duplicates: remove duplicates in alignment files.
-5. BAM Filtering: quality filtering of aligned reads.
-6. BAM Indexing: index the alignment files.
-7. BAM Stats: generate a statistical summary of the alignment.
-8. Gene Counts: quantify gene expression.
-9. Results Summary: summarize the results.
+This pipeline implements the following steps (between parentheses you have the functions used
+for implementation):
 
-The following is a list of the functions used for each step:
-
-1. Genome Indexing: *STAR* ([docs][STAR]).
-2. Alignment: *STAR* ([docs][STAR]).
-3. BAM Sorting: *SAMtools* ([docs][SAMtools]).
-4. Remove duplicates: *picard* ([docs][picard]).
-5. BAM Filtering: *SAMtools* ([docs][SAMtools]).
-6. BAM Indexing: *SAMtools* ([docs][SAMtools]).
-7. BAM Stats: *SAMtools* ([docs][SAMtools]).
-8. Gene Counts: *featureCounts* ([docs][featureCounts]) **or** *HTSeq* ([docs][HTSeq]).
-9. Results Summary: *multiQC* ([docs][multiQC]).
+1. Genome Indexing: preprocess the genome for alignment ([*STAR*][STAR]).
+2. Alignment: properly align reads to the reference genome ([*STAR*][STAR]).
+3. BAM Sorting: sort alignment files ([*SAMtools*][SAMtools]).
+4. Remove duplicates: remove duplicates in alignment files ([*picard*][picard]).
+5. BAM Filtering: quality filtering of aligned reads ([*SAMtools*][SAMtools]).
+6. BAM Indexing: index the alignment files ([*SAMtools*][SAMtools]).
+7. BAM Stats: generate a statistical summary of the alignment ([*SAMtools*][SAMtools]).
+8. Gene Counts: quantify gene expression ([*featureCounts*][featureCounts] or [*HTSeq*][HTSeq]).
+9. Results Summary: summarize the results ([*multiQC*][multiQC]).
 
 
 ## Requirements
@@ -49,12 +40,17 @@ related documentation [here][nextflow] and [here][singularity] for instructions.
   that you only need the container images related to the steps you want to run). You can either
   build the containers by yourself or download them from the assets of this program's release.
   The following is a list of the available containers in assets:
-  - STAR v2.7.11b ([][])
-  - SAMtools v1.3.1 ([][])
-  - picard v3.1.1 ([][])
-  - featureCounts v2.0.6 ([][])
-  - HTSeq v2.0.2 ([][])
-  - multiQC v1.18 ([][])
+  - STAR v2.7.11b ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/STAR-v2.7.11b.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/STAR-v2.7.11b.sif))
+  - SAMtools v1.3.1 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/SAMtools-v1.3.1.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/SAMtools-v1.3.1.sif))
+  - picard v3.1.1 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/picard-v3.1.1.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/picard-v3.1.1.sif))
+  - featureCounts v2.0.6 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/featureCounts-v2.0.6.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/featureCounts-v2.0.6.sif))
+  - HTSeq v2.0.2 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/HTSeq-v2.0.2.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/HTSeq-v2.0.2.sif))
+  - multiQC v1.18 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/multiQC-v1.18.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/multiQC-v1.18.sif))
+  
+  If you are operating from command line, you can use [*wget*][wget] (or [*curl*][curl]) to download the images:
+  ````
+  $ wget <url_to_container_image> -O /path/to/your/container/image
+  ````
 
 - If your pipeline uses FastQ files, please make sure they are **paired-end**, **zipped**, and
 ending in `_R#_001.fastq.gz` or `_R#_001.fq.gz`, with `#` equal to 1 and 2 (de facto standard).
@@ -321,3 +317,5 @@ The output of alignment will therefore be:
 [featureCounts]: https://subread.sourceforge.net/featureCounts.html
 [HTSeq]: https://htseq.readthedocs.io/en/master/overview.html
 [multiQC]: https://multiqc.info/docs/ 
+[wget]: https://www.gnu.org/software/wget/manual/wget.html
+[curl]: https://curl.se/docs/
