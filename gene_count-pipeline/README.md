@@ -162,7 +162,7 @@ Other process-specific parameteres are:
 }
 
 "BAM_filtering": {
-  "quality_thres" -> integer: threshold for quality filtering
+  "quality_thres" -> integer: MAPQ threshold for quality filtering
 }
 
 "gene_counts": {
