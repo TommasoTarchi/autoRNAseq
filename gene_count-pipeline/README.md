@@ -142,7 +142,7 @@ Common to all processes are the following variables:
 "time" -> string: maximum time for job (example: "2h")
 "memory" -> string: RAM used for the job (example: "2GB")
 "container_path" -> string: full path to singularity image for the process
-"num_threads" -> integer: number of threads (not supported for "remove_duplicates" and "summarize_results")
+"num_threads" -> integer: number of threads (not supported for "alignment" when "algo": "HTSeq", "remove_duplicates" and "summarize_results")
 ````
 
 For `container_path` setting refer to the [requirements](#requirements).
