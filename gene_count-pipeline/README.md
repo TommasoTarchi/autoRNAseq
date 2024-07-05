@@ -118,7 +118,7 @@ these variables. The following list shows for each data path variable which step
 it to be set. If **at least one** of the steps you intend to run is listed for a variable, then you
 need to set that variable.
 
-- `index_dir`: path to directory for genome index files, required by: 1. genome indexing, 2. alignment.
+- `index_dir`: path to directory for genome index files, required by: 1. genome indexing, 2. alignment; **optional**: 9. summarize results.
 
 - `fasta_file`: complete path to fasta file with reference genome, required by: 1. genome indexing.
 
@@ -127,13 +127,13 @@ need to set that variable.
 - `fastq_files`: list of complete paths to input (**zipped**) read files, required by: 2. alignment.
 
 - `bam_dir`: path to directory to store output alignment files, required by: 2. alignment, 3. BAM sorting,
-  4. remove duplicates, 5. BAM filtering, 7. BAM stats, 8. gene counts.
+  4. remove duplicates, 5. BAM filtering, 7. BAM stats, 8. gene counts; **optional**: 9. summarize results.
 
 - `bam_files`: list of complete paths to input alignment files, required by: 3. BAM sorting, 4. remove duplicates,
   5. BAM filtering, 6. BAM indexing, 7. BAM stats, 8. gene counts (**Notice**: this variable is **never** needed when
   your pipeline contains the alignment step, i.e. number 2.).
 
-- `gene_counts_dir`: path to directory to store gene counts files, required by: 8. gene counts.
+- `gene_counts_dir`: path to directory to store gene counts files, required by: 8. gene counts; **optional**: 9. summarize results.
 
 - `report_dir`: path to directory to store produced reports and plots, required by: 9. summarize results.
 
