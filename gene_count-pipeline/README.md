@@ -17,15 +17,18 @@ This pipeline can be used to produce compressed alignment files (BAM) and gene e
 
 ## Pipeline steps
 
-1. Genome Indexing: preprocess the genome for alignment.
-2. Alignment: properly align reads to the reference genome.
-3. BAM Sorting: sort alignment files.
-4. Remove duplicates: remove duplicates in alignment files.
-5. BAM Filtering: quality filtering of aligned reads.
-6. BAM Indexing: index the alignment files.
-7. BAM Stats: generate a statistical summary of the alignment.
-8. Gene Counts: quantify gene expression.
-9. Results Summary: summarize the results.
+This pipeline implements the following steps (between parentheses you have the functions used
+for implementation):
+
+1. Genome Indexing: preprocess the genome for alignment ([*STAR*][STAR]).
+2. Alignment: properly align reads to the reference genome ([*STAR*][STAR]).
+3. BAM Sorting: sort alignment files ([*SAMtools*][SAMtools]).
+4. Remove duplicates: remove duplicates in alignment files ([*picard*][picard]).
+5. BAM Filtering: quality filtering of aligned reads ([*SAMtools*][SAMtools]).
+6. BAM Indexing: index the alignment files ([*SAMtools*][SAMtools]).
+7. BAM Stats: generate a statistical summary of the alignment ([*SAMtools*][SAMtools]).
+8. Gene Counts: quantify gene expression ([*featureCounts*][featureCounts] or [*HTSeq*][HTSeq]).
+9. Results Summary: summarize the results ([*multiQC*][multiQC]).
 
 
 ## Requirements
@@ -33,22 +36,23 @@ This pipeline can be used to produce compressed alignment files (BAM) and gene e
 - You need to have Nextflow and Singularity installed on your machine. You can look at the
 related documentation [here][nextflow] and [here][singularity] for instructions.
 
-- You need to build, or download, containers with the following functions installed (each point
-of the list describes the function needed by the corresponding step in the pipeline):
+- You need to have the containers on which the steps of the pipeline will run (**remember**
+  that you only need the container images related to the steps you want to run). You can either
+  build the containers by yourself or download them from the assets of this program's release.
+  The following is a list of the available containers in assets:
+  - STAR v2.7.11b ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/STAR-v2.7.11b.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/STAR-v2.7.11b.sif))
+  - SAMtools v1.3.1 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/SAMtools-v1.3.1.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/SAMtools-v1.3.1.sif))
+  - picard v3.1.1 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/picard-v3.1.1.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/picard-v3.1.1.sif))
+  - featureCounts v2.0.6 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/featureCounts-v2.0.6.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/featureCounts-v2.0.6.sif))
+  - HTSeq v2.0.2 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/HTSeq-v2.0.2.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/HTSeq-v2.0.2.sif))
+  - multiQC v1.18 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/multiQC-v1.18.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/multiQC-v1.18.sif))
+  
+  If you are operating from command line, you can use [*wget*][wget] (or [*curl*][curl]) to download the images:
+  ````
+  $ wget <url_to_container_image> -O /path/to/your/container/image
+  ````
 
-1. Genome Indexing: *STAR* ([docs][STAR]).
-2. Alignment: *STAR* ([docs][STAR]).
-3. BAM Sorting: *SAMtools* ([docs][SAMtools]).
-4. Remove duplicates: *picard* ([docs][picard]).
-5. BAM Filtering: *SAMtools* ([docs][SAMtools]).
-6. BAM Indexing: *SAMtools* ([docs][SAMtools]).
-7. BAM Stats: *SAMtools* ([docs][SAMtools]).
-8. Gene Counts: *featureCounts* ([docs][featureCounts]) **or** *HTSeq* ([docs][HTSeq]).
-9. Results Summary: *multiQC* ([docs][multiQC]).
-
-Remember that you need **only** the containers corresponding to the steps you want to run.
-
-- If your pipelines uses FastQ files, please make sure they are **paired-end**, **zipped**, and
+- If your pipeline uses FastQ files, please make sure they are **paired-end**, **zipped**, and
 ending in `_R#_001.fastq.gz` or `_R#_001.fq.gz`, with `#` equal to 1 and 2 (de facto standard).
 
 - Make sure that in all input files **all relevant information is placed after dots**. If this is
@@ -59,6 +63,9 @@ Example:
 
 - If you want to use the pipeline only to remove duplicates (without running previous steps), please
 make sure that input BAM files are sorted.
+
+- If your pipeline contains the gene count step, please include the BAM indexing step as well. If you
+  only want to run the gene count step, make sure your input BAM files are indexed.
 
 
 ## Parameters description
@@ -305,8 +312,10 @@ The output of alignment will therefore be:
 [nextflow_and_singularity]: https://nextflow.io/docs/edge/container.html#singularity
 [build_containers]: https://github.com/fburic/notes/blob/master/singularity_conda.md
 [STAR]: https://docs.csc.fi/apps/star/
-[SAMtools]:https://www.htslib.org/doc/samtools.html
+[SAMtools]: https://www.htslib.org/doc/samtools.html
 [picard]: https://broadinstitute.github.io/picard/
 [featureCounts]: https://subread.sourceforge.net/featureCounts.html
 [HTSeq]: https://htseq.readthedocs.io/en/master/overview.html
-[multiQC]: https://multiqc.info/docs/
+[multiQC]: https://multiqc.info/docs/ 
+[wget]: https://www.gnu.org/software/wget/manual/wget.html
+[curl]: https://curl.se/docs/
