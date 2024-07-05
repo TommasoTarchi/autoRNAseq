@@ -56,7 +56,7 @@ related documentation [here][nextflow] and [here][singularity] for instructions.
   - HTSeq v2.0.2 ([][])
   - multiQC v1.18 ([][])
 
-- If your pipelines uses FastQ files, please make sure they are **paired-end**, **zipped**, and
+- If your pipeline uses FastQ files, please make sure they are **paired-end**, **zipped**, and
 ending in `_R#_001.fastq.gz` or `_R#_001.fq.gz`, with `#` equal to 1 and 2 (de facto standard).
 
 - Make sure that in all input files **all relevant information is placed after dots**. If this is
@@ -67,6 +67,9 @@ Example:
 
 - If you want to use the pipeline only to remove duplicates (without running previous steps), please
 make sure that input BAM files are sorted.
+
+- If your pipeline contains the gene count step, please include the BAM indexing step as well. If you
+  only want to run the gene count step, make sure your input BAM files are indexed.
 
 
 ## Parameters description
@@ -132,8 +135,7 @@ need to set that variable.
 
 - `bam_files`: list of complete paths to input alignment files, required by: 3. BAM sorting, 4. remove duplicates,
   5. BAM filtering, 6. BAM indexing, 7. BAM stats, 8. gene counts (**Notice**: this variable is **never** needed when
-  your pipeline contains the alignment step, i.e. number 2.. Also **notice** that if run gene counts step with HTSeq
-  then you **need** each of your BAM files to have its own index file (*.bai*) in the same directory).
+  your pipeline contains the alignment step, i.e. number 2.).
 
 - `gene_counts_dir`: path to directory to store gene counts files, required by: 8. gene counts.
 
