@@ -27,14 +27,7 @@ This pipeline can be used to produce compressed alignment files (BAM) and gene e
 8. Gene Counts: quantify gene expression.
 9. Results Summary: summarize the results.
 
-
-## Requirements
-
-- You need to have Nextflow and Singularity installed on your machine. You can look at the
-related documentation [here][nextflow] and [here][singularity] for instructions.
-
-- You need to build, or download, containers with the following functions installed (each point
-of the list describes the function needed by the corresponding step in the pipeline):
+The following is a list of the functions used for each step:
 
 1. Genome Indexing: *STAR* ([docs][STAR]).
 2. Alignment: *STAR* ([docs][STAR]).
@@ -46,7 +39,22 @@ of the list describes the function needed by the corresponding step in the pipel
 8. Gene Counts: *featureCounts* ([docs][featureCounts]) **or** *HTSeq* ([docs][HTSeq]).
 9. Results Summary: *multiQC* ([docs][multiQC]).
 
-Remember that you need **only** the containers corresponding to the steps you want to run.
+
+## Requirements
+
+- You need to have Nextflow and Singularity installed on your machine. You can look at the
+related documentation [here][nextflow] and [here][singularity] for instructions.
+
+- You need to have the containers on which the steps of the pipeline will run (**remember**
+  that you only need the container images related to the steps you want to run). You can either
+  build the containers by yourself or download them from the assets of this program's release.
+  The following is a list of the available containers in assets:
+  - STAR v2.7.11b ([][])
+  - SAMtools v1.3.1 ([][])
+  - picard v3.1.1 ([][])
+  - featureCounts v2.0.6 ([][])
+  - HTSeq v2.0.2 ([][])
+  - multiQC v1.18 ([][])
 
 - If your pipelines uses FastQ files, please make sure they are **paired-end**, **zipped**, and
 ending in `_R#_001.fastq.gz` or `_R#_001.fq.gz`, with `#` equal to 1 and 2 (de facto standard).
@@ -124,7 +132,8 @@ need to set that variable.
 
 - `bam_files`: list of complete paths to input alignment files, required by: 3. BAM sorting, 4. remove duplicates,
   5. BAM filtering, 6. BAM indexing, 7. BAM stats, 8. gene counts (**Notice**: this variable is **never** needed when
-  your pipeline contains the alignment step, i.e. number 2.).
+  your pipeline contains the alignment step, i.e. number 2.. Also **notice** that if run gene counts step with HTSeq
+  then you **need** each of your BAM files to have its own index file (*.bai*) in the same directory).
 
 - `gene_counts_dir`: path to directory to store gene counts files, required by: 8. gene counts.
 
@@ -305,8 +314,8 @@ The output of alignment will therefore be:
 [nextflow_and_singularity]: https://nextflow.io/docs/edge/container.html#singularity
 [build_containers]: https://github.com/fburic/notes/blob/master/singularity_conda.md
 [STAR]: https://docs.csc.fi/apps/star/
-[SAMtools]:https://www.htslib.org/doc/samtools.html
+[SAMtools]: https://www.htslib.org/doc/samtools.html
 [picard]: https://broadinstitute.github.io/picard/
 [featureCounts]: https://subread.sourceforge.net/featureCounts.html
 [HTSeq]: https://htseq.readthedocs.io/en/master/overview.html
-[multiQC]: https://multiqc.info/docs/
+[multiQC]: https://multiqc.info/docs/ 
