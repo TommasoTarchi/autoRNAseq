@@ -281,7 +281,7 @@ process runRemoveDuplicates {
     picard MarkDuplicates \
     --INPUT ${bam} \
     --OUTPUT ${bam_marked} \
-    --REMOVE_SEQUENCING_DUPLICATES true \
+    --REMOVE_SEQUENCING_DUPLICATES $params.remove_seq_duplicates \
     --METRICS_FILE "${params.bam_dir}/stats/${metrics}"
     """
 }
@@ -352,7 +352,8 @@ process runFeatureCounts {
     featureCounts \
     -a $params.annotation_file \
     -g gene_id \
-    -f \
+    -t exon \
+    -p \
     -s 2 \
     -o "$params.gene_counts_dir/\${core_name}.counts.txt" \
     -T $params.gene_counts_nt \
@@ -369,6 +370,15 @@ process runHTSeq {
 
     script:
     """
+    # set strandedness parameter
+    if [ "$params.strandedness" -eq 0 ]; then
+	strand="no"
+    elif [ "$params.strandedness" -eq 1 ]; then
+	strand="yes"
+    elif [ "$params.strandedness" -eq 2 ]; then
+	strand="reverse"
+    fi
+
     bam_name=\$(basename "${bam}")
     core_name="\${bam_name%%.*}"
 
@@ -377,7 +387,7 @@ process runHTSeq {
     -r pos \
     -i gene_id \
     -t exon \
-    -s reverse \
+    -s "\${strand}" \
     ${bam} \
     $params.annotation_file \
     > "$params.gene_counts_dir/\${core_name}.counts.txt"
