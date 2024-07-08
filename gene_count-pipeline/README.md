@@ -100,11 +100,9 @@ All parameters can be set from the `config.json` file. We strongly suggest to **
   
   },
   
-  "run_locally": boolean variable indicating whether the code should be run locally
-                 (default "false")
+  "run_locally" -> bool: whether the pipeline should be run locally
 
-  "save_all_bams": boolean variable indicating whether BAM files should be saved at
-                   each step (default "false", i.e. only final BAMs are saved)
+  "save_all_bams" -> bool: whether output BAM files should be saved at each step
 }
 ````
 
@@ -161,12 +159,17 @@ Other process-specific parameteres are:
   "max_RAM" -> string: maximum RAM for STAR indexing **in bytes** (should be same amount as in "memory")
 }
 
+"remove_duplicates": {
+  "remove_seq_duplicates" -> bool: whether duplicates likely caused by sequencing process should be removed
+}
+
 "BAM_filtering": {
   "quality_thres" -> integer: MAPQ threshold for quality filtering
 }
 
 "gene_counts": {
   "algo" -> string: algorithm for gene expression quantification (allowed options: "featureCounts","HTSeq")
+  "strandedness" -> integer: 0 for non-stranded, 1 for forward-stranded, 2 for reverse-stranded
 }
 ````
 
