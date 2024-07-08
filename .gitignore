@@ -2,8 +2,5 @@
 **/work/
 **/.nextflow*
 
-# container images
-**/*.sif
-
 # personal notes
 **/notes.txt
