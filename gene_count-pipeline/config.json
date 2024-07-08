@@ -9,7 +9,7 @@
     "BAM_indexing": false,
     "BAM_stats": false,
     "gene_counts": true,
-    "summurize_results": false
+    "summarize_results": false
   },
   "data_paths": {
     "index_dir": "/scratch/ttarchi/data_test/STAR_indexing",

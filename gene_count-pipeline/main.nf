@@ -413,7 +413,7 @@ process runSumResults {
     fi
 
     # run multiQC if any directory available
-    if [[ -z "\${dirs[@]}" ]]; then
+    if ! [[ -z "\${dirs[@]}" ]]; then
         multiqc "\${dirs[@]}" \
         --force \
         --export \
