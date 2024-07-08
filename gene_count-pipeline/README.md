@@ -161,6 +161,7 @@ Other process-specific parameteres are:
 
 "remove_duplicates": {
   "remove_seq_duplicates" -> bool: whether duplicates likely caused by sequencing process should be removed
+                                   (if false, duplicates are only marked and not removed)
 }
 
 "BAM_filtering": {
