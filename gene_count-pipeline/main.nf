@@ -281,7 +281,7 @@ process runRemoveDuplicates {
     picard MarkDuplicates \
     --INPUT ${bam} \
     --OUTPUT ${bam_marked} \
-    --REMOVE_DUPLICATES true \
+    --REMOVE_SEQUENCING_DUPLICATES true \
     --METRICS_FILE "${params.bam_dir}/stats/${metrics}"
     """
 }
@@ -351,6 +351,9 @@ process runFeatureCounts {
 
     featureCounts \
     -a $params.annotation_file \
+    -g gene_id \
+    -f \
+    -s 2 \
     -o "$params.gene_counts_dir/\${core_name}.counts.txt" \
     -T $params.gene_counts_nt \
     ${bam}
@@ -370,11 +373,14 @@ process runHTSeq {
     core_name="\${bam_name%%.*}"
 
     htseq-count \
-    -f "bam" \
+    -f bam \
     -r pos \
-    -o "$params.gene_counts_dir/\${core_name}.counts.txt" \
+    -i gene_id \
+    -t exon \
+    -s reverse \
     ${bam} \
-    $params.annotation_file
+    $params.annotation_file \
+    > "$params.gene_counts_dir/\${core_name}.counts.txt"
     """
 }
 
@@ -449,11 +455,11 @@ workflow {
     def bam_ch_marked = false
     if (params.run_remove_duplicates || params.run_all) {
 
-        bam_ch_marked = runRemoveDuplicates(bam_ch)
+        bam_ch_marked = runRemoveDuplicates(bam_ch_sorted)
 
     } else {
 
-        bam_ch_marked = bam_ch
+        bam_ch_marked = bam_ch_sorted
     }
 
 

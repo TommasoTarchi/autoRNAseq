@@ -17,8 +17,8 @@
     "annotation_file": "/scratch/ttarchi/data_test/genome_annotations/gencode.v44.annotation.gtf",
     "fastq_files": ["/scratch/ttarchi/data_test/fastq/OVCAR8-PAR-PT-TREATED*", "/scratch/ttarchi/data_test/fastq/OVCAR8-PAR-SR4835-TREATED*"],
     "bam_dir": "/scratch/ttarchi/data_test/BAM",
-    "bam_files": ["/scratch/ttarchi/data_test/BAM/*.filtered.bam"],
-    "gene_counts_dir": "/scratch/ttarchi/data_test/counts_hts",
+    "bam_files": ["/scratch/ttarchi/data_test/BAM_control/*.bam"],
+    "gene_counts_dir": "/scratch/ttarchi/data_test/counts_fc",
     "report_dir": ""
   },
   "processes": {
@@ -73,11 +73,11 @@
       "num_threads": 10
     },
     "gene_counts": {
-      "algo": "HTSeq",
+      "algo": "featureCounts",
       "queue": "regular1",
-      "time": "2h",
-      "memory": "2GB",
-      "container_path": "/scratch/ttarchi/container_images/HTSeq-v2.0.2.sif",
+      "time": "1h",
+      "memory": "4GB",
+      "container_path": "/scratch/ttarchi/container_images/featureCounts-v2.0.6.sif",
       "num_threads": 10
     },
     "summarize_results": {
