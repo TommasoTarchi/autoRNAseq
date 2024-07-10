@@ -205,6 +205,40 @@ process runGenomeIndexing {
     """
 }
 
+process runTrimming {
+    input:
+    tuple path(input_fastq1), path(input_fastq2)
+
+    output:
+    tuple path(output_fastq1), path(output_fastq2)
+
+    script:
+    output_fastq1 = ""
+    output_fastq2 = ""
+    if (input_fastq1.toString().endsWith('.fq.gz')) {
+        output_fastq1 = input_fastq1.toString() - '.fq.gz'
+    } else if (input_fastq1.toString().endsWith('.fastq.gz')) {
+        output_fastq1 = input_fastq1.toString() - '.fastq.gz'
+    }
+    output_fastq1 = output_fastq1 + '_val_1.fq.gz'
+    if (input_fastq2.toString().endsWith('.fq.gz')) {
+        output_fastq2 = input_fastq2.toString() - '.fq.gz'
+    } else if (input_fastq2.toString().endsWith('.fastq.gz')) {
+        output_fastq2 = input_fastq2.toString() - '.fastq.gz'
+    }
+    output_fastq2 = output_fastq2 + '_val_2.fq.gz'
+
+    """
+    trim_galore \
+    --quality $params.fq_quality_thres \
+    --fastqc \
+    --paired \
+    --length $params.min_read_len \
+    --output_dir $params.fastq_dir \
+    ${input_fastq1} ${input_fastq2}
+    """
+}
+
 process runAlignment {
     if (params.save_all_BAM || params.last_BAM_output == "alignment") {
         publishDir "${params.bam_dir}", mode: 'copy', pattern: "${bam}"
@@ -301,7 +335,7 @@ process runBAMFiltering {
     bam_filtered = bam.toString().split("\\.")[0] + ".Aligned.filtered.bam"
 
     """
-    samtools view --threads $params.BAM_filtering_nt -b -q $params.quality_thres ${bam} > ${bam_filtered}
+    samtools view --threads $params.BAM_filtering_nt -b -q $params.BAM_quality_thres ${bam} > ${bam_filtered}
     """
 }
 
@@ -433,15 +467,29 @@ workflow {
     }
 
 
-    // run reads alignment
-    def bam_ch = false
-    if (params.run_alignment || params.run_all) {
+    // run trimming and fastQC reports
+    def fastq_ch_trimmed = false
+    if (params.run_trimming || params.run_all) {
 
         // extract complete fastq files and define channel
         def fastq_files_complete = params.fastq_files.collect{ path -> return (path.toString() + "_R{1,2}_001.f*q.gz") }
         def fastq_ch = channel.fromFilePairs(fastq_files_complete, checkIfExists: true).map{baseName, fileList -> fileList}
 
-        bam_ch = runAlignment(ready: index_ready, fastq_ch)[0]
+        fastq_ch_trimmed = runTrimming(fastq_ch)
+
+    } else if (params.run_alignment) {
+
+        // extract complete fastq files and define channel
+        def fastq_files_complete = params.fastq_files.collect{ path -> return (path.toString() + "_R{1,2}_001.f*q.gz") }
+        fastq_ch_trimmmed = channel.fromFilePairs(fastq_files_complete, checkIfExists: true).map{baseName, fileList -> fileList}
+    }
+
+
+    // run reads alignment
+    def bam_ch = false
+    if (params.run_alignment || params.run_all) {
+
+        bam_ch = runAlignment(ready: index_ready, fastq_ch_trimmed)[0]
 
     } else if (params.run_BAM_sorting || params.run_remove_duplicates || params.run_BAM_filtering || params.run_BAM_indexing || params.run_BAM_stats || params.run_gene_counts){
 
