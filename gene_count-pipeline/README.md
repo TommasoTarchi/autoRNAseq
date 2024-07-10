@@ -40,12 +40,12 @@ related documentation [here][nextflow] and [here][singularity] for instructions.
   that you only need the container images related to the steps you want to run). You can either
   build the containers by yourself or download them from the assets of this program's release.
   The following is a list of the available containers in assets:
-  - STAR v2.7.11b ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/STAR-v2.7.11b.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/STAR-v2.7.11b.sif))
-  - SAMtools v1.3.1 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/SAMtools-v1.3.1.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/SAMtools-v1.3.1.sif))
-  - picard v3.1.1 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/picard-v3.1.1.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/picard-v3.1.1.sif))
-  - featureCounts v2.0.6 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/featureCounts-v2.0.6.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/featureCounts-v2.0.6.sif))
-  - HTSeq v2.0.2 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/HTSeq-v2.0.2.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/HTSeq-v2.0.2.sif))
-  - multiQC v1.18 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/multiQC-v1.18.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/untagged-8f59c3edda8eebafc526/multiQC-v1.18.sif))
+  - STAR v2.7.11b ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/STAR-v2.7.11b.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/STAR-v2.7.11b.sif))
+  - SAMtools v1.3.1 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/SAMtools-v1.3.1.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/SAMtools-v1.3.1.sif))
+  - picard v3.1.1 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/picard-v3.1.1.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/picard-v3.1.1.sif))
+  - featureCounts v2.0.6 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/featureCounts-v2.0.6.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/featureCounts-v2.0.6.sif))
+  - HTSeq v2.0.2 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/HTSeq-v2.0.2.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/HTSeq-v2.0.2.sif))
+  - multiQC v1.18 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/multiQC-v1.18.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/multiQC-v1.18.sif))
   
   If you are operating from command line, you can use [*wget*][wget] (or [*curl*][curl]) to download the images:
   ````
