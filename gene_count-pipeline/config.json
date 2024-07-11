@@ -17,7 +17,7 @@
     "fasta_file": "/scratch/ttarchi/data_test/genome_annotations/GRCh38.p14.genome.fa",
     "annotation_file": "/scratch/ttarchi/data_test/genome_annotations/gencode.v44.annotation.gtf",
     "fastq_files": ["/scratch/ttarchi/data_test/fastq/OVCAR8-PAR-PT-TREATED*", "/scratch/ttarchi/data_test/fastq/OVCAR8-PAR-SR4835-TREATED*"],
-    "fastq_dir": "/scratch/ttarchi/data_test/fastq_trimmed",
+    "trimmed_fastq_dir": "/scratch/ttarchi/data_test/fastq_trimmed",
     "bam_dir": "/scratch/ttarchi/data_test/BAM_control",
     "bam_files": ["/scratch/ttarchi/data_test/BAM_control/*.bam"],
     "gene_counts_dir": "/scratch/ttarchi/data_test/counts_hts",
