@@ -181,11 +181,15 @@ if (params.help) {
 }
 
 
-// check valid option for gene count algorithm
+// check valid option for gene count algorithm and strandedness
 def validCountAlgos = ['featureCounts', 'HTSeq']
+def validStrandedness = [0, 1, 2]
 
 if (!(params.count_algo in validCountAlgos)) {
     throw new IllegalArgumentException("Invalid value for 'count_algo'. Allowed values are: ${validCountAlgos.join(', ')}")
+}
+if (!(params.strandedness in validStrandedness)) {
+    throw new IllegalArgumentException("Invalid value for 'strandedness'. Allowed values are: ${validStrandedness.join(', ')}")
 }
 
 
@@ -227,6 +231,10 @@ process runTrimming {
         output_fastq2 = input_fastq2.toString() - '.fastq.gz'
     }
     output_fastq2 = output_fastq2 + '_val_2.fq.gz'
+    n_threads = 1
+    if ($params.trimming_multithreaded) {
+        n_threads = 4
+    }
 
     """
     trim_galore \
@@ -235,6 +243,7 @@ process runTrimming {
     --paired \
     --length $params.min_read_len \
     --output_dir $params.fastq_dir \
+    --cores ${n_threads} \
     ${input_fastq1} ${input_fastq2}
     """
 }
@@ -308,7 +317,7 @@ process runRemoveDuplicates {
     path bam_marked
 
     script:
-    bam_marked = bam.toString().split("\\.")[0] + ".Aligned.noDuplicates.bam"
+    bam_marked = bam.toString().split("\\.")[0] + ".Aligned.marked.bam"
     metrics = bam.toString().split("\\.")[0] + ".dup_metrics.txt"
 
     """
@@ -406,11 +415,11 @@ process runHTSeq {
     """
     # set strandedness parameter
     if [ "$params.strandedness" -eq 0 ]; then
-	strand="no"
+        strand="no"
     elif [ "$params.strandedness" -eq 1 ]; then
-	strand="yes"
+        strand="yes"
     elif [ "$params.strandedness" -eq 2 ]; then
-	strand="reverse"
+        strand="reverse"
     fi
 
     bam_name=\$(basename "${bam}")
@@ -557,10 +566,10 @@ workflow {
     if (params.run_gene_counts || params.run_all) {
 
         // if indexing not run, extract BAM and corresponding index file and define channel
-	if (!bam_ch_indexed) {
+        if (!bam_ch_indexed) {
             def bam_bai_pairs = params.bam_files.collect{ path -> return (path.toString() + "{,.bai}") }
             bam_ch_indexed = channel.fromFilePairs(bam_bai_pairs, checkIfExists: true).map{baseName, fileList -> fileList}
-	}
+        }
 
         // run featureCounts
         if (params.count_algo == 'featureCounts') {

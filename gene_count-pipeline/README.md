@@ -202,7 +202,7 @@ the related variable in `config.json`.
     - BAM files sorted by coordinates, saved into `bam_dir` with extention `.Aligned.sortedByCoord.bam`.
 
 4. Remove duplicates:
-    - BAM files with duplicates removed, saved into `bam_dir` with extention `.Aligned.noDuplicates.bam`.
+    - BAM files with duplicates removed, saved into `bam_dir` with extention `.Aligned.marked.bam`.
     - Duplicate metrics report, saved in "`bam_dir`/stats/" with extention `.dup_metrics.txt`.
 
 5. BAM Filtering:
