@@ -8,8 +8,8 @@
     "BAM_filtering": false,
     "BAM_indexing": false,
     "BAM_stats": false,
-    "gene_counts": true,
-    "summarize_results": false
+    "gene_counts": false,
+    "summarize_results": true
   },
   "data_paths": {
     "index_dir": "/scratch/ttarchi/data_test/STAR_indexing",
@@ -18,8 +18,8 @@
     "fastq_files": ["/scratch/ttarchi/data_test/fastq/OVCAR8-PAR-PT-TREATED*", "/scratch/ttarchi/data_test/fastq/OVCAR8-PAR-SR4835-TREATED*"],
     "bam_dir": "/scratch/ttarchi/data_test/BAM_control",
     "bam_files": ["/scratch/ttarchi/data_test/BAM_control/*.bam"],
-    "gene_counts_dir": "/scratch/ttarchi/data_test/counts_fc",
-    "report_dir": ""
+    "gene_counts_dir": "/scratch/ttarchi/data_test/counts_hts",
+    "report_dir": "/scratch/ttarchi/data_test/qc_reports"
   },
   "processes": {
     "genome_indexing": {
@@ -77,16 +77,16 @@
       "algo": "featureCounts",
       "strandedness": 2,
       "queue": "regular1",
-      "time": "2h",
+      "time": "4h",
       "memory": "32GB",
       "container_path": "/scratch/ttarchi/container_images/featureCounts-v2.0.6.sif",
       "num_threads": 10
     },
     "summarize_results": {
-      "queue": "",
+      "queue": "regular1",
       "time": "1h",
       "memory": "2GB",
-      "container_path": ""
+      "container_path": "/scratch/ttarchi/container_images/multiqc_v1.9.sif"
     }
   },
   "run_locally": false,
