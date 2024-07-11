@@ -2,6 +2,7 @@
   "run_processes": {
     "all": false,
     "genome_indexing": false,
+    "fastq_trimmming": false,
     "alignment": false,
     "BAM_sorting": false,
     "remove_duplicates": false,
@@ -16,6 +17,7 @@
     "fasta_file": "/scratch/ttarchi/data_test/genome_annotations/GRCh38.p14.genome.fa",
     "annotation_file": "/scratch/ttarchi/data_test/genome_annotations/gencode.v44.annotation.gtf",
     "fastq_files": ["/scratch/ttarchi/data_test/fastq/OVCAR8-PAR-PT-TREATED*", "/scratch/ttarchi/data_test/fastq/OVCAR8-PAR-SR4835-TREATED*"],
+    "fastq_dir": "",
     "bam_dir": "/scratch/ttarchi/data_test/BAM_control",
     "bam_files": ["/scratch/ttarchi/data_test/BAM_control/*.bam"],
     "gene_counts_dir": "/scratch/ttarchi/data_test/counts_fc",
@@ -29,6 +31,15 @@
       "memory": "180GB",
       "container_path": "/scratch/ttarchi/container_images/STAR-2.7.11b.sif",
       "num_threads": 20
+    },
+    "fastq_trimmming": {
+      "quality_thres": 20,
+      "min_length": 20,
+      "queue": "regular1",
+      "time": "2h",
+      "memory": "4GB",
+      "container_path": "",
+      "multithreaded": true
     },
     "alignment": {
       "queue": "wide1",
