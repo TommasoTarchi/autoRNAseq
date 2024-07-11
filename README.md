@@ -40,19 +40,20 @@ Content of the repository (each pipeline has a dedicated directory):
 ## Gene expression count pipeline
 
 This pipeline can be used to produce compressed alignment files (*BAM*) and gene expression count files
-from "raw" paired-end read files (*FastQ*).
+from **paired-end** read files (*FastQ*).
 
 It is composed of the following steps:
 
-1. Genome Indexing: preprocess the genome for alignment.
-2. Alignment: properly align reads to the reference genome.
-3. BAM Sorting: sort alignment files.
-4. Remove duplicates: remove duplicates in alignment files.
-5. BAM Filtering: quality filtering of aligned reads.
-6. BAM Indexing: index the alignment files.
-7. BAM Stats: generate a statistical summary of the alignment.
-8. Gene Counts: quantify gene expression.
-9. Results Summary: summarize the results.
+1. **Genome Indexing**: preprocess the genome for alignment.
+2. **FastQ trimming**: trim reads based on length, Phred score and adapters, and quality control.
+3. **Alignment**: properly align reads to the reference genome.
+4. **BAM Sorting**: sort alignment files.
+5. **Remove duplicates**: remove (or mark only) duplicates in alignment files.
+6. **BAM Filtering**: filter aligned reads by MAPQ quality score.
+7. **BAM Indexing**: index the alignment files.
+8. **BAM Stats**: generate a statistical summary of the alignment.
+9. **Gene Counts**: quantify gene expression.
+10. **Results Summary**: summarize the results.
 
 A more detailed description of the pipeline and instruction on how to run it can be found in the
 [related README.md](./gene_count-pipeline/README.md).
