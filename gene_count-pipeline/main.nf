@@ -232,7 +232,7 @@ process runTrimming {
     }
     output_fastq2 = output_fastq2 + '_val_2.fq.gz'
     n_threads = 1
-    if ($params.trimming_multithreaded) {
+    if (params.trimming_multithreaded) {
         n_threads = 4
     }
 
@@ -490,7 +490,7 @@ workflow {
 
         // extract complete fastq files and define channel
         def fastq_files_complete = params.fastq_files.collect{ path -> return (path.toString() + "_R{1,2}_001.f*q.gz") }
-        fastq_ch_trimmmed = channel.fromFilePairs(fastq_files_complete, checkIfExists: true).map{baseName, fileList -> fileList}
+        fastq_ch_trimmed = channel.fromFilePairs(fastq_files_complete, checkIfExists: true).map{baseName, fileList -> fileList}
     }
 
 
