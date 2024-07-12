@@ -448,6 +448,9 @@ process runSumResults {
     if [[ -n "$params.index_dir" ]]; then
         dirs+=("$params.index_dir")
     fi
+    if [[ -n "$params.trimmed_fastq_dir" ]]; then
+        dirs+=("$params.trimmed_fastq_dir")
+    fi
     if [[ -n "$params.bam_dir" ]]; then
         dirs+=("$params.bam_dir")
     fi
