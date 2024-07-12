@@ -5,173 +5,109 @@
 def helpMessage() {
     log.info """
         USAGE:
+           This pipeline processes paired-end FastQ files to produce aligned BAM files and gene expression counts. Below is a comprehensive guide to set up and run the pipeline.
+           Any combination of its steps can be run.
 
+        PIPELINE STEPS:
+           This pipeline performs the following steps:
+           - Genome Indexing: Preprocess the genome for alignment (using STAR).
+           - FastQ Trimming: Trim reads based on quality scores and adapters (using Trim Galore!).
+           - Alignment: Align reads to the reference genome (using STAR).
+           - BAM Sorting: Sort alignment files by coordinates (using SAMtools).
+           - Remove Duplicates: Remove or mark duplicate reads in BAM files (using Picard).
+           - BAM Filtering: Filter aligned reads by MAPQ score (using SAMtools).
+           - BAM Indexing: Index BAM files for fast retrieval (using SAMtools).
+           - BAM Stats: Generate statistics from BAM files (using SAMtools).
+           - Gene Counts: Quantify gene expression from BAM files (using either featureCounts or HTSeq).
+           - Results Summary: Generate a summary report of pipeline results (using multiQC).
 
-        This program can be used to run a RNAseq analysis pipeline, consisting of the following
-        steps (also called "processes" in the following):
+        REQUIREMENTS:
+           - Nextflow and Singularity must be installed on your machine. Refer to their documentation for installation instructions.
+           - Download or build the required container images for each pipeline step:
+             * STAR v2.7.11b
+             * Trim Galore! v0.6.7
+             * SAMtools v1.3.1
+             * Picard v3.1.1
+             * featureCounts v2.0.6
+             * HTSeq v2.0.2
+             * multiQC v1.18
 
-        1. Genome Indexing: preprocess the genome for alignment.
-        2. Alignment: properly align reads to the reference genome.
-        3. BAM Sorting: sort BAM files.
-        4. Remove duplicates: remove duplicates in BAM files.
-        5. BAM Filtering: quality filtering of aligned reads.
-        6. BAM Indexing: index the alignment files.
-        7. BAM Stats: generate a statistical summary of the alignment.
-        8. Gene Counts: quantify gene expression.
-        9. Results Summary: summarize the results.
+           Use wget or curl to download the container images if operating from the command line:
+           ```
+           wget <url_to_container_image> -O /path/to/your/container/image
+           ```
 
+        PARAMETERS:
+           - All parameters are set in the `config.json` file. Avoid modifying `main.nf` or `nextflow.config`.
+           - `config.json` is organized into:
+             * run_processes: Boolean flags to enable or disable each process.
+             * data_paths: Paths to input and output data.
+             * processes: Specific parameters for each process, including SLURM and function call variables.
+             * run_locally: Boolean to specify if the pipeline runs locally.
+             * save_all_bams: Boolean to save intermediate BAM files.
 
-        Any step of the pipeline can be run (multiple steps can be run together), see 'ARGUMENTS'
-        and 'HOW TO RUN A PIPELINE' below for instructions.
+            1. Data Paths:
+               - Set the following paths in `data_paths` according to the steps you intend to run:
+                 * index_dir: Directory for genome index files (required for genome indexing and alignment).
+                 * fasta_file: Path to the reference genome fasta file (required for genome indexing).
+                 * annotation_file: Path to the GTF/GFF file (required for genome indexing and gene counts).
+                 * fastq_files: List of paths to input FastQ files (required for FastQ trimming and alignment).
+                 * trimmed_fastq_dir: Directory for trimmed FastQ files (required for FastQ trimming).
+                 * bam_dir: Directory for output BAM files (required for alignment, BAM sorting, removing duplicates, filtering, stats, and gene counts).
+                 * bam_files: List of paths to input BAM files (required for BAM sorting, removing duplicates, filtering, indexing, stats, and gene counts).
+                 * gene_counts_dir: Directory for gene count files (required for gene counts).
+                 * report_dir: Directory for summary reports (required for results summary).
 
-        The program is designed to run on a cluster using SLURM as job scheduler: each step is run
-        as an independent (and parallel, when no data dependency occurs) multithreaded job.
+            2. Process Specific Parameters:
+               - Each process has its own parameters:
+                 * Common parameters: queue, time, memory, container_path, num_threads.
+                 * Specific parameters:
+                   - genome_indexing: max_RAM
+                   - fastq_trimming: quality_thres, min_length, multithreaded
+                   - remove_duplicates: remove_seq_duplicates
+                   - BAM_filtering: quality_thres
+                   - gene_counts: algo, strandedness
 
-        Optionally, it can also be run locally. However, we strongly recommend to run it on a
-        cluster, especially for more demanding pipelines (like those including genome indexing
-        and/or alignment).
+            3. Example of Input FastQ Files:
+               - Ensure paired-end FastQ files are named appropriately (_R1_001.fastq.gz, _R2_001.fastq.gz).
+               - Example:
+                 ```
+                 TREATED-replica1-S11_R1_001.fastq.gz
+                 TREATED-replica1-S11_R2_001.fastq.gz
+                 ```
+               - Set fastq_files in config.json to include the common prefix of read pairs without the suffix.
 
-        ______________________________________________________________________________________
+        OUTPUT FILES:
+           - Each step produces specific output files:
+             * Genome Indexing: Indexed genome files in index_dir.
+             * FastQ Trimming: Trimmed FastQ files in trimmed_fastq_dir.
+             * Alignment: BAM files in bam_dir with suffix .Aligned.out.bam.
+             * BAM Sorting: Sorted BAM files with suffix .Aligned.sortedByCoord.bam.
+             * Remove Duplicates: BAM files with suffix .Aligned.marked.bam and duplicate metrics report.
+             * BAM Filtering: Filtered BAM files with suffix .Aligned.filtered.bam.
+             * BAM Indexing: Index files (.bai) in bam_dir.
+             * BAM Stats: Statistics summary in bam_dir/stats/.
+             * Gene Counts: Gene expression counts in gene_counts_dir.
+             * Results Summary: HTML reports in report_dir.
 
+        8. How to Run Your Pipeline:
+           1. Clone the repository:
+              ```
+              git clone git@github.com:TommasoTarchi/autoRNAseq.git
+              ```
+           2. Navigate to the gene_count-pipeline directory.
+           3. Edit `config.json`:
+              - Set `run_processes` to true for desired steps.
+              - Configure `data_paths` with correct paths.
+              - Customize process parameters under `processes`.
+              - Adjust `run_locally` and `save_all_bams`.
+           4. Run the pipeline:
+              ```
+              nextflow run main.nf
+              ```
 
-        ARGUMENTS:
-
-
-        ALL variables must be set in the "config.json" file.
-
-        "config.json" is organized in the following hierarchical manner:
-
-        ---
-        {
-          "run_processes": {
-            ... boolean variables indicating whether each process should be run or not
-            ("all" is to run all pipeline from first to last step (BAM sorting excluded)) ...
-          },
-          "data_paths": {
-            ... path variables to data ...
-          },
-          "processes": {
-            ...
-            process_name: {
-              ... variables specific to process (both SLURM and function call variables) ...
-            },
-            ...
-          },
-          "run_locally": ...
-        }
-        ---
-
-
-        The following describes path variables and lists all processes each variable
-        is required for. If at least one step of your pipeline is included in one list,
-        the corresponding path variable NEEDS to be specified.
-
-        - "index_dir": path to directory for genome index files, required by:
-        1. genome indexing
-        2. alignment
-
-        - "fasta_file": complete path to fasta file with reference genome, required by:
-        1. genome indexing
-
-        - "annotation_file": complete path to GTF/GFF files, required by:
-        1. genome indexing
-        8. gene counts
-
-        - "fastq_files": list of complete paths to input read files, required by:
-        2. alignment
-
-        - "bam_dir": path to directory to store output alignment files, required by:
-        2. alignment
-        3. BAM sorting
-        4. remove duplicates
-        5. BAM filtering
-        7. BAM stats
-        8. gene counts
-
-        - "bam_files": list of complete paths to input alignment files, required by:
-        3. BAM sorting
-        4. remove duplicates
-        5. BAM filtering
-        6. BAM indexing
-        7. BAM stats
-        8. gene counts
-        (NOTICE: this variable is NEVER needed when your pipeline contains alignment step)
-
-        - "gene_counts_dir": path to directory to store gene counts files, required by:
-        8. gene counts
-
-        - "report_dir": path to directory to store produced reports and plots, required by:
-        9. summarize results
-
-        _____________________________________________________________________________________
-
-
-        HOW TO RUN A PIPELINE:
-
-
-        1. Prepare a directory with Singularity images for required functions if not already available.
-
-        2. Edit the "config.json" file as follows:
-
-        2a. Set variables in "run_processes" section to true for the processes you wish to execute
-            (if you set "all": true, then all steps will be run regardless of following variables'
-            values).
-
-        2b. Configure "data_paths" to specify paths to your data. Remember to use lists for "fastq_files"
-            and "bam_files". Each path should be complete, in particular:
-            - for "fastq_files", only the common prefix of reads pair should be passed, i.e. one
-              full path without the "_R#_001.fastq.gz" suffix (glob patterns are allowed);
-            - for "bam_files", include complete file paths including extensions (glob patterns are
-              allowed);
-            - if you don't need a path variable set it to an empty string/list.
-
-        2c. Set "run_locally" variable to true if you want to run the pipeline on your local machine
-            (not recommended for most applications).
-
-        2d. Customize settings for each process under the "processes" section in "config.json". Refer to
-            your cluster's specifications for SLURM settings, especially for the "queue" variable.
-
-        3. Run the pipeline using the command:
-           ---
-           nextflow run main.nf
-           ---
-
-        Ensure all dependencies are properly configured and accessible before running the pipeline.
-        See "NOTES" section below for details.
-
-        Also, be sure to have "main.nf", "nextflow.config" and "config.json" in the same directory.
-
-        _____________________________________________________________________________________
-
-
-        NOTES:
-
-
-        - The alignment step is designed for paired-end reads; however, subsequent steps can
-          process both paired and single-end reads.
-
-        - Ensure complete paths are provided for "data_paths" variables in "config.json".
-
-        - Fastq files should be in ".gz" format, matching the pattern "*_R#_001.fastq.gz" or
-          "*_R#_001.fq.gz".
-
-        - Input alignment files must always be in BAM format.
-
-        - "bam_files" is a list of input BAM files, "bam_dir" is the directory where all BAM
-          file produced by the pipeline will be stored. Hence, files in "bam_files" do not need
-          to be located in "bam_dir".
-
-        - File names should contain relevant experimental information (e.g., cell line, sample
-          number) only after dots. If not, change dots to dashes or other separators. All
-          information after dots will be lost in subsequent files.
-          Examples:
-          - invalid: "COV362-TREATED-replica1.Tot_S11.Aligned.sortedByCoord.out.bam"
-          - valid: "COV362-TREATED-replica1-Tot_S11.Aligned.sortedByCoord.out.bam"
-
-        - "bam_dir" directory must contain the following subdirectories:
-          - "logs/": For log files needed for quality control.
-          - "stats/": For statistics summaries from SAMtools and metrics reports from Picard.
-          - "tabs/": For tab files produced by STAR in alignment.
+        DOCS:
+           For detailed instructions and troubleshooting, refer to the full README file provided with this pipeline.
     """
 }
 
