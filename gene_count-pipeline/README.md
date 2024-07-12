@@ -55,16 +55,17 @@ related documentation [here][nextflow] and [here][singularity] for instructions.
   ````
 
 - If your pipeline uses FastQ files, please make sure they are **paired-end**, **zipped**, and
-ending in `_R#_001.fastq.gz` or `_R#_001.fq.gz`, with `#` equal to 1 and 2.
+ending in `_R#_001.fastq.gz` or `_R#_001.fq.gz`, with `#` equal to 1 for first read and 2 for second
+read.
 
 - Make sure that in all input files **all relevant information is placed after dots**. If this is
 not the case, you can replace these dots with other seprators.
-Example: `<something>.<something_else>.Aligned.out.bam` should be renamed something like
-`<something>_<something_else>.out.bam` if you don't want to lose `<something_else>` from the final
+Example: `<info1>.<info2>.Aligned.out.bam` should be renamed something like
+`<info1>_<info2>.out.bam` if you don't want to lose `<info2>` from the final
 output file name.
 
-- If you want to use the pipeline only to remove duplicates (without running previous steps), please
-make sure that input BAM files are sorted.
+- If you want to use the pipeline only to remove or mark duplicates (without running previous steps), please
+make sure that input BAM files are sorted (you can include the BAM sorting step if you are not sure).
 
 - If your pipeline contains the gene count step, please include the BAM indexing step as well. If you
 only want to run the gene count step, make sure your input BAM files are indexed.
@@ -321,7 +322,7 @@ The output of alignment will therefore be:
       processes you are not running will be ignored (you can leave them as they are).
     
     - Change `run_locally` variable to true if you want to run the pipeline on your local machine (**not recommended** for
-      most applications).
+      most applications). If you want to run it on a cluster, leave it to false.
 
     - Change `save_all_bams` variable to true if you want to keep all BAM files produced along the pipeline (usually **not
       recommended**, especially when working with many files). If you only want the final result, leave it to false.
