@@ -3,7 +3,7 @@
 In this repository you can find the following automated pipelines:
 
 1. [Gene expression count](./gene_count-pipeline): from paired-end reads to gene expression counts.
-2. Differential expression analysis: *soon available...*
+2. Differential gene expression analysis: *soon available...*
 
 All pipelines are composed of a certain number of steps. The user can choose to run **any
 combination** of these steps, given that the correct arguments and containers are provided.
