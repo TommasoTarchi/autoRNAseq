@@ -61,7 +61,7 @@ read.
 - Make sure that in all input files **all relevant information is placed after dots**. If this is
 not the case, you can replace these dots with other seprators.
 Example: `<info1>.<info2>.Aligned.out.bam` should be renamed something like
-`<info1>_<info2>.out.bam` if you don't want to lose `<info2>` from the final
+`<info1>_<info2>.Aligned.out.bam` if you don't want to lose `<info2>` from the final
 output file name.
 
 - If you want to use the pipeline only to remove or mark duplicates (without running previous steps), please
@@ -81,8 +81,8 @@ you can just manually check the output file `strandedness_check.txt` and interpr
 
 ## Parameters description
 
-All parameters can be set from the `config.json` file. We strongly suggest to **not modify** either
-`main.nf` nor `nextflow.config`.
+All parameters can be set from the `config.json` file. Please, do not modify neither
+`main.nf` nor `nextflow.config`, unless you are familiar with nextflow.
 
 `config.json` is organized according to the following hierarchical structure:
 
@@ -90,7 +90,7 @@ All parameters can be set from the `config.json` file. We strongly suggest to **
 {
   "run_processes": {
     ... boolean variables indicating whether each process should be run or not
-        ("all" is to run all pipeline from first to last step ...
+        ("all" is to run all pipeline from first to last step) ...
   },
   
   "data_paths": {
