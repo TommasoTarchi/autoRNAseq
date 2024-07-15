@@ -213,10 +213,10 @@ the related variable in `config.json`.
     - Various files with indexed and preprocessed genome, saved into `inded_dir`.
 
 2. FastQ trimming:
-    - Trimmed FastQ files, ...
-    - ...
-    - ...
-    - ...
+    - Trimmed FastQ files, called as the original FastQ but with suffix `_val_#`, with `#` equal to
+      1 and 2.
+    - Trimming reports, saved as text files into "`trimmed_fastq_dir`/reports/".
+    - *FastQC* reports, saved as html files into "`trimmed_fastq_dir`/reports/".
 
 3. Alignment:
     - BAM files with alignment (one per paired-end pair of fastq file), **unsorted** and saved
@@ -312,6 +312,7 @@ The output of alignment will therefore be:
       - for `fastq_files`, only the common prefix of reads pair should be passed, i.e. one full path per read pair
         **without** the `_R#_001.fastq.gz` suffix (**glob patterns are allowed** - see [here](#example-of-input-fastq-files)
         for more details);
+      - `trimmed_fastq_dir` should contain a subdirectory called "reports/";
       - for `bam_files`, include full paths (**glob patterns are allowed**);
       Also:
       - `bam_dir` should contain three subdirectories called "logs/", "stats/" and "tabs/";
