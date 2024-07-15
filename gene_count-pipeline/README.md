@@ -135,7 +135,7 @@ need to set that variable.
 
 - `fastq_files`: list of complete paths to input (**zipped**) read files. Required by: 2. FastQ trimmming, 3. alignment.
 
-- `trimmed_fastq_dir`: path to directory to store trimmed read files. Required by: 2. FastQ trimmming; **optional**: 10. summarize results.
+- `trimmed_fastq_dir`: path to directory to store trimmed read files. Required by: 2. FastQ trimmming.
 
 - `bam_dir`: path to directory to store output alignment files. Required by: 3. alignment, 4. BAM sorting,
   5. remove duplicates, 6. BAM filtering, 8. BAM stats, 9. gene counts; **optional**: 10. summarize results.
