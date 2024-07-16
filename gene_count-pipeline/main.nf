@@ -195,9 +195,7 @@ process runTrimming {
 }
 
 process runAlignment {
-    if (params.save_all_BAM || params.last_BAM_output == "alignment") {
-        publishDir "${params.bam_dir}", mode: 'copy', pattern: "${bam}"
-    }
+    publishDir "${params.bam_dir}", mode: 'copy', pattern: "${bam}", enabled: {params.save_all_BAM || params.last_BAM_output == "alignment"}
     publishDir "${params.bam_dir}/logs/", mode: 'copy', pattern: "*.Log.final.out"
     publishDir "${params.bam_dir}/tabs/", mode: 'copy', pattern: "*.tab"
 
@@ -229,9 +227,7 @@ process runAlignment {
 }
 
 process runBAMSorting {
-    if (params.save_all_BAM || params.last_BAM_output == "sorting") {
-        publishDir "${params.bam_dir}", mode: 'copy'
-    }
+    publishDir "${params.bam_dir}", mode: 'copy', enabled: {params.save_all_BAM || params.last_BAM_output == "sorting"}
 
     input:
     path bam
@@ -252,9 +248,7 @@ process runBAMSorting {
 }
 
 process runRemoveDuplicates {
-    if (params.save_all_BAM || params.last_BAM_output == "duplicates") {
-        publishDir "${params.bam_dir}", mode: 'copy'
-    }
+    publishDir "${params.bam_dir}", mode: 'copy', enabled: {params.save_all_BAM || params.last_BAM_output == "duplicates"}
 
     input:
     path bam
@@ -276,9 +270,7 @@ process runRemoveDuplicates {
 }
 
 process runBAMFiltering {
-    if (params.save_all_BAM || params.last_BAM_output == "filtering") {
-        publishDir "${params.bam_dir}", mode: 'copy'
-    }
+    publishDir "${params.bam_dir}", mode: 'copy', enabled: {params.save_all_BAM || params.last_BAM_output == "filtering"}
 
     input:
     path bam
