@@ -189,7 +189,6 @@ process runTrimming {
     --fastqc \
     --paired \
     --length $params.min_read_len \
-    --output_dir $params.trimmed_fastq_dir \
     --cores ${n_threads} \
     ${input_fastq1} ${input_fastq2}
     """
