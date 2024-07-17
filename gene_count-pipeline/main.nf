@@ -238,9 +238,9 @@ process runBAMSorting {
     script:
     bam_sorted = ""
     if (params.first_bam_output == "sorting") {
-	bam_sorted = bam.toString().split("\\.")[0] + ".Aligned.sortedByCoord.bam"
+        bam_sorted = bam.toString().split("\\.")[0] + ".Aligned.sortedByCoord.bam"
     } else {
-	bam_sorted = bam.toString()[0..-5] + ".sortedByCoord.bam"
+        bam_sorted = bam.toString()[0..-5] + ".sortedByCoord.bam"
     }
 
     """
@@ -264,9 +264,9 @@ process runRemoveDuplicates {
     script:
     bam_marked = ""
     if (params.first_bam_output == "duplicates") {
-	bam_marked = bam.toString().split("\\.")[0] + ".Aligned.marked.bam"
+        bam_marked = bam.toString().split("\\.")[0] + ".Aligned.marked.bam"
     } else {
-	bam_marked = bam.toString()[0..-5] + ".marked.bam"
+        bam_marked = bam.toString()[0..-5] + ".marked.bam"
     }
     metrics = bam.toString().split("\\.")[0] + ".dup_metrics.txt"
 
@@ -291,9 +291,9 @@ process runBAMFiltering {
     script:
     bam_filtered = ""
     if (params.first_bam_output == "filtering") {
-	bam_filtered = bam.toString().split("\\.")[0] + ".Aligned.filtered.bam"
+        bam_filtered = bam.toString().split("\\.")[0] + ".Aligned.filtered.bam"
     } else {
-	bam_filtered = bam.toString()[0..-5] + ".filtered.bam"
+        bam_filtered = bam.toString()[0..-5] + ".filtered.bam"
     }
 
     """
