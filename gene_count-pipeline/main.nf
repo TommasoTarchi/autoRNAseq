@@ -81,10 +81,10 @@ def helpMessage() {
            - Each step produces specific output files:
              * Genome Indexing: Indexed genome files in index_dir.
              * FastQ Trimming: Trimmed FastQ files in trimmed_fastq_dir.
-             * Alignment: BAM files in bam_dir with suffix .Aligned.out.bam.
-             * BAM Sorting: Sorted BAM files with suffix .Aligned.sortedByCoord.bam.
-             * Remove Duplicates: BAM files with suffix .Aligned.marked.bam and duplicate metrics report.
-             * BAM Filtering: Filtered BAM files with suffix .Aligned.filtered.bam.
+             * Alignment: BAM files in bam_dir with suffix ".Aligned.bam".
+             * BAM Sorting: Sorted BAM files with suffix containing ".sortedByCoord".
+             * Remove Duplicates: Marked BAM files with suffix containing ".marked" and duplicate metrics report.
+             * BAM Filtering: Filtered BAM files with suffix containing ".filtered".
              * BAM Indexing: Index files (.bai) in bam_dir.
              * BAM Stats: Statistics summary in bam_dir/stats/.
              * Gene Counts: Gene expression counts in gene_counts_dir.
@@ -211,7 +211,7 @@ process runAlignment {
     script:
     fastq_name = fastq1.toString().split("\\.")[0]
     core_name = fastq_name.substring(0, fastq_name.length() - 7)
-    bam = core_name + ".Aligned.out.bam"
+    bam = core_name + ".Aligned.bam"
 
     """
     STAR \
@@ -236,7 +236,12 @@ process runBAMSorting {
     path bam_sorted
 
     script:
-    bam_sorted = bam.toString().split("\\.")[0] + ".Aligned.sortedByCoord.bam"
+    bam_sorted = ""
+    if (params.first_bam_output == "sorting") {
+	bam_sorted = bam.toString().split("\\.")[0] + ".Aligned.sortedByCoord.bam"
+    } else {
+	bam_sorted = bam.toString()[0..-5] + ".sortedByCoord.bam"
+    }
 
     """
     if samtools view -H ${bam} | grep -q '@HD.*SO:coordinate'; then
@@ -257,7 +262,12 @@ process runRemoveDuplicates {
     path bam_marked
 
     script:
-    bam_marked = bam.toString().split("\\.")[0] + ".Aligned.marked.bam"
+    bam_marked = ""
+    if (params.first_bam_output == "duplicates") {
+	bam_marked = bam.toString().split("\\.")[0] + ".Aligned.marked.bam"
+    } else {
+	bam_marked = bam.toString()[0..-5] + ".marked.bam"
+    }
     metrics = bam.toString().split("\\.")[0] + ".dup_metrics.txt"
 
     """
@@ -279,7 +289,12 @@ process runBAMFiltering {
     path bam_filtered
 
     script:
-    bam_filtered = bam.toString().split("\\.")[0] + ".Aligned.filtered.bam"
+    bam_filtered = ""
+    if (params.first_bam_output == "filtering") {
+	bam_filtered = bam.toString().split("\\.")[0] + ".Aligned.filtered.bam"
+    } else {
+	bam_filtered = bam.toString()[0..-5] + ".filtered.bam"
+    }
 
     """
     samtools view --threads $params.BAM_filtering_nt -b -q $params.BAM_quality_thres ${bam} > ${bam_filtered}
