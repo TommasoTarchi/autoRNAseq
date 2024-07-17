@@ -219,22 +219,24 @@ the related variable in `config.json`.
     - *FastQC* reports, saved as html files into "`trimmed_fastq_dir`/reports/".
 
 3. Alignment:
-    - BAM files with alignment (one per paired-end pair of fastq file), **unsorted** and saved
-    into `bam_dir`. The name of the file will have all the relevant information contained in the fastq
-    names followed by the suffix: `.Aligned.out.bam`.
+    - BAM files with alignment (one per paired-end pair of fastq file), **unsorted** and saved into
+    `bam_dir`. The name of the file will have all the information contained before dots in the fastq
+    names followed by the suffix: `.Aligned.bam`.
     - Alignment log files, saved into "`bam_dir`/logs/".
     - Alignment tab files, saved into "`bam_dir`/tabs/".
 
 4. BAM Sorting:
-    - BAM files sorted by coordinates, saved into `bam_dir` with extention `.Aligned.sortedByCoord.bam`.
+    - BAM files sorted by coordinates, saved into `bam_dir`. All files that have undergone this step will
+      contain `sortedByCoord` in their name's suffix.
 
 5. Remove duplicates:
-    - BAM files with duplicates removed, saved into `bam_dir` with extention `.Aligned.marked.bam`.
+    - BAM files with duplicates removed (or just marked), saved into `bam_dir`. All files that have undergone
+      this step will contain `marked` in their name's suffix.
     - Duplicate metrics report, saved in "`bam_dir`/stats/" with extention `.dup_metrics.txt`.
 
 6. BAM Filtering:
-    - BAM files filtered according to some threshold on quality score, saved into `bam_dir` with extention
-    `.Aligned.filtered.bam`.
+    - BAM files filtered according to some threshold on quality score, saved into `bam_dir`. All files that have
+      undergone this step will contain `filtered` in their name's suffix.
 
 7. BAM Indexing:
     - Index files of input BAM files (one for each BAM), saved into `bam_dir` with same name as input BAM plus
@@ -287,9 +289,9 @@ not match any glob pattern passed.
 
 The output of alignment will therefore be:
 
-- `TREATED-replica1-S11.Aligned.out.bam`
-- `TREATED-replica3-S34.Aligned.out.bam`
-- `RES_PT-replica1-S12.Aligned.out.bam`
+- `TREATED-replica1-S11.Aligned.bam`
+- `TREATED-replica3-S34.Aligned.bam`
+- `RES_PT-replica1-S12.Aligned.bam`
 
 
 ## How to run your pipeline
