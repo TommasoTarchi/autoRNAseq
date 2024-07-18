@@ -340,6 +340,11 @@ The output of alignment will therefore be:
    $ nextflow run main.nf
    ````
 
+6. (**optional**) If your pipeline was run successfully and you think you will not need any of the temporary files (i.e
+   those not included among the outputs), we strongly suggest to clean `nf_work_dir`. The program is optimized to use
+   less disk possible, however temporary files could still occupy a lot of disk space.
+
+
 
 
 
