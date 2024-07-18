@@ -114,6 +114,8 @@ All parameters can be set from the `config.json` file. Please, do not modify nei
   "run_locally" -> boolean: whether the pipeline should be run locally
 
   "save_all_bams" -> boolean: whether output BAM files should be saved at each step
+
+  "nf_work_dir" -> string: work directory for pipeline (default: "./work/")
 }
 ````
 
@@ -329,6 +331,9 @@ The output of alignment will therefore be:
 
     - Change `save_all_bams` variable to true if you want to keep all BAM files produced along the pipeline (usually **not
       recommended**, especially when working with many files). If you only want the final result, leave it to false.
+
+    - Set `nf_work_dir` to the path to work directory of your choice (choose a directory with sufficient disk available).
+      If you leave it empty, `./work/` (nextflow default) will be passed.
 
 5. Run the pipeline using:
    ````
