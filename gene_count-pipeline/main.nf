@@ -130,14 +130,17 @@ if (!(params.strandedness in validStrandedness)) {
 
 
 process runGenomeIndexing {
+    publishDir "${params.index_dir}", mode: 'move'
+    
     output:
     val true  // for state dependency
+    path "*"
 
     script:
     """
     STAR \
     --runMode genomeGenerate \
-    --genomeDir $params.index_dir \
+    --genomeDir . \
     --genomeFastaFiles $params.fasta_file \
     --sjdbGTFfile $params.annotation_file \
     --limitGenomeGenerateRAM $params.max_RAM_indexing \
@@ -147,9 +150,9 @@ process runGenomeIndexing {
 
 process runTrimming {
     publishDir "${params.trimmed_fastq_dir}", mode: 'copy', pattern: "*.fq.gz"
-    publishDir "${params.trimmed_fastq_dir}/reports/", mode: 'copy', pattern: "*.txt"
-    publishDir "${params.trimmed_fastq_dir}/reports/", mode: 'copy', pattern: "*.html"
-    publishDir "${params.trimmed_fastq_dir}/reports/", mode: 'copy', pattern: "*.zip"
+    publishDir "${params.trimmed_fastq_dir}/reports/", mode: 'move', pattern: "*.txt"
+    publishDir "${params.trimmed_fastq_dir}/reports/", mode: 'move', pattern: "*.html"
+    publishDir "${params.trimmed_fastq_dir}/reports/", mode: 'move', pattern: "*.zip"
 
     input:
     tuple path(input_fastq1), path(input_fastq2)
@@ -196,8 +199,8 @@ process runTrimming {
 
 process runAlignment {
     publishDir "${params.bam_dir}", mode: 'copy', pattern: "${bam}", enabled: {params.save_all_BAM || params.last_BAM_output == "alignment"}
-    publishDir "${params.bam_dir}/logs/", mode: 'copy', pattern: "*.Log.final.out"
-    publishDir "${params.bam_dir}/tabs/", mode: 'copy', pattern: "*.tab"
+    publishDir "${params.bam_dir}/logs/", mode: 'move', pattern: "*.Log.final.out"
+    publishDir "${params.bam_dir}/tabs/", mode: 'move', pattern: "*.tab"
 
     input:
     val ready  // for state dependency
@@ -210,7 +213,12 @@ process runAlignment {
 
     script:
     fastq_name = fastq1.toString().split("\\.")[0]
-    core_name = fastq_name.substring(0, fastq_name.length() - 7)
+    core_name = ""
+    if (params.run_trimming) {
+	core_name = fastq_name[0..-14]
+    } else {
+	core_name = fastq_name[0..-8]
+    }
     bam = core_name + ".Aligned.bam"
 
     """
@@ -302,7 +310,7 @@ process runBAMFiltering {
 }
 
 process runBAMIndexing {
-    publishDir "${params.bam_dir}", mode: 'copy', pattern: "${bai}"
+    publishDir "${params.bam_dir}", mode: 'move', pattern: "${bai}"
 
     input:
     path bam
@@ -430,7 +438,7 @@ workflow {
     def index_ready = true  // any value would be fine (just for state dependency)
     if (params.run_genome_indexing || params.run_all) {
 
-        index_ready = runGenomeIndexing()
+        index_ready = runGenomeIndexing()[0]
     }
 
 
