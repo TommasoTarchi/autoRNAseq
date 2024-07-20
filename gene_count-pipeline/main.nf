@@ -44,7 +44,7 @@ def helpMessage() {
              * data_paths: Paths to input and output data.
              * processes: Specific parameters for each process, including SLURM and function call variables.
              * run_locally: Boolean to specify if the pipeline runs locally.
-             * save_all_bams: Boolean to save intermediate BAM files.
+             * save_all_BAM: Boolean to save intermediate BAM files.
 
             1. Data Paths:
                - Set the following paths in `data_paths` according to the steps you intend to run:
@@ -198,7 +198,7 @@ process runTrimming {
 }
 
 process runAlignment {
-    publishDir "${params.bam_dir}", mode: 'copy', pattern: "${bam}", enabled: {params.save_all_BAM || params.last_BAM_output == "alignment"}
+    publishDir "${params.bam_dir}", mode: 'copy', pattern: "${bam}", enabled: ( params.save_all_BAM || params.last_BAM_output == "alignment" )
     publishDir "${params.bam_dir}/logs/", mode: 'move', pattern: "*.Log.final.out"
     publishDir "${params.bam_dir}/tabs/", mode: 'move', pattern: "*.tab"
 
@@ -231,11 +231,14 @@ process runAlignment {
     --outFileNamePrefix "${core_name}." \
     --quantMode GeneCounts \
     --runThreadN $params.alignment_nt
+
+    # just rename for nicer output
+    mv "${core_name}.Aligned.out.bam" ${bam}
     """
 }
 
 process runBAMSorting {
-    publishDir "${params.bam_dir}", mode: 'copy', enabled: {params.save_all_BAM || params.last_BAM_output == "sorting"}
+    publishDir "${params.bam_dir}", mode: 'copy', enabled: ( params.save_all_BAM || params.last_BAM_output == "sorting" )
 
     input:
     path bam
@@ -245,7 +248,7 @@ process runBAMSorting {
 
     script:
     bam_sorted = ""
-    if (params.first_bam_output == "sorting") {
+    if (params.first_BAM_output == "sorting") {
         bam_sorted = bam.toString().split("\\.")[0] + ".Aligned.sortedByCoord.bam"
     } else {
         bam_sorted = bam.toString()[0..-5] + ".sortedByCoord.bam"
@@ -253,7 +256,7 @@ process runBAMSorting {
 
     """
     if samtools view -H ${bam} | grep -q '@HD.*SO:coordinate'; then
-        cp ${bam} ${bam_sorted}
+        mv ${bam} ${bam_sorted}
     else
         samtools sort -@ $params.BAM_sorting_nt -o ${bam_sorted} ${bam}
     fi
@@ -261,7 +264,7 @@ process runBAMSorting {
 }
 
 process runRemoveDuplicates {
-    publishDir "${params.bam_dir}", mode: 'copy', enabled: {params.save_all_BAM || params.last_BAM_output == "duplicates"}
+    publishDir "${params.bam_dir}", mode: 'copy', enabled: ( params.save_all_BAM || params.last_BAM_output == "duplicates" )
 
     input:
     path bam
@@ -271,7 +274,7 @@ process runRemoveDuplicates {
 
     script:
     bam_marked = ""
-    if (params.first_bam_output == "duplicates") {
+    if (params.first_BAM_output == "duplicates") {
         bam_marked = bam.toString().split("\\.")[0] + ".Aligned.marked.bam"
     } else {
         bam_marked = bam.toString()[0..-5] + ".marked.bam"
@@ -288,7 +291,7 @@ process runRemoveDuplicates {
 }
 
 process runBAMFiltering {
-    publishDir "${params.bam_dir}", mode: 'copy', enabled: {params.save_all_BAM || params.last_BAM_output == "filtering"}
+    publishDir "${params.bam_dir}", mode: 'copy', enabled: ( params.save_all_BAM || params.last_BAM_output == "filtering" )
 
     input:
     path bam
@@ -298,7 +301,7 @@ process runBAMFiltering {
 
     script:
     bam_filtered = ""
-    if (params.first_bam_output == "filtering") {
+    if (params.first_BAM_output == "filtering") {
         bam_filtered = bam.toString().split("\\.")[0] + ".Aligned.filtered.bam"
     } else {
         bam_filtered = bam.toString()[0..-5] + ".filtered.bam"
