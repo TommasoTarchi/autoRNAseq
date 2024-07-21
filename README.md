@@ -25,6 +25,7 @@ Resources parameters can be adjusted differently for each step of the pipeline.
 - [Pipeline steps](#pipeline-steps)
 - [Requirements](#requirements)
 - [Parameters description](#parameters-description)
+  - [Input files](#input-files)
   - [Data paths](#data-paths)
   - [Process specific parameters](#process-specific-parameters)
   - [Output files](#output-files)
@@ -54,8 +55,8 @@ for implementation):
 related documentation [here][nextflow] and [here][singularity] for instructions.
 
 - You need to have the container images on which the steps of the pipeline will run (**remember** that you only need
-  the containers for the steps you want to run). The images can be downloaded from the assets of this program's release,
-  at the following links:
+  the containers for the steps you want to run). The images can be downloaded from the assets of this program's release
+  (make sure you place **all container images in the same directory**):
   - STAR v2.7.11b ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/STAR-v2.7.11b.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/STAR-v2.7.11b.sif))
   - Trim Galore! v0.6.7 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/trim_galore-v0.6.7.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/trim_galore-v0.6.7.sif))
   - SAMtools v1.3.1 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/SAMtools-v1.3.1.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/SAMtools-v1.3.1.sif))
@@ -69,7 +70,7 @@ related documentation [here][nextflow] and [here][singularity] for instructions.
   $ wget <url_to_container_image> -O /path/to/your/container/image
   ````
 
-- If your pipeline uses FastQ files, please make sure they are **paired-end**, **zipped**.
+- If your pipeline uses FastQ files, please make sure they are **paired-end** and **zipped**.
 
 - Make sure that in all input files **all relevant information is placed after dots**. If this is
 not the case, you can replace these dots with other seprators.
@@ -122,14 +123,41 @@ All parameters can be set from the `config.json` file. Please, do not modify nei
     ...
   
   },
+
+  "container_dir" -> string: path to directory with container images
+
+  "nf_work_dir" -> string: path to work directory for pipeline (default: "./work/")
   
   "run_locally" -> boolean: whether the pipeline should be run locally
 
   "save_all_bams" -> boolean: whether output BAM files should be saved at each step
-
-  "nf_work_dir" -> string: work directory for pipeline (default: "./work/")
 }
 ````
+
+
+### Input files
+
+Input files must be passed through a txt file.
+
+There are three possible scenarios:
+1. If your pipeline contains only steps 1 and/or 10, then you don't need any txt file.
+2. If your pipeline starts at step 2 or 3, then your txt file should look like:
+   ````
+   /path/to/read1_of_sample1,/path/to/read2_of_sample1,condition_of_sample1
+   /path/to/read1_of_sample2,/path/to/read2_of_sample2,condition_of_sample2
+   ...
+   ````
+   i.e. each line should contain complete path to the FastQ with first read, complete path to the FastQ with
+   second read and condition of the sample, in this order and comma-separated.
+3. If your pipeline starts at step 4, 5, 6, 7, 8 or 9, then your txt file should look like:
+   ````
+   /path/to/bam1,condition1
+   /path/to/bam2,condition2
+   ...
+   ````
+   i.e. each line should contain complete path to the BAM file and condition of the sample, in this order and comma-separated.
+
+**Please check** that your txt file does not contain any empty lines, as they would most likely produce an error.
 
 
 ### Data paths
@@ -141,20 +169,22 @@ these variables. The following list shows for each data path variable which step
 it to be set. If **at least one** of the steps you intend to run is listed for a variable, then you
 need to set that variable.
 
-- `index_dir`: path to directory for genome index files. Required by: 1. genome indexing, 3. alignment.
+- `input_list`: complete path to txt file containing input files described in the previous section.
+  Required by steps: 2, 3, 4, 5, 6, 7, 8, 9.
 
-- `fasta_file`: complete path to fasta file with reference genome. Required by: 1. genome indexing.
+- `index_dir`: path to directory for genome index files. Required by steps: 1, 3.
 
-- `annotation_file`: complete path to GTF/GFF file. Required by: 1. genome indexing, 9. gene counts.
+- `fasta_file`: complete path to fasta file with reference genome. Required by steps: 1.
 
-- `trimmed_fastq_dir`: path to directory to store trimmed read files. Required by: 2. FastQ trimmming.
+- `annotation_file`: complete path to GTF/GFF file. Required by steps: 1, 9.
 
-- `out_bam_dir`: path to directory to store output alignment files. Required by: 3. alignment, 4. BAM sorting,
-  5. remove duplicates, 6. BAM filtering, 8. BAM stats, 9. gene counts.
+- `trimmed_fastq_dir`: path to directory to store trimmed read files. Required by steps: 2.
 
-- `gene_counts_dir`: path to directory to store gene counts files. Required by: 9. gene counts.
+- `out_bam_dir`: path to directory to store output alignment files. Required by steps: 3, 4, 5, 6, 7, 8, 9.
 
-- `report_dir`: path to directory to store produced reports and plots. Required by: 10. summarize results.
+- `gene_counts_dir`: path to directory to store gene counts files. Required by steps: 9.
+
+- `report_dir`: path to directory to store produced reports and plots. Required by steps: 10.
 
 
 ### Process specific parameters
@@ -170,8 +200,6 @@ Common to all processes are the following variables:
 "container_path" -> string: full path to singularity image for the process
 "num_threads" -> integer: number of threads (excluded "FastQ trimming", "alignment" when "algo": "HTSeq", "remove_duplicates" and "summarize_results")
 ````
-
-For `container_path` setting refer to the [requirements](#requirements).
 
 Other process-specific parameteres are:
 
@@ -211,7 +239,7 @@ guaranteed to work.
 
 ### Output files
 
-The following is a list of output files of each step of the pipeline.
+The following is a list of the output files produced at each step of the pipeline.
 
 If not specified, the output file is always saved, independently of which steps are run after. Exeption are
 BAM files: by default only the last version is saved, but they can optionally be saved at each step by setting
@@ -271,26 +299,27 @@ the related variable in `config.json`.
    $ git clone git@github.com:TommasoTarchi/autoRNAseq.git
    ````
 
-3. Navigate to the `gene_count-pipeline` directory and edit the `config.json` file as follows:
+3. If your pipeline does not contain only steps 1 and/or 10, produce a txt file listing input files, as described in
+   [this section](#input-files).
 
-    - Set variables in `run_processes` section to true for the processes you wish to execute
-      (if you set `all` to true, then all steps will be run regardless of the values of the following
-      variables).
+4. Edit the `config.json` file as follows:
+
+    - Set variables in `run_processes` section to true for the processes you wish to execute.
 
     - Configure `data_paths` to specify paths to your data following the descriptions in [this section](#data-paths).
-      Remember to use lists for `fastq_files` and `bam_files`. Each path should be complete, in particular:
-      - for `fastq_files`, only the common prefix of reads pair should be passed, i.e. one full path per read pair
-        **without** the `_R#_001.fastq.gz` suffix (**glob patterns are allowed** - see [here](#example-of-input-fastq-files)
-        for more details);
-      - `trimmed_fastq_dir` should contain a subdirectory called "reports/";
-      - for `bam_files`, include full paths (**glob patterns are allowed**);
-      Also:
-      - `bam_dir` should contain three subdirectories called "logs/", "stats/" and "tabs/";
-      - if you don't need a path variable set it to an empty string/list.
+      Make sure that:
+      - `trimmed_fastq_dir` contains a subdirectory called "reports/";
+      - `out_bam_dir` contains three subdirectories called "logs/", "stats/" and "tabs/";
+      - if you don't need a path variable set it to an empty string or leave it as it is.
       
-    - Customize settings for each process you are running under the corresponding `processes` section in `config.json`. Refer
-      to your cluster's specifications for SLURM settings. See [here](#process-specific-parameters) for details. Parameters of
+    - Customize settings for each process you are running under the corresponding `processes` section in `config.json`, see
+      [here](#process-specific-parameters) for details. Refer to your cluster's specifications for SLURM settings. Parameters of
       processes you are not running will be ignored (you can leave them as they are).
+
+    - Set `container_dir` to the path to directory with container images.
+
+    - Set `nf_work_dir` to the path to work directory of your choice (choose a directory with sufficient disk available).
+      If you leave it empty, `./work/` (nextflow default) will be passed.
     
     - Change `run_locally` variable to true if you want to run the pipeline on your local machine (**not recommended** for
       most applications). If you want to run it on a cluster, leave it to false.
@@ -298,15 +327,12 @@ the related variable in `config.json`.
     - Change `save_all_bams` variable to true if you want to keep all BAM files produced along the pipeline (usually **not
       recommended**, especially when working with many files). If you only want the final result, leave it to false.
 
-    - Set `nf_work_dir` to the path to work directory of your choice (choose a directory with sufficient disk available).
-      If you leave it empty, `./work/` (nextflow default) will be passed.
-
-5. Run the pipeline using:
+6. Run the pipeline using:
    ````
    $ nextflow run main.nf
    ````
 
-6. (**optional**) If your pipeline was run successfully and you think you will not need any of the temporary files (i.e
+7. (**optional**) If your pipeline was run successfully and you think you will not need any of the temporary files (i.e
    those not included among the outputs), we strongly suggest to clean `nf_work_dir`. The program is optimized to use
    less disk possible, however temporary files could still occupy a lot of disk space.
 
