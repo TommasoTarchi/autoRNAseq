@@ -1,6 +1,6 @@
 # AutoRNAseq: an automated pipeline for paired-end RNAseq data analysis
 
-The pipeline can be used to perform alignment, FastQ and BAM processing, gene expression count,
+This pipeline can be used to perform alignment, FastQ and BAM processing, gene expression count,
 differential gene expression analysis and splicing analysis, for **paired-end reads**.
 
 It is composed of several steps. The user can choose to run **any combination** of these steps,
@@ -28,7 +28,6 @@ Resources parameters can be adjusted differently for each step of the pipeline.
   - [Data paths](#data-paths)
   - [Process specific parameters](#process-specific-parameters)
   - [Output files](#output-files)
-  - [Example of input FastQ files](#example-of-input-fastq-files)
 - [How to run your pipeline](#how-to-run-your-pipeline)
 
 
@@ -38,7 +37,7 @@ This pipeline implements the following steps (between parentheses you have the f
 for implementation):
 
 1. **Genome Indexing**: preprocess the genome for alignment ([*STAR*][STAR]).
-2. **FastQ trimming**: trim reads based on length, Phred score and adapters, and quality control ([*Trim Galore!*][trim_galore]).
+2. **FastQ trimming**: trim reads based on length, Phred score and adapters, and run quality control ([*Trim Galore!*][trim_galore]).
 3. **Alignment**: properly align reads to the reference genome ([*STAR*][STAR]).
 4. **BAM Sorting**: sort alignment files ([*SAMtools*][SAMtools]).
 5. **Remove duplicates**: remove (or mark only) duplicates in alignment files ([*picard*][picard]).
@@ -54,10 +53,9 @@ for implementation):
 - You need to have Nextflow and Singularity installed on your machine. You can look at the
 related documentation [here][nextflow] and [here][singularity] for instructions.
 
-- You need to have the containers on which the steps of the pipeline will run (**remember**
-  that you only need the container images related to the steps you want to run). You can either
-  build the containers by yourself or download them from the assets of this program's release.
-  The following is a list of the available containers in assets:
+- You need to have the container images on which the steps of the pipeline will run (**remember** that you only need
+  the containers for the steps you want to run). The images can be downloaded from the assets of this program's release,
+  at the following links:
   - STAR v2.7.11b ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/STAR-v2.7.11b.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/STAR-v2.7.11b.sif))
   - Trim Galore! v0.6.7 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/trim_galore-v0.6.7.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/trim_galore-v0.6.7.sif))
   - SAMtools v1.3.1 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/SAMtools-v1.3.1.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/SAMtools-v1.3.1.sif))
@@ -71,9 +69,7 @@ related documentation [here][nextflow] and [here][singularity] for instructions.
   $ wget <url_to_container_image> -O /path/to/your/container/image
   ````
 
-- If your pipeline uses FastQ files, please make sure they are **paired-end**, **zipped**, and
-ending in `_R#_001.fastq.gz` or `_R#_001.fq.gz`, with `#` equal to 1 for first read and 2 for second
-read.
+- If your pipeline uses FastQ files, please make sure they are **paired-end**, **zipped**.
 
 - Make sure that in all input files **all relevant information is placed after dots**. If this is
 not the case, you can replace these dots with other seprators.
@@ -106,8 +102,7 @@ All parameters can be set from the `config.json` file. Please, do not modify nei
 ````
 {
   "run_processes": {
-    ... boolean variables indicating whether each process should be run or not
-        ("all" is to run all pipeline from first to last step) ...
+    ... boolean variables indicating whether each process should be run or not ...
   },
   
   "data_paths": {
@@ -146,24 +141,18 @@ these variables. The following list shows for each data path variable which step
 it to be set. If **at least one** of the steps you intend to run is listed for a variable, then you
 need to set that variable.
 
-- `index_dir`: path to directory for genome index files. Required by: 1. genome indexing, 3. alignment; **optional**: 10. summarize results.
+- `index_dir`: path to directory for genome index files. Required by: 1. genome indexing, 3. alignment.
 
 - `fasta_file`: complete path to fasta file with reference genome. Required by: 1. genome indexing.
 
 - `annotation_file`: complete path to GTF/GFF file. Required by: 1. genome indexing, 9. gene counts.
 
-- `fastq_files`: list of complete paths to input (**zipped**) read files. Required by: 2. FastQ trimmming, 3. alignment.
-
 - `trimmed_fastq_dir`: path to directory to store trimmed read files. Required by: 2. FastQ trimmming.
 
-- `bam_dir`: path to directory to store output alignment files. Required by: 3. alignment, 4. BAM sorting,
-  5. remove duplicates, 6. BAM filtering, 8. BAM stats, 9. gene counts; **optional**: 10. summarize results.
+- `out_bam_dir`: path to directory to store output alignment files. Required by: 3. alignment, 4. BAM sorting,
+  5. remove duplicates, 6. BAM filtering, 8. BAM stats, 9. gene counts.
 
-- `bam_files`: list of complete paths to input alignment files. Required by: 4. BAM sorting, 5. remove duplicates,
-  6. BAM filtering, 7. BAM indexing, 8. BAM stats, 9. gene counts (**Notice**: this variable is **never** needed when
-  your pipeline contains the alignment step, i.e. number 3.).
-
-- `gene_counts_dir`: path to directory to store gene counts files. Required by: 9. gene counts; **optional**: 10. summarize results.
+- `gene_counts_dir`: path to directory to store gene counts files. Required by: 9. gene counts.
 
 - `report_dir`: path to directory to store produced reports and plots. Required by: 10. summarize results.
 
@@ -271,46 +260,6 @@ the related variable in `config.json`.
 
 10. Results Summary:
     - html reports of all steps run, saved into `report_dir`.
-
-
-### Example of input FastQ files
-
-Suppose you want to run reads alignment and suppose you have a directory containing the following files:
-
-- `TREATED-replica1-S11_R1_001.fastq.gz`
-- `TREATED-replica1-S11_R2_001.fastq.gz`
-- `TREATED-replica2-S22_R1_001.fastq.gz`
-- `TREATED-replica3-S34_R1_001.fq.gz`
-- `TREATED-replica3-S34_R2_001.fq.gz`
-- `TREATED-replica4-S25_R1_001.fastq`
-- `TREATED-replica4-S25_R2_001.fastq`
-- `RES_PT-replica1-S12_R1_001.fq.gz`
-- `RES_PT-replica1-S12_R2_001.fq.gz`
-- `RES_PT-replica2-S24_R1_001.fq.gz`
-- `RES_PT-replica2-S24_R2_001.fq.gz`
-- `RES_PT-replica3-S24_R1_001.fq.gz`
-- `RES_PT-replica3-S24_R2_001.fq.gz`
-
-Now, for instance if you set `fastq_files` to the list: [`TREATED-replica*`, `RES_PT-replica1-S12`,
-`RES_PT-replica2-S24_R?_001.fq.gz`], the files in the directory will be treated in the following way:
-
-- `TREATED-replica1-S11_R1_001.fastq.gz` and `TREATED-replica1-S11_R2_001.fastq.gz`: processed
-- `TREATED-replica2-S22_R1_001.fastq.gz`: not processed, since it does not have a corresponding paired read file
-(notice that the file matches one of the glob pattern passed).
-- `TREATED-replica3-S34_R1_001.fq.gz` and `TREATED-replica3-S34_R2_001.fq.gz`: processed
-- `TREATED-replica4-S25_R1_001.fastq` and `TREATED-replica4-S25_R2_001.fastq`: not processed, since
-they do not match the expected format
-- `RES_PT-replica1-S12_R1_001.fq.gz` and `RES_PT-replica1-S12_R2_001.fq.gz`: processed
-- `RES_PT-replica2-S24_R1_001.fq.gz` and `RES_PT-replica2-S24_R2_001.fq.gz`: not processed, since the
-provided pattern wrongly includes the suffix `_R#_001.fq.gz`
-- `RES_PT-replica3-S24_R1_001.fq.gz` and `RES_PT-replica3-S24_R2_001.fq.gz`: not processed, since it does
-not match any glob pattern passed.
-
-The output of alignment will therefore be:
-
-- `TREATED-replica1-S11.Aligned.bam`
-- `TREATED-replica3-S34.Aligned.bam`
-- `RES_PT-replica1-S12.Aligned.bam`
 
 
 ## How to run your pipeline
