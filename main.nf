@@ -347,7 +347,7 @@ workflow {
     if (params.run_trimming) {
 
         // extract complete fastq files and define channel
-        def fastq_files_complete = params.fastq_files.collect{ path -> return (path.toString() + "_R{1,2}_001.f*q.gz") }
+        def fastq_files_complete = params.fastq_files.collect{ path -> return path.toString() }
         def fastq_ch = channel.fromFilePairs(fastq_files_complete, checkIfExists: true).map{baseName, fileList -> fileList}
 
         fastq_ch_trimmed = runTrimming(fastq_ch)[0]
@@ -358,7 +358,7 @@ workflow {
     } else if (params.run_alignment) {
 
         // extract complete fastq files and define channel
-        def fastq_files_complete = params.fastq_files.collect{ path -> return (path.toString() + "_R{1,2}_001.f*q.gz") }
+        def fastq_files_complete = params.fastq_files.collect{ path -> return path.toString() }
         fastq_ch_trimmed = channel.fromFilePairs(fastq_files_complete, checkIfExists: true).map{baseName, fileList -> fileList}
     }
 
