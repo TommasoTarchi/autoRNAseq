@@ -29,7 +29,7 @@ process runGenomeIndexing {
     publishDir "${params.index_dir}", mode: 'move'
     
     output:
-    val true  // for state dependency
+   val true  // for state dependency
     path "*"
 
     script:
@@ -109,13 +109,7 @@ process runAlignment {
 
     script:
     fastq_name = fastq1.toString().split("\\.")[0]
-    core_name = ""
-    if (params.run_trimming) {
-	core_name = fastq_name[0..-14]
-    } else {
-	core_name = fastq_name[0..-8]
-    }
-    bam = core_name + ".Aligned.bam"
+    bam = fastq_name + ".Aligned.bam"
 
     """
     STAR \
@@ -124,7 +118,7 @@ process runAlignment {
     --genomeDir $params.index_dir \
     --readFilesIn ${fastq1} ${fastq2} \
     --outSAMtype BAM Unsorted \
-    --outFileNamePrefix "${core_name}." \
+    --outFileNamePrefix "${fastq_name}." \
     --quantMode GeneCounts \
     --runThreadN $params.alignment_nt
 
@@ -297,24 +291,47 @@ process runHTSeq {
     """
 }
 
-//process runRMATS-turbo {
-//    input:
-//    tuple path(bam), path(bai)
-    
-   // output:
-  //  val true  // for state depencency
+process runSplicing {
+    publishDir "${params.splicing_dir}", mode: 'move', pattern: '*.rmats'
 
-//    script:
-//    ./run_mats --b1 /path/to/b1.txt \
-   // --b2 /path/to/b2.txt \
-    //--gtf params.annotation_file \
- //   -t paired \
-//    --readLength  \
-  //  --variable-read-length \
- //   --nthread $params.splicing_nt \
-//    --od  \
-//    --tmp .
-//}
+    input:
+    path bam_list
+    path bai_list
+
+    output:
+    val true  // for state depencency
+
+    script:
+    // define files listing BAMs with requested conditions
+    def file_condition1 = new File('file_condition1.txt')
+    def file_condition2 = new File('file_condition2.txt')
+    def string_condition1 = ""
+    def string_condition2 = ""
+
+    // write BAMs matching requested conditions to corresponding files
+    for (int i=0; i<params.conditions.size(); i++) {
+        if (params.conditions[i] == params.spl_condition1) {
+            string_condition1 = string_condition1 + params.bam_files[i] + ","
+        } else if (params.conditions[i] == params.spl_condition2) {
+            string_condition2 = string_condition2 + params.bam_files[i] + ","
+        }
+    }
+    file_condition1.write(string_condition1[0..-2] + "\n")
+    file_condition2.write(string_condition2[0..-2] + "\n")
+
+    """
+    ./run_rmats \
+    --b1 "file_condition1.txt" \
+    --b2 "file_condition2.txt" \
+    --gtf $params.annotation_file \
+    -t paired \
+    --readLength $params.read_length \
+    --variable-read-length \
+    --nthread $params.splicing_nt \
+    --od $params.splicing_dir \
+    --tmp .
+    """
+}
 
 process runSumResults {
     input:
@@ -338,6 +355,9 @@ process runSumResults {
     fi
     if [[ -n "$params.gene_counts_dir" ]]; then
         dirs+=("$params.gene_counts_dir")
+    fi
+    if [[ -n "$params.splicing_dir" ]]; then
+        dirs+=("$params.splicing_dir")
     fi
 
     # run multiQC if any directory available
@@ -446,7 +466,7 @@ workflow {
     }
 
 
-    // build BAM-BAI channels
+    // build BAM-BAI channels if BAM indexing was not run
     if (params.run_gene_counts || params.run_splicing) {
 
         // if indexing not run, extract BAM and corresponding index file and define channel
@@ -482,13 +502,24 @@ workflow {
 
     // run splicing analysis
     def splicing_ready = false
-    //if (params.run_splicing) {
+    if (params.run_splicing) {
 
-    //    def splicing_ready_par = runRMATS-turbo(bam_ch_indexed)
+        // gather all BAM-BAI couples for running splicing
+        def bam_bai_list = bam_ch_indexed.collect()
+        def bam_list = []
+        def bai_list = []
+        bam_bai_list.each { pair ->
+            bam_list << pair[0]
+            bai_list << pair[1]
+        }
+        
+        // sort paths to be able to retrieve conditions
+        bam_list.sort()
+        bai_list.sort()
 
-        // make sure all splicing analyses have been performed
-    //    splicing_ready = splicing_ready_par.collect()
-    //}
+        // run proper analysis
+        splicing_ready = runSplicing(bam_list, bai_list)
+    }
 
 
     // run results summary

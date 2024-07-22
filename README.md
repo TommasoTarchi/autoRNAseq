@@ -46,7 +46,8 @@ for implementation):
 7. **BAM Indexing**: index the alignment files ([*SAMtools*][SAMtools]).
 8. **BAM Stats**: generate a statistical summary of the alignment ([*SAMtools*][SAMtools]).
 9. **Gene Counts**: quantify gene expression ([*featureCounts*][featureCounts] or [*HTSeq*][HTSeq]).
-10. **Results Summary**: summarize the results ([*multiQC*][multiQC]).
+10. **Splicing Analysis**: ...
+11. **Results Summary**: summarize the results ([*multiQC*][multiQC]).
 
 
 ## Requirements
@@ -72,17 +73,18 @@ related documentation [here][nextflow] and [here][singularity] for instructions.
 
 - If your pipeline uses FastQ files, please make sure they are **paired-end** and **zipped**.
 
-- Make sure that in all input files **all relevant information is placed after dots**. If this is
+- Make sure that in all input files **all relevant information is placed before dots**. If this is
 not the case, you can replace these dots with other seprators.
 Example: `<info1>.<info2>.Aligned.out.bam` should be renamed something like
 `<info1>_<info2>.Aligned.out.bam` if you don't want to lose `<info2>` from the final
-output file name.
+output file name. Also make sure that all input files have different names.
 
 - If you want to use the pipeline only to remove or mark duplicates (without running previous steps), please
 make sure that input BAM files are sorted (you can include the BAM sorting step if you are not sure).
 
-- If your pipeline contains the gene count step, please include the BAM indexing step as well. If you
-only want to run the gene count step, make sure your input BAM files are indexed.
+- If your pipeline contains the gene count and/or the splicing analysis steps, please include the BAM indexing step
+as well. If you only want to run the gene count step, make sure your input BAM files are indexed and that each index
+file is placed in the same directory as the corresponding BAM file.
 
 - If you want to run the gene count step, you need to know the *strandedness* of your data. If you don't
 know it, you can infer it from BAM files using [RSeQC infer_experiment.py](http://rseqc.sourceforge.net/#infer-experiment-py)
@@ -140,7 +142,7 @@ All parameters can be set from the `config.json` file. Please, do not modify nei
 Input files must be passed through a txt file.
 
 There are three possible scenarios:
-1. If your pipeline contains only steps 1 and/or 10, then you don't need any txt file.
+1. If your pipeline contains only steps 1 and/or 11, then you don't need any txt file.
 2. If your pipeline starts at step 2 or 3, then your txt file should look like:
    ````
    /path/to/read1_of_sample1,/path/to/read2_of_sample1,condition_of_sample1
@@ -184,7 +186,7 @@ need to set that variable.
 
 - `gene_counts_dir`: path to directory to store gene counts files. Required by steps: 9.
 
-- `report_dir`: path to directory to store produced reports and plots. Required by steps: 10.
+- `report_dir`: path to directory to store produced reports and plots. Required by steps: 11.
 
 
 ### Process specific parameters
@@ -255,9 +257,9 @@ the related variable in `config.json`.
     - *FastQC* reports, saved as html files into "`trimmed_fastq_dir`/reports/".
 
 3. Alignment:
-    - BAM files with alignment (one per paired-end pair of fastq file), **unsorted** and saved into
-    `bam_dir`. The name of the file will have all the information contained before dots in the fastq
-    names followed by the suffix: `.Aligned.bam`.
+    - BAM files with alignment (one per paired-end pair of fastq file), **unsorted** and saved into `bam_dir`.
+      The name of the file will have all the information contained before dots in the name of the corresponding
+      FastQ file with first reads followed by the suffix: `.Aligned.bam`.
     - Alignment log files, saved into "`bam_dir`/logs/".
     - Alignment tab files, saved into "`bam_dir`/tabs/".
 
@@ -286,7 +288,7 @@ the related variable in `config.json`.
     - Gene expression count files (one for each input BAM), saved into `gene_counts_dir` with extention
     `.counts.txt`.
 
-10. Results Summary:
+11. Results Summary:
     - html reports of all steps run, saved into `report_dir`.
 
 
@@ -299,7 +301,7 @@ the related variable in `config.json`.
    $ git clone git@github.com:TommasoTarchi/autoRNAseq.git
    ````
 
-3. If your pipeline does not contain only steps 1 and/or 10, produce a txt file listing input files, as described in
+3. If your pipeline does not contain only steps 1 and/or 11, produce a txt file listing input files, as described in
    [this section](#input-files).
 
 4. Edit the `config.json` file as follows:

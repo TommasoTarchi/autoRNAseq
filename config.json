@@ -9,6 +9,7 @@
     "BAM_indexing": false,
     "BAM_stats": true,
     "gene_counts": false,
+    "splicing_analysis": false,
     "summarize_results": true
   },
   "data_paths": {
@@ -19,6 +20,7 @@
     "trimmed_fastq_dir": "/scratch/ttarchi/data_test/fastq_trimmed",
     "out_bam_dir": "/scratch/ttarchi/data_test/BAM",
     "gene_counts_dir": "/scratch/ttarchi/data_test/counts_fc",
+    "splicing_dir": "",
     "report_dir": "/scratch/ttarchi/data_test/qc_reports"
   },
   "processes": {
@@ -80,6 +82,15 @@
       "queue": "regular1",
       "time": "4h",
       "memory": "32GB",
+      "num_threads": 10
+    },
+    "splicing_analysis": {
+      "condition1": "",
+      "condition2": "",
+      "read_length": ,
+      "queue": "regular1",
+      "time": "1h",
+      "memory": "2GB",
       "num_threads": 10
     },
     "summarize_results": {
