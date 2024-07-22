@@ -1,8 +1,8 @@
 {
   "run_processes": {
     "genome_indexing": false,
-    "fastq_trimming": false,
-    "alignment": false,
+    "fastq_trimming": true,
+    "alignment": true,
     "BAM_sorting": true,
     "remove_duplicates": true,
     "BAM_filtering": true,
@@ -12,7 +12,7 @@
     "summarize_results": true
   },
   "data_paths": {
-    "input_list": "/home/ttarchi/autoRNAseq/input_list.txt",
+    "input_list": "/home/ttarchi/autoRNAseq/input_list_fq.txt",
     "index_dir": "/scratch/ttarchi/data_test/STAR_indexing",
     "fasta_file": "/scratch/ttarchi/data_test/genome_annotations/GRCh38.p14.genome.fa",
     "annotation_file": "/scratch/ttarchi/data_test/genome_annotations/gencode.v44.annotation.gtf",
@@ -89,7 +89,7 @@
     }
   },
   "container_dir": "/scratch/ttarchi/container_images",
-  "nf_work_dir": "",
+  "nf_work_dir": "/scratch/ttarchi/nf_work",
   "run_locally": false,
   "save_all_BAM": false
 }

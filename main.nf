@@ -346,9 +346,7 @@ workflow {
     def trimming_ready = false  // for multiQC
     if (params.run_trimming) {
 
-        // extract complete fastq files and define channel
-        def fastq_files_complete = params.fastq_files.collect{ path -> return path.toString() }
-        def fastq_ch = channel.fromFilePairs(fastq_files_complete, checkIfExists: true).map{baseName, fileList -> fileList}
+	def fastq_ch = channel.from(params.fastq_files)
 
         fastq_ch_trimmed = runTrimming(fastq_ch)[0]
 
@@ -357,9 +355,7 @@ workflow {
 
     } else if (params.run_alignment) {
 
-        // extract complete fastq files and define channel
-        def fastq_files_complete = params.fastq_files.collect{ path -> return path.toString() }
-        fastq_ch_trimmed = channel.fromFilePairs(fastq_files_complete, checkIfExists: true).map{baseName, fileList -> fileList}
+	fastq_ch_trimmed = channel.from(params.fastq_files)
     }
 
 
