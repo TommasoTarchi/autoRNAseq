@@ -311,9 +311,9 @@ process runSplicing {
     // write BAMs matching requested conditions to corresponding files
     for (int i=0; i<params.conditions.size(); i++) {
         if (params.conditions[i] == params.spl_condition1) {
-            string_condition1 = string_condition1 + params.bam_files[i] + ","
+            string_condition1 = string_condition1 + bam_list[i] + ","
         } else if (params.conditions[i] == params.spl_condition2) {
-            string_condition2 = string_condition2 + params.bam_files[i] + ","
+            string_condition2 = string_condition2 + bam_list[i] + ","
         }
     }
     file_condition1.write(string_condition1[0..-2] + "\n")
@@ -513,7 +513,7 @@ workflow {
             bai_list << pair[1]
         }
         
-        // sort paths to be able to retrieve conditions
+        // sort paths to be able to retrieve right conditions
         bam_list.sort()
         bai_list.sort()
 
