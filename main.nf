@@ -297,11 +297,31 @@ process runHTSeq {
     """
 }
 
+//process runRMATS-turbo {
+//    input:
+//    tuple path(bam), path(bai)
+    
+   // output:
+  //  val true  // for state depencency
+
+//    script:
+//    ./run_mats --b1 /path/to/b1.txt \
+   // --b2 /path/to/b2.txt \
+    //--gtf params.annotation_file \
+ //   -t paired \
+//    --readLength  \
+  //  --variable-read-length \
+ //   --nthread $params.splicing_nt \
+//    --od  \
+//    --tmp .
+//}
+
 process runSumResults {
     input:
     val ready1
     val ready2
     val ready3
+    val ready4
 
     script:
     """
@@ -346,16 +366,16 @@ workflow {
     def trimming_ready = false  // for multiQC
     if (params.run_trimming) {
 
-	def fastq_ch = channel.from(params.fastq_files)
+        def fastq_ch = channel.from(params.fastq_files)
 
         fastq_ch_trimmed = runTrimming(fastq_ch)[0]
 
-	// signal to multiQC that this process is done
-	trimming_ready = fastq_ch_trimmed.collect()
+        // signal to multiQC that this process is done
+        trimming_ready = fastq_ch_trimmed.collect()
 
     } else if (params.run_alignment) {
 
-	fastq_ch_trimmed = channel.from(params.fastq_files)
+        fastq_ch_trimmed = channel.from(params.fastq_files)
     }
 
 
@@ -426,27 +446,49 @@ workflow {
     }
 
 
-    // run gene counts
-    def counts_ready = false
-    if (params.run_gene_counts) {
+    // build BAM-BAI channels
+    if (params.run_gene_counts || params.run_splicing) {
 
         // if indexing not run, extract BAM and corresponding index file and define channel
         if (!bam_ch_indexed) {
             def bam_bai_pairs = params.bam_files.collect{ path -> return (path.toString() + "{,.bai}") }
             bam_ch_indexed = channel.fromFilePairs(bam_bai_pairs, checkIfExists: true).map{baseName, fileList -> fileList}
         }
+    }
+
+
+    // run gene counts
+    def counts_ready = false
+    if (params.run_gene_counts) {
 
         // run featureCounts
         if (params.count_algo == 'featureCounts') {
 
-            counts_ready = runFeatureCounts(bam_ch_indexed)
+            def counts_ready_par = runFeatureCounts(bam_ch_indexed)
+
+            // make sure all counts have been performed
+            counts_ready = counts_ready_par.collect()
 
         // run HTSeq
         } else if (params.count_algo == 'HTSeq') {
 
-            counts_ready = runHTSeq(bam_ch_indexed)
+            def counts_ready_par = runHTSeq(bam_ch_indexed)
+
+            // make sure all counts have been performed
+            counts_ready = counts_ready_par.collect()
         }
     }
+
+
+    // run splicing analysis
+    def splicing_ready = false
+    //if (params.run_splicing) {
+
+    //    def splicing_ready_par = runRMATS-turbo(bam_ch_indexed)
+
+        // make sure all splicing analyses have been performed
+    //    splicing_ready = splicing_ready_par.collect()
+    //}
 
 
     // run results summary
@@ -465,6 +507,10 @@ workflow {
             counts_ready = channel.of(1)  // "dummy" channel
         }
 
-        runSumResults(trimming_ready, bam_stats_ready, counts_ready)
+        if (!splicing_ready) {
+            splicing_ready = channel.of(1)  // "dummy" channel
+        }
+
+        runSumResults(trimming_ready, bam_stats_ready, counts_ready, splicing_ready)
     }
 }
