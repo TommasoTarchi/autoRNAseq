@@ -292,23 +292,22 @@ process runHTSeq {
 }
 
 process runSplicing {
-    publishDir "${params.splicing_dir}", mode: 'move', pattern: '*.rmats'
+    publishDir "${params.splicing_dir}", mode: 'move', pattern: "*.rmats"
 
     input:
-    path bam_list
-    path bai_list
+    path bam_list  // not single path but list
+    path bai_list  // not single path but list
 
     output:
     val true  // for state depencency
+    path "*.rmats"  // stats files
 
     script:
-    // define files listing BAMs with requested conditions
-    def file_condition1 = new File('file_condition1.txt')
-    def file_condition2 = new File('file_condition2.txt')
+    // define strings listing BAMs with requested conditions
     def string_condition1 = ""
     def string_condition2 = ""
 
-    // write BAMs matching requested conditions to corresponding files
+    // write BAMs matching requested conditions to corresponding strings
     for (int i=0; i<params.conditions.size(); i++) {
         if (params.conditions[i] == params.spl_condition1) {
             string_condition1 = string_condition1 + bam_list[i] + ","
@@ -316,13 +315,18 @@ process runSplicing {
             string_condition2 = string_condition2 + bam_list[i] + ","
         }
     }
-    file_condition1.write(string_condition1[0..-2] + "\n")
-    file_condition2.write(string_condition2[0..-2] + "\n")
+    string_condition1 = string_condition1[0..-2]
+    string_condition2 = string_condition2[0..-2]
 
     """
+    # write paths to files matching conditions to files
+    echo ${string_condition1} > list_condition1.txt
+    echo ${string_condition2} > list_condition2.txt
+
+    # run rMATS-turbo
     ./run_rmats \
-    --b1 "file_condition1.txt" \
-    --b2 "file_condition2.txt" \
+    --b1 "list_condition1.txt" \
+    --b2 "list_condition2.txt" \
     --gtf $params.annotation_file \
     -t paired \
     --readLength $params.read_length \
@@ -505,20 +509,20 @@ workflow {
     if (params.run_splicing) {
 
         // gather all BAM-BAI couples for running splicing
-        def bam_bai_list = bam_ch_indexed.collect()
-        def bam_list = []
-        def bai_list = []
-        bam_bai_list.each { pair ->
-            bam_list << pair[0]
-            bai_list << pair[1]
-        }
+	bam_ch_indexed.multiMap { pair ->
+	    bam: pair[0]
+	    bai: pair[1]
+	}.set { bam_bai_list }
+
+	def bam_list = bam_bai_list.bam.collect()
+	def bai_list = bam_bai_list.bai.collect()
         
         // sort paths to be able to retrieve right conditions
         bam_list.sort()
         bai_list.sort()
 
         // run proper analysis
-        splicing_ready = runSplicing(bam_list, bai_list)
+        splicing_ready = runSplicing(bam_list, bai_list)[0]
     }
 
 

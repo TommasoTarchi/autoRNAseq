@@ -7,10 +7,10 @@
     "remove_duplicates": false,
     "BAM_filtering": false,
     "BAM_indexing": false,
-    "BAM_stats": true,
+    "BAM_stats": false,
     "gene_counts": false,
-    "splicing_analysis": false,
-    "summarize_results": true
+    "splicing_analysis": true,
+    "summarize_results": false
   },
   "data_paths": {
     "input_list": "/home/ttarchi/autoRNAseq/input_list_bam.txt",
@@ -20,7 +20,7 @@
     "trimmed_fastq_dir": "/scratch/ttarchi/data_test/fastq_trimmed",
     "out_bam_dir": "/scratch/ttarchi/data_test/BAM",
     "gene_counts_dir": "/scratch/ttarchi/data_test/counts_fc",
-    "splicing_dir": "",
+    "splicing_dir": "/scratch/ttarchi/data_test/splicing_analysis",
     "report_dir": "/scratch/ttarchi/data_test/qc_reports"
   },
   "processes": {
@@ -85,9 +85,9 @@
       "num_threads": 10
     },
     "splicing_analysis": {
-      "condition1": "",
-      "condition2": "",
-      "read_length": ,
+      "condition1": "pippo1",
+      "condition2": "pippo2",
+      "read_length": 100,
       "queue": "regular1",
       "time": "1h",
       "memory": "2GB",
