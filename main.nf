@@ -324,7 +324,7 @@ process runSplicing {
     echo ${string_condition2} > list_condition2.txt
 
     # run rMATS-turbo
-    ./run_rmats \
+    rmats.py \
     --b1 "list_condition1.txt" \
     --b2 "list_condition2.txt" \
     --gtf $params.annotation_file \
