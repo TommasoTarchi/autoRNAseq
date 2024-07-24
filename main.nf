@@ -321,6 +321,15 @@ process runSplicing {
     string_condition1 = string_condition1[0..-2]
     string_condition2 = string_condition2[0..-2]
 
+    // set options for rMATS-turbo
+    def rmats_options = ""
+    if (params.use_paired_stats) {
+	rmats_options = rmats_options + "--paired-stats"
+    }
+    if (params.detect_novel_splice) {
+	rmats_options = rmats_options + " --novelSS"
+    }
+
     """
     # set strandedness parameter
     if [ "$params.spl_strandedness" -eq 0 ]; then
@@ -344,15 +353,14 @@ process runSplicing {
     --libType "\${strand}" \
     --readLength $params.spl_read_len \
     --variable-read-length \
-    --paired_stats $params.use_paired_stats \
     --cstat $params.spl_cutoff_diff \
-    --novelSS $params.detect_novel_splice \
     --mil $params.spl_min_intron_len \
     --mel $params.spl_max_exon_len \
     --allow-clipping \
     --nthread $params.splicing_nt \
     --od $params.splicing_dir \
-    --tmp .
+    --tmp . \
+    $rmats_options
     """
 }
 
