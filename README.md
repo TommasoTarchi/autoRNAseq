@@ -95,7 +95,7 @@ make sure that input BAM files are sorted (you can include the BAM sorting step 
 as well. If you only want to run the gene count step, make sure your input BAM files are indexed and that each index
 file is placed in the same directory as the corresponding BAM file.
 
-- If you want to run the gene count step, you need to know the *strandedness* of your data. If you don't
+- If you want to run the gene count and/or splicing analysis steps, you need to know the *strandedness* of your data. If you don't
 know it, you can infer it from BAM files using [RSeQC infer_experiment.py](http://rseqc.sourceforge.net/#infer-experiment-py)
 or from FastQ files using [how_are_we_stranded_here](https://github.com/signalbash/how_are_we_stranded_here).
 **Notice** that the second option may not work because of some bug in output file processing. In this case
@@ -246,8 +246,16 @@ Other process-specific parameteres are:
 "splicing_analysis": {
   "condition1" -> string: first condition to be compared (MUST correspond to at least one input BAM file)
   "condition2" -> string: second condition to be compared (MUST correspond to at least one input BAM file)
-  "read_length" -> integer: reads length (not all reads have to be of that length - rMATS-turbo is set to
-                            to handle varying length reads)
+  "strandedness" -> integer: 0 for non-stranded, 1 for forward-stranded, 2 for reverse-stranded
+  "read_length" -> integer: reads length (not all reads have to be of this length - rMATS-turbo is set to
+                            to handle varying length reads; in this case a reasonable approach is to use
+                            the length of reads before trimming)
+  "use_paired_stats" -> boolean: whether to use paired stats model
+  "cutoff_diff" -> float: cutoff difference used in hypothesis test for differential alternative splicing
+                          (ignored if "use_paired_stats": false); example: 0.0001 for 0.01% difference
+  "detect_novel_splice" -> boolean: whether to detect unannotated splice sites
+  "min_intron_len" -> integer: minimum intron length (ignored if "detect_novel_splice": false)
+  "max_exon_len" -> integer: maximum exon length (ignored if "detect_novel_splice": false)
 }
 ````
 
