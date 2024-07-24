@@ -20,8 +20,11 @@ def validStrandedness = [0, 1, 2]
 if (!(params.count_algo in validCountAlgos)) {
     throw new IllegalArgumentException("Invalid value for 'count_algo'. Allowed values are: ${validCountAlgos.join(', ')}")
 }
-if (!(params.strandedness in validStrandedness)) {
-    throw new IllegalArgumentException("Invalid value for 'strandedness'. Allowed values are: ${validStrandedness.join(', ')}")
+if (!(params.gc_strandedness in validStrandedness)) {
+    throw new IllegalArgumentException("Invalid value for 'strandedness' in gene counts. Allowed values are: ${validStrandedness.join(', ')}")
+}
+if (!(params.spl_strandedness in validStrandedness)) {
+    throw new IllegalArgumentException("Invalid value for 'strandedness' in splicing analysis. Allowed values are: ${validStrandedness.join(', ')}")
 }
 
 
@@ -268,11 +271,11 @@ process runHTSeq {
     script:
     """
     # set strandedness parameter
-    if [ "$params.strandedness" -eq 0 ]; then
+    if [ "$params.gc_strandedness" -eq 0 ]; then
         strand="no"
-    elif [ "$params.strandedness" -eq 1 ]; then
+    elif [ "$params.gc_strandedness" -eq 1 ]; then
         strand="yes"
-    elif [ "$params.strandedness" -eq 2 ]; then
+    elif [ "$params.gc_strandedness" -eq 2 ]; then
         strand="reverse"
     fi
 
@@ -319,6 +322,15 @@ process runSplicing {
     string_condition2 = string_condition2[0..-2]
 
     """
+    # set strandedness parameter
+    if [ "$params.spl_strandedness" -eq 0 ]; then
+        strand="fr-unstranded"
+    elif [ "$params.spl_strandedness" -eq 1 ]; then
+        strand="fr-firststrand"
+    elif [ "$params.spl_strandedness" -eq 2 ]; then
+        strand="fr-secondstrand"
+    fi
+
     # write paths to files matching conditions to files
     echo ${string_condition1} > list_condition1.txt
     echo ${string_condition2} > list_condition2.txt
@@ -329,8 +341,15 @@ process runSplicing {
     --b2 "list_condition2.txt" \
     --gtf $params.annotation_file \
     -t paired \
-    --readLength $params.read_length \
+    --libType "\${strand}" \
+    --readLength $params.spl_read_len \
     --variable-read-length \
+    --paired_stats $params.use_paired_stats \
+    --cstat $params.spl_cutoff_diff \
+    --novelSS $params.detect_novel_splice \
+    --mil $params.spl_min_intron_len \
+    --mel $params.spl_max_exon_len \
+    --allow-clipping \
     --nthread $params.splicing_nt \
     --od $params.splicing_dir \
     --tmp .

@@ -87,7 +87,13 @@
     "splicing_analysis": {
       "condition1": "pippo1",
       "condition2": "pippo2",
+      "strandedness": 2,
       "read_length": 100,
+      "use_paired_stats": false,
+      "cutoff_dir": 0.0001,
+      "detect_novel_splice": false,
+      "min_intron_len": 50,
+      "max_exon_len": 500,
       "queue": "regular1",
       "time": "1h",
       "memory": "2GB",
