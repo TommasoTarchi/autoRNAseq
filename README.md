@@ -47,7 +47,7 @@ for implementation):
 7. **BAM Indexing**: index the alignment files ([*SAMtools*][SAMtools]).
 8. **BAM Stats**: generate a statistical summary of the alignment ([*SAMtools*][SAMtools]).
 9. **Gene Counts**: quantify gene expression ([*featureCounts*][featureCounts] or [*HTSeq*][HTSeq]).
-10. **Splicing Analysis**: comparative splicing analysis between given conditions ([*rMATS-turbo][rMATS-turbo]).
+10. **Splicing Analysis**: comparative splicing analysis between given conditions ([*rMATS-turbo*][rMATS-turbo]).
 11. **Results Summary**: summarize the results ([*multiQC*][multiQC]).
 
 
@@ -317,7 +317,7 @@ the related variable in `config.json`.
 
 10. Splicing analysis:
     - Files with differential splicing data, saved into `splicing_dir` with extention `.txt`.
-    - `summary.txt` containing summary of all differential plsicing events detected, saved into `splicing_dir`.
+    - `summary.txt` containing summary of all differential splicing events detected, saved into `splicing_dir`.
     - `.rmats` files with summary of BAM processing, saved into `splicing_dir`.
 
 11. Results Summary:
