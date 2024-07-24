@@ -47,7 +47,7 @@ for implementation):
 7. **BAM Indexing**: index the alignment files ([*SAMtools*][SAMtools]).
 8. **BAM Stats**: generate a statistical summary of the alignment ([*SAMtools*][SAMtools]).
 9. **Gene Counts**: quantify gene expression ([*featureCounts*][featureCounts] or [*HTSeq*][HTSeq]).
-10. **Splicing Analysis**: comparative splicing analysis between given conditions (...).
+10. **Splicing Analysis**: comparative splicing analysis between given conditions ([*rMATS-turbo*][rMATS-turbo]).
 11. **Results Summary**: summarize the results ([*multiQC*][multiQC]).
 
 
@@ -73,6 +73,7 @@ related documentation [here][nextflow] and [here][singularity] for instructions.
   - picard v3.1.1 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/picard-v3.1.1.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/picard-v3.1.1.sif))
   - featureCounts v2.0.6 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/featureCounts-v2.0.6.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/featureCounts-v2.0.6.sif))
   - HTSeq v2.0.2 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/HTSeq-v2.0.2.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/HTSeq-v2.0.2.sif))
+  - rMATS v4.3.0 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/rMATS-v4.3.0.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/rMATS-v4.3.0.sif))
   - multiQC v1.18 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/multiQC-v1.18.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/multiQC-v1.18.sif))
   
   If you are operating from command line, you can use [*wget*][wget] (or [*curl*][curl]) to download the images:
@@ -315,8 +316,9 @@ the related variable in `config.json`.
     `.counts.txt`.
 
 10. Splicing analysis:
-    - ...
-    - ...
+    - Files with differential splicing data, saved into `splicing_dir` with extention `.txt`.
+    - `summary.txt` containing summary of all differential splicing events detected, saved into `splicing_dir`.
+    - `.rmats` files with summary of BAM processing, saved into `splicing_dir`.
 
 11. Results Summary:
     - html reports of all steps run, saved into `report_dir`.
@@ -386,6 +388,7 @@ the related variable in `config.json`.
 [picard]: https://broadinstitute.github.io/picard/
 [featureCounts]: https://subread.sourceforge.net/featureCounts.html
 [HTSeq]: https://htseq.readthedocs.io/en/master/overview.html
+[rMATS-turbo]: https://github.com/Xinglab/rmats-turbo
 [multiQC]: https://multiqc.info/docs/ 
 [wget]: https://www.gnu.org/software/wget/manual/wget.html
 [curl]: https://curl.se/docs/
