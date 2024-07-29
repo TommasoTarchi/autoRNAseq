@@ -10,18 +10,18 @@
     "BAM_stats": false,
     "gene_counts": false,
     "splicing_analysis": true,
-    "summarize_results": false
+    "summarize_results": true
   },
   "data_paths": {
-    "input_list": "/home/ttarchi/autoRNAseq/input_list_bam.txt",
-    "index_dir": "/scratch/ttarchi/data_test/STAR_indexing",
-    "fasta_file": "/scratch/ttarchi/data_test/genome_annotations/GRCh38.p14.genome.fa",
-    "annotation_file": "/scratch/ttarchi/data_test/genome_annotations/gencode.v44.annotation.gtf",
-    "trimmed_fastq_dir": "/scratch/ttarchi/data_test/fastq_trimmed",
-    "out_bam_dir": "/scratch/ttarchi/data_test/BAM",
-    "gene_counts_dir": "/scratch/ttarchi/data_test/counts_fc",
-    "splicing_dir": "/scratch/ttarchi/data_test/splicing_analysis",
-    "report_dir": "/scratch/ttarchi/data_test/qc_reports"
+    "input_list": "/home/ttarchi/splicing_analysis/may_2023/OVCAR8/PTresPT_PTresU.txt",
+    "index_dir": "",
+    "fasta_file": "",
+    "annotation_file": "/scratch/rimargi/project_CRO/data_may2023/genome_annotations/gencode.v44.annotation.gtf",
+    "trimmed_fastq_dir": "",
+    "out_bam_dir": "",
+    "gene_counts_dir": "",
+    "splicing_dir": "/home/ttarchi/splicing_analysis/may_2023/OVCAR8/PTresPTvsPTresU",
+    "report_dir": "/home/ttarchi/splicing_analysis/may_2023/OVCAR8/PTresPTvsPTresU/multi_qc"
   },
   "processes": {
     "genome_indexing": {
@@ -85,8 +85,8 @@
       "num_threads": 10
     },
     "splicing_analysis": {
-      "treatment": "pippo1",
-      "control": "pippo2",
+      "treatment": "PTresPT",
+      "control": "PTresU",
       "strandedness": 2,
       "read_length": 100,
       "use_paired_stats": false,
