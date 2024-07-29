@@ -178,7 +178,7 @@ Particular care must be taken in setting the `data_path` variables.
 
 If you run only some of the pipeline steps (as it is usually the case), you will only need some of
 these variables. The following list shows for each data path variable which steps of the pipeline need
-it to be set. If **at least one** of the steps you intend to run is listed for a variable, then you
+it to be set (for step reference numbers see [this section](#pipeline-steps)). If **at least one** of the steps you intend to run is listed for a variable, then you
 need to set that variable.
 
 - `input_list`: complete path to txt file containing input files described in the previous section.
