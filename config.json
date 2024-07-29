@@ -85,8 +85,8 @@
       "num_threads": 10
     },
     "splicing_analysis": {
-      "condition1": "pippo1",
-      "condition2": "pippo2",
+      "treatment": "pippo1",
+      "control": "pippo2",
       "strandedness": 2,
       "read_length": 100,
       "use_paired_stats": false,

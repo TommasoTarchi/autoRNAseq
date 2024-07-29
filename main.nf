@@ -32,7 +32,7 @@ process runGenomeIndexing {
     publishDir "${params.index_dir}", mode: 'move'
     
     output:
-   val true  // for state dependency
+    val true  // for state dependency
     path "*"
 
     script:
@@ -324,10 +324,10 @@ process runSplicing {
     // set options for rMATS-turbo
     def rmats_options = ""
     if (params.use_paired_stats) {
-	rmats_options = rmats_options + "--paired-stats"
+        rmats_options = rmats_options + "--paired-stats"
     }
     if (params.detect_novel_splice) {
-	rmats_options = rmats_options + " --novelSS"
+        rmats_options = rmats_options + " --novelSS"
     }
 
     """
@@ -536,14 +536,14 @@ workflow {
     if (params.run_splicing) {
 
         // gather all BAM-BAI couples for running splicing
-	bam_ch_indexed.multiMap { pair ->
-	    bam: pair[0]
-	    bai: pair[1]
-	}.set { bam_bai_list }
+        bam_ch_indexed.multiMap { pair ->
+            bam: pair[0]
+            bai: pair[1]
+        }.set { bam_bai_list }
 
-	def bam_list = bam_bai_list.bam.collect()
-	def bai_list = bam_bai_list.bai.collect()
-        
+        def bam_list = bam_bai_list.bam.collect()
+        def bai_list = bam_bai_list.bai.collect()
+
         // sort paths to be able to retrieve right conditions
         bam_list.sort()
         bai_list.sort()

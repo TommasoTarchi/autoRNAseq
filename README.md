@@ -1,7 +1,7 @@
 # AutoRNAseq: an automated pipeline for paired-end RNAseq data analysis
 
-This pipeline can be used to perform alignment, FastQ and BAM processing, gene expression count,
-differential gene expression analysis and splicing analysis, for **paired-end reads**.
+This pipeline can be used to perform alignment, FastQ and BAM processing, gene expression count
+and splicing analysis, for **paired-end reads**.
 
 It is composed of several steps. The user can choose to run **any combination** of these steps,
 given that the correct arguments and containers are provided.
