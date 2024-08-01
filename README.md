@@ -200,6 +200,8 @@ need to set that variable.
 
 - `report_dir`: path to directory to store produced reports and plots. Required by steps: 11.
 
+Please, make sure to use **absolute paths**.
+
 
 ### Process specific parameters
 
