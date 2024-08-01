@@ -20,7 +20,7 @@ most demanding pipelines. When run with SLURM, each process is launched as a dif
 Resources parameters can be adjusted differently for each step of the pipeline.
 
 
-## Outline
+## Table of contents
 
 - [Pipeline steps](#pipeline-steps)
 - [What you will find in this repository](#what-you-will-find-in-this-repository)
@@ -55,7 +55,8 @@ for implementation):
 
 - This README file: description of the pipeline and instructions to run it
 - [`main.nf`](./main.nf): nextflow main
-- [`nextflow.config`](./nextflow.config): nextflow configuration file for parameters and processes
+- [`nextflow.config`](./nextflow.config): nextflow configuration file for parameters
+- [`modules/`](./modules/): directory containing definition files of all processes
 - [`config.json`](./config.json): configuration file for user
 
 
