@@ -1,19 +1,19 @@
 {
   "run_processes": {
     "genome_indexing": false,
-    "fastq_trimming": true,
+    "fastq_trimming": false,
     "alignment": false,
     "BAM_sorting": false,
     "remove_duplicates": false,
     "BAM_filtering": false,
-    "BAM_indexing": false,
+    "BAM_indexing": true,
     "BAM_stats": false,
     "gene_counts": false,
-    "splicing_analysis": false,
+    "splicing_analysis": true,
     "summarize_results": false
   },
   "data_paths": {
-    "input_list": "/home/ttarchi/autoRNAseq/input_lists/trimming_list.txt",
+    "input_list": "/home/ttarchi/autoRNAseq/input_lists/PTresPT_PTresU.txt",
     "index_dir": "",
     "fasta_file": "",
     "annotation_file": "/scratch/rimargi/project_CRO/data_may2023/genome_annotations/gencode.v44.annotation.gtf",
@@ -36,7 +36,7 @@
       "min_length": 20,
       "queue": "regular1",
       "time": "2h",
-      "memory": "16GB",
+      "memory": "24GB",
       "multithreaded": true
     },
     "alignment": {

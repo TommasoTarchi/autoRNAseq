@@ -55,108 +55,52 @@ if (!(params.spl_strandedness in validStrandedness)) {
 //
 // check that needed data path variables were given and are valid
 //
-def input_path = false
+def checkPath(path, file_name) {
+    def input = new File(path)
+    
+    if (!input.exists()) {
+        println "ERROR: data_path variable '${file_name}' does not exist or was not provided"
+	    System.exit(1)
+    }
+}
+
 if (params.run_genome_indexing) {
-    input_path = new File(params.index_dir)
-    if (!inputs_path.exists()) {
-        println "data_path variable 'index_dir' does not exist or was not provided"
-	    System.exit(1)
-    }
-    input_path = new File(params.fasta_file)
-    if (!inputs_path.exists()) {
-        println "data_path variable 'fasta_file' does not exist or was not provided"
-	    System.exit(1)
-    }
-    input_path = new File(params.annotation_file)
-    if (!inputs_path.exists()) {
-        println "data_path variable 'annotation_file' does not exist or was not provided"
-	    System.exit(1)
-    }
+    checkPath(params.index_dir, "index_dir")
+    checkPath(params.fasta_file, "fasta_file")
+    checkPath(params.annotation_file, "annotation_file")
 }
 if (params.run_trimming){
-    input_path = new File(params.trimmed_fastq_dir)
-    if (!inputs_path.exists()) {
-        println "data_path variable 'trimmed_fastq_dir' does not exist or was not provided"
-	    System.exit(1)
-    }
+    checkPath(params.trimmed_fastq_dir, "trimmed_fastq_dir")
 }
 if (params.run_alignment){
-    input_path = new File(params.index_dir)
-    if (!inputs_path.exists()) {
-        println "data_path variable 'index_dir' does not exist or was not provided"
-	    System.exit(1)
-    }
-    input_path = new File(params.out_bam_dir)
-    if (!inputs_path.exists()) {
-        println "data_path variable 'out_bam_dir' does not exist or was not provided"
-	    System.exit(1)
-    }
+    checkPath(params.index_dir, "index_dir")
+    checkPath(params.out_bam_dir, "out_bam_dir")
 }
 if (params.run_BAM_sorting){
-    input_path = new File(params.out_bam_dir)
-    if (!inputs_path.exists()) {
-        println "data_path variable 'out_bam_dir' does not exist or was not provided"
-	    System.exit(1)
-    }
+    checkPath(params.out_bam_dir, "out_bam_dir")
 }
 if (params.run_remove_duplicates){
-    input_path = new File(params.out_bam_dir)
-    if (!inputs_path.exists()) {
-        println "data_path variable 'out_bam_dir' does not exist or was not provided"
-	    System.exit(1)
-    }
+    checkPath(params.out_bam_dir, "out_bam_dir")
 }
 if (params.run_BAM_filtering){
-    input_path = new File(params.out_bam_dir)
-    if (!inputs_path.exists()) {
-        println "data_path variable 'out_bam_dir' does not exist or was not provided"
-	    System.exit(1)
-    }
+    checkPath(params.out_bam_dir, "out_bam_dir")
 }
 if (params.run_BAM_indexing){
-    input_path = new File(params.out_bam_dir)
-    if (!inputs_path.exists()) {
-        println "data_path variable 'out_bam_dir' does not exist or was not provided"
-	    System.exit(1)
-    }
+    checkPath(params.out_bam_dir, "out_bam_dir")
 }
 if (params.run_BAM_stats){
-    input_path = new File(params.out_bam_dir)
-    if (!inputs_path.exists()) {
-        println "data_path variable 'out_bam_dir' does not exist or was not provided"
-	    System.exit(1)
-    }
+    checkPath(params.out_bam_dir, "out_bam_dir")
 }
 if (params.run_gene_counts){
-    input_path = new File(params.annotation_file)
-    if (!inputs_path.exists()) {
-        println "data_path variable 'annotation_file' does not exist or was not provided"
-	    System.exit(1)
-    }
-    input_path = new File(params.gene_counts_dir)
-    if (!inputs_path.exists()) {
-        println "data_path variable 'gene_counts_dir' does not exist or was not provided"
-	    System.exit(1)
-    }
+    checkPath(params.annotation_file, "annotation_file")
+    checkPath(params.gene_counts_dir, "gene_counts_dir")
 }
 if (params.run_splicing){
-    input_path = new File(params.annotation_file)
-    if (!inputs_path.exists()) {
-        println "data_path variable 'annotation_file' does not exist or was not provided"
-	    System.exit(1)
-    }
-    input_path = new File(params.splicing_dir)
-    if (!inputs_path.exists()) {
-        println "data_path variable 'splicing_dir' does not exist or was not provided"
-	    System.exit(1)
-    }
+    checkPath(params.annotation_file, "annotation_file")
+    checkPath(params.splicing_dir, "splicing_dir")
 }
 if (params.run_summarize_results){
-    input_path = new File(params.report_dir)
-    if (!inputs_path.exists()) {
-        println "data_path variable 'report_dir' does not exist or was not provided"
-	    System.exit(1)
-    }
+    checkPath(params.report_dir, "report_dir")
 }
 
 
