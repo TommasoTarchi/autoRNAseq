@@ -3,8 +3,9 @@
 This pipeline can be used to perform alignment, FastQ and BAM processing, gene expression count
 and splicing analysis, for **paired-end reads**.
 
-It is composed of several steps. The user can choose to run **any combination** of these steps,
-given that the correct arguments and containers are provided.
+It is composed of several steps. The user can choose to run any combination of these steps with
+restrictions defined in [Requirements](#requirements), and given that the correct arguments and containers
+are provided.
 
 The implementation uses *Nextflow* for automation and *Singularity* for containerization. If you
 are new to these tools, you can find the documentation, respectively, [here][nextflow] and
@@ -96,6 +97,9 @@ make sure that input BAM files are sorted (you can include the BAM sorting step 
 - If your pipeline contains the gene count and/or the splicing analysis steps, please include the BAM indexing step
 as well. If you only want to run the gene count step, make sure your input BAM files are indexed and that each index
 file is placed in the same directory as the corresponding BAM file.
+
+- At the moment,the pipeline only supports splicing analysis from BAM files. If you only have FastQ files and you wan to
+perform splicing analysis, please include alignment (step 3) in the pipeline.
 
 - If you want to run the gene count and/or splicing analysis steps, you need to know the *strandedness* of your data. If you don't
 know it, you can infer it from BAM files using [RSeQC infer_experiment.py](http://rseqc.sourceforge.net/#infer-experiment-py)
