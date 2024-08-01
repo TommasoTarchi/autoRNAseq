@@ -197,7 +197,7 @@ need to set that variable.
 
 - `trimmed_fastq_dir`: path to directory to store trimmed read files. Required by steps: 2.
 
-- `out_bam_dir`: path to directory to store output alignment files. Required by steps: 3, 4, 5, 6, 7, 8, 9.
+- `out_bam_dir`: path to directory to store output alignment files. Required by steps: 3, 4, 5, 6, 7, 8.
 
 - `gene_counts_dir`: path to directory to store gene counts files. Required by steps: 9.
 
