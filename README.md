@@ -98,8 +98,8 @@ make sure that input BAM files are sorted (you can include the BAM sorting step 
 as well. If you only want to run the gene count step, make sure your input BAM files are indexed and that each index
 file is placed in the same directory as the corresponding BAM file.
 
-- At the moment,the pipeline only supports splicing analysis from BAM files. If you only have FastQ files and you wan to
-perform splicing analysis, please include alignment (step 3) in the pipeline.
+- At the moment,the pipeline only supports splicing analysis from BAM files. If you only have FastQ files and you want to
+perform splicing analysis, please include (at least) steps 3,4 and 7 in the pipeline.
 
 - If you want to run the gene count and/or splicing analysis steps, you need to know the *strandedness* of your data. If you don't
 know it, you can infer it from BAM files using [RSeQC infer_experiment.py](http://rseqc.sourceforge.net/#infer-experiment-py)
