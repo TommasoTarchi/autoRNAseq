@@ -1,7 +1,26 @@
 #! /usr/bin/env nextflow
 
 
+//
+// import processes from definition files
+//
+include { runGenomeIndexing } from './modules/GenomeIndexing.nf'
+include { runTrimming } from './modules/Trimming.nf'
+include { runAlignment } from './modules/Alignment.nf'
+include { runBAMSorting } from './modules/BAMSorting.nf'
+include { runRemoveDuplicates } from './modules/RemoveDuplicates.nf'
+include { runBAMFiltering } from './modules/BAMFiltering.nf'
+include { runBAMIndexing } from './modules/BAMIndexing.nf'
+include { runBAMStats } from './modules/BAMStats.nf'
+include { runFeatureCounts } from './modules/FeatureCounts.nf'
+include { runHTSeq } from './modules/HTSeq.nf'
+include { runSplicing } from './modules/Splicing.nf'
+include { runSumResults } from './modules/SumResults.nf'
+
+
+//
 // help message (can be displayed using --help option)
+//
 def helpMessage() {
     log.info """
     """
@@ -13,7 +32,9 @@ if (params.help) {
 }
 
 
+//
 // check valid option for gene count algorithm and strandedness
+//
 def validCountAlgos = ['featureCounts', 'HTSeq']
 def validStrandedness = [0, 1, 2]
 
@@ -28,395 +49,11 @@ if (!(params.spl_strandedness in validStrandedness)) {
 }
 
 
-process runGenomeIndexing {
-    publishDir "${params.index_dir}", mode: 'move'
-    
-    output:
-    val true  // for state dependency
-    path "*"
-
-    script:
-    """
-    STAR \
-    --runMode genomeGenerate \
-    --genomeDir . \
-    --genomeFastaFiles $params.fasta_file \
-    --sjdbGTFfile $params.annotation_file \
-    --limitGenomeGenerateRAM $params.max_RAM_indexing \
-    --runThreadN $params.genome_indexing_nt
-    """
-}
-
-process runTrimming {
-    publishDir "${params.trimmed_fastq_dir}", mode: 'copy', pattern: "*.fq.gz"
-    publishDir "${params.trimmed_fastq_dir}/reports/", mode: 'move', pattern: "*.txt"
-    publishDir "${params.trimmed_fastq_dir}/reports/", mode: 'move', pattern: "*.html"
-    publishDir "${params.trimmed_fastq_dir}/reports/", mode: 'move', pattern: "*.zip"
-
-    input:
-    tuple path(input_fastq1), path(input_fastq2)
-
-    output:
-    tuple path(output_fastq1), path(output_fastq2)
-    path '*.txt'
-    path '*.html'
-    path '*.zip'
-
-    script:
-    // extract core and output names
-    core_fastq1 = ""
-    core_fastq2 = ""
-    if (input_fastq1.toString().endsWith('.fq.gz')) {
-        core_fastq1 = input_fastq1.toString() - '.fq.gz'
-    } else if (input_fastq1.toString().endsWith('.fastq.gz')) {
-        core_fastq1 = input_fastq1.toString() - '.fastq.gz'
-    }
-    if (input_fastq2.toString().endsWith('.fq.gz')) {
-        core_fastq2 = input_fastq2.toString() - '.fq.gz'
-    } else if (input_fastq2.toString().endsWith('.fastq.gz')) {
-        core_fastq2 = input_fastq2.toString() - '.fastq.gz'
-    }
-    output_fastq1 = core_fastq1 + '_val_1.fq.gz'
-    output_fastq2 = core_fastq2 + '_val_2.fq.gz'
-    
-    // set number of threads
-    n_threads = 1
-    if (params.trimming_multithreaded) {
-        n_threads = 4
-    }
-
-    """
-    trim_galore \
-    --quality $params.fq_quality_thres \
-    --fastqc \
-    --paired \
-    --length $params.min_read_len \
-    --cores ${n_threads} \
-    ${input_fastq1} ${input_fastq2}
-    """
-}
-
-process runAlignment {
-    publishDir "${params.out_bam_dir}", mode: 'copy', pattern: "${bam}", enabled: ( params.save_all_BAM || params.last_BAM_output == "alignment" )
-    publishDir "${params.out_bam_dir}/logs/", mode: 'move', pattern: "*.Log.final.out"
-    publishDir "${params.out_bam_dir}/tabs/", mode: 'move', pattern: "*.tab"
-
-    input:
-    val ready  // for state dependency
-    tuple path(fastq1), path(fastq2)
-
-    output:
-    path bam
-    path '*.Log.final.out'
-    path '*.tab'
-
-    script:
-    fastq_name = fastq1.toString().split("\\.")[0]
-    bam = fastq_name + ".Aligned.bam"
-
-    """
-    STAR \
-    --runMode alignReads \
-    --readFilesCommand "gunzip -c" \
-    --genomeDir $params.index_dir \
-    --readFilesIn ${fastq1} ${fastq2} \
-    --outSAMtype BAM Unsorted \
-    --outFileNamePrefix "${fastq_name}." \
-    --quantMode GeneCounts \
-    --runThreadN $params.alignment_nt
-
-    # just rename for nicer output
-    mv "${core_name}.Aligned.out.bam" ${bam}
-    """
-}
-
-process runBAMSorting {
-    publishDir "${params.out_bam_dir}", mode: 'copy', enabled: ( params.save_all_BAM || params.last_BAM_output == "sorting" )
-
-    input:
-    path bam
-
-    output:
-    path bam_sorted
-
-    script:
-    bam_sorted = ""
-    if (params.first_BAM_output == "sorting") {
-        bam_sorted = bam.toString().split("\\.")[0] + ".Aligned.sortedByCoord.bam"
-    } else {
-        bam_sorted = bam.toString()[0..-5] + ".sortedByCoord.bam"
-    }
-
-    """
-    if samtools view -H ${bam} | grep -q '@HD.*SO:coordinate'; then
-        mv ${bam} ${bam_sorted}
-    else
-        samtools sort -@ $params.BAM_sorting_nt -o ${bam_sorted} ${bam}
-    fi
-    """
-}
-
-process runRemoveDuplicates {
-    publishDir "${params.out_bam_dir}", mode: 'copy', enabled: ( params.save_all_BAM || params.last_BAM_output == "duplicates" )
-
-    input:
-    path bam
-
-    output:
-    path bam_marked
-
-    script:
-    bam_marked = ""
-    if (params.first_BAM_output == "duplicates") {
-        bam_marked = bam.toString().split("\\.")[0] + ".Aligned.marked.bam"
-    } else {
-        bam_marked = bam.toString()[0..-5] + ".marked.bam"
-    }
-    metrics = bam.toString().split("\\.")[0] + ".dup_metrics.txt"
-
-    """
-    picard MarkDuplicates \
-    --INPUT ${bam} \
-    --OUTPUT ${bam_marked} \
-    --REMOVE_SEQUENCING_DUPLICATES $params.remove_seq_duplicates \
-    --METRICS_FILE "${params.out_bam_dir}/stats/${metrics}"
-    """
-}
-
-process runBAMFiltering {
-    publishDir "${params.out_bam_dir}", mode: 'copy', enabled: ( params.save_all_BAM || params.last_BAM_output == "filtering" )
-
-    input:
-    path bam
-
-    output:
-    path bam_filtered
-
-    script:
-    bam_filtered = ""
-    if (params.first_BAM_output == "filtering") {
-        bam_filtered = bam.toString().split("\\.")[0] + ".Aligned.filtered.bam"
-    } else {
-        bam_filtered = bam.toString()[0..-5] + ".filtered.bam"
-    }
-
-    """
-    samtools view --threads $params.BAM_filtering_nt -b -q $params.BAM_quality_thres ${bam} > ${bam_filtered}
-    """
-}
-
-process runBAMIndexing {
-    publishDir "${params.out_bam_dir}", mode: 'copy', pattern: "${bai}"
-
-    input:
-    path bam
-
-    output:
-    tuple path(bam), path(bai)
-
-    script:
-    bai = bam.toString() + ".bai"
-
-    """
-    samtools index -@ $params.BAM_indexing_nt "${bam}"
-    """
-}
-
-process runBAMStats {
-    input:
-    path bam
-
-    output:
-    val true  // for state depencency
-
-    script:
-    """
-    bam_name=\$(basename "${bam}")
-
-    samtools flagstat -@ $params.BAM_stats_nt ${bam} > "$params.out_bam_dir/stats/\${bam_name}.stats.txt"
-    """
-}
-
-process runFeatureCounts {
-    input:
-    tuple path(bam), path(bai)
-
-    output:
-    val true  // for state depencency
-
-    script:
-    """
-    bam_name=\$(basename "${bam}")
-    core_name="\${bam_name%%.*}"
-
-    featureCounts \
-    -a $params.annotation_file \
-    -g gene_id \
-    -t exon \
-    -p \
-    -s 2 \
-    -o "$params.gene_counts_dir/\${core_name}.counts.txt" \
-    -T $params.gene_counts_nt \
-    ${bam}
-    """
-}
-
-process runHTSeq {
-    input:
-    tuple path(bam), path(bai)
-
-    output:
-    val true  // for state depencency
-
-    script:
-    """
-    # set strandedness parameter
-    if [ "$params.gc_strandedness" -eq 0 ]; then
-        strand="no"
-    elif [ "$params.gc_strandedness" -eq 1 ]; then
-        strand="yes"
-    elif [ "$params.gc_strandedness" -eq 2 ]; then
-        strand="reverse"
-    fi
-
-    bam_name=\$(basename "${bam}")
-    core_name="\${bam_name%%.*}"
-
-    htseq-count \
-    -f bam \
-    -r pos \
-    -i gene_id \
-    -t exon \
-    -s "\${strand}" \
-    ${bam} \
-    $params.annotation_file \
-    > "$params.gene_counts_dir/\${core_name}.counts.txt"
-    """
-}
-
-process runSplicing {
-    publishDir "${params.splicing_dir}", mode: 'move', pattern: "*.rmats"
-    publishDir "${params.splicing_dir}", mode: 'move', pattern: "*_read_outcomes_by_bam.txt"
-
-    input:
-    path bam_list  // not single path but list
-    path bai_list  // not single path but list
-
-    output:
-    val true  // for state depencency
-    path "*.rmats"  // stats files
-    path "*_read_outcomes_by_bam.txt"  // report on used reads
-
-    script:
-    // define strings listing BAMs with requested conditions
-    def string_condition1 = ""
-    def string_condition2 = ""
-
-    // write BAMs matching requested conditions to corresponding strings
-    for (int i=0; i<params.conditions.size(); i++) {
-        if (params.conditions[i] == params.spl_condition1) {
-            string_condition1 = string_condition1 + bam_list[i] + ","
-        } else if (params.conditions[i] == params.spl_condition2) {
-            string_condition2 = string_condition2 + bam_list[i] + ","
-        }
-    }
-    string_condition1 = string_condition1[0..-2]
-    string_condition2 = string_condition2[0..-2]
-
-    // set options for rMATS-turbo (in case paired statistics and/or novel splice
-    // sites detection are required)
-    def rmats_options = ""
-    if (params.use_paired_stats) {
-        rmats_options = rmats_options + "--paired-stats"
-    }
-    if (params.detect_novel_splice) {
-        rmats_options = rmats_options + " --novelSS --mil " + params.spl_min_intron_len.toString() + " --mel " + params.spl_max_exon_len.toString()
-    }
-
-    // debugging
-    println bam_list
-    println bai_list
-    println params.conditions
-
-    """
-    # set strandedness parameter
-    strand=""
-    if [ "$params.spl_strandedness" -eq 0 ]; then
-        strand="fr-unstranded"
-    elif [ "$params.spl_strandedness" -eq 1 ]; then
-        strand="fr-firststrand"
-    elif [ "$params.spl_strandedness" -eq 2 ]; then
-        strand="fr-secondstrand"
-    fi
-
-    # write paths to files matching conditions to files
-    echo ${string_condition1} > list_condition1.txt
-    echo ${string_condition2} > list_condition2.txt
-
-    # run rMATS-turbo
-    rmats.py \
-    --task both \
-    --b1 "/home/ttarchi/autoRNAseq/input_lists/list_condition1_hardcoded.txt" \
-    --b2 "/home/ttarchi/autoRNAseq/input_lists/list_condition2_hardcoded.txt" \
-    --gtf $params.annotation_file \
-    -t paired \
-    --libType "\${strand}" \
-    --readLength $params.spl_read_len \
-    --variable-read-length \
-    --cstat $params.spl_cutoff_diff \
-    --allow-clipping \
-    --nthread $params.splicing_nt \
-    --od $params.splicing_dir \
-    --tmp . \
-    $rmats_options \
-    1> rmats.log
-
-    # remove temporary files
-    rm -r "$params.splicing_dir/tmp/"
-    """
-}
-
-process runSumResults {
-    input:
-    val ready1
-    val ready2
-    val ready3
-    val ready4
-
-    script:
-    """
-    # set available directories
-    dirs=()
-    if [[ -n "$params.index_dir" ]]; then
-        dirs+=("$params.index_dir")
-    fi
-    if [[ -n "$params.trimmed_fastq_dir" ]]; then
-        dirs+=("$params.trimmed_fastq_dir")
-    fi
-    if [[ -n "$params.out_bam_dir" ]]; then
-        dirs+=("$params.out_bam_dir")
-    fi
-    if [[ -n "$params.gene_counts_dir" ]]; then
-        dirs+=("$params.gene_counts_dir")
-    fi
-    if [[ -n "$params.splicing_dir" ]]; then
-        dirs+=("$params.splicing_dir")
-    fi
-
-    # run multiQC if any directory available
-    if ! [[ -z "\${dirs[@]}" ]]; then
-        multiqc "\${dirs[@]}" \
-        --force \
-        --export \
-        --outdir $params.report_dir
-    fi
-    """
-}
-
-
 workflow {
 
+    //
     // run genome indexing
+    //
     def index_ready = true  // any value would be fine (just for state dependency)
     if (params.run_genome_indexing) {
 
@@ -424,7 +61,9 @@ workflow {
     }
 
 
+    //
     // run trimming and fastQC reports
+    //
     def fastq_ch_trimmed = false
     def trimming_ready = false  // for multiQC
     if (params.run_trimming) {
@@ -442,7 +81,9 @@ workflow {
     }
 
 
+    //
     // run reads alignment
+    //
     def bam_ch = false
     if (params.run_alignment) {
 
@@ -454,7 +95,9 @@ workflow {
     }
 
 
+    //
     // run BAM sorting
+    //
     def bam_ch_sorted = false
     if (params.run_BAM_sorting) {
 
@@ -466,7 +109,9 @@ workflow {
     }
 
 
+    //
     // run remove duplicates of BAM
+    //
     def bam_ch_marked = false
     if (params.run_remove_duplicates) {
 
@@ -478,7 +123,9 @@ workflow {
     }
 
 
+    //
     // run alignment filtering
+    //
     def bam_ch_filtered = false
     if (params.run_BAM_filtering) {
 
@@ -490,7 +137,9 @@ workflow {
     }
 
 
+    //
     // run BAM files indexing
+    //
     def bam_ch_indexed = false
     if (params.run_BAM_indexing) {
 
@@ -498,7 +147,9 @@ workflow {
     }
 
 
+    //
     // run alignment stats summary
+    //
     def bam_stats_ch = false
     def bam_stats_ready = false
     if (params.run_BAM_stats) {
@@ -509,7 +160,9 @@ workflow {
     }
 
 
+    //
     // build BAM-BAI channels if BAM indexing was not run
+    //
     if (params.run_gene_counts || params.run_splicing) {
 
         // if indexing not run, extract BAM and corresponding index file and define channel
@@ -520,7 +173,9 @@ workflow {
     }
 
 
+    //
     // run gene counts
+    //
     def counts_ready = false
     if (params.run_gene_counts) {
 
@@ -543,7 +198,9 @@ workflow {
     }
 
 
+    //
     // run splicing analysis
+    //
     def splicing_ready = false
     if (params.run_splicing) {
 
@@ -556,16 +213,14 @@ workflow {
         def bam_list = bam_bai_list.bam.collect()
         def bai_list = bam_bai_list.bai.collect()
 
-        // sort paths to be able to retrieve right conditions
-        bam_list.sort()
-        bai_list.sort()
-
         // run proper analysis
         splicing_ready = runSplicing(bam_list, bai_list)[0]
     }
 
 
+    //
     // run results summary
+    //
     if (params.run_summarize_results) {
 
         // make sure all data have been processed before going on
