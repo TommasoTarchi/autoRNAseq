@@ -15,6 +15,10 @@ process runSplicing {
     path "*_read_outcomes_by_bam.txt"  // report on used reads
 
     script:
+    // redefine bamlist to avoid conflicts
+    def bamlist = bam_list
+    def paths = Paths
+
     // define strings listing BAMs with requested conditions
     def string_condition1 = ""
     def string_condition2 = ""
@@ -23,25 +27,25 @@ process runSplicing {
     def core_names = []
     if (params.run_trimming || params.run_alignment) {
        for (file_pair in params.fastq_files) { 
-            core_names << Paths.get(file_pairs[0]).getFileName().toString().split("\\.")[0]
+            core_names << paths.get(file_pairs[0].toString()).getFileName().toString().split("\\.")[0]
        }
     } else {
         for (file_path in params.bam_files) {
-            core_names << Paths.get(file_path).getFileName().toString().split("\\.")[0]
+            core_names << paths.get(file_path.toString()).getFileName().toString().split("\\.")[0]
         }
     }
 
     // write BAMs matching requested conditions to corresponding strings
-    for (int i=0; i<bam_list.size(); i++) {  // iterate over BAM list
-        def current_core_name = Paths.get(bam_list[i]).getFileName().toString().split("\\.")[0]
+    for (int i=0; i<bamlist.size(); i++) {  // iterate over BAM list
+        def current_core_name = paths.get(bamlist[i].toString()).getFileName().toString().split("\\.")[0]
 
         for (int j=0; j<core_names.size(); j++) {  // iterate over original inputs
 
             if (current_core_name == core_names[j]) {  // look for matching pattern and condition
                 if (params.conditions[j] == params.spl_condition1) {
-                    string_condition1 = string_condition1 + bam_list[i] + ","
+                    string_condition1 = string_condition1 + bamlist[i] + ","
                 } else if (params.conditions[j] == params.spl_condition2) {
-                    string_condition2 = string_condition2 + bam_list[i] + ","
+                    string_condition2 = string_condition2 + bamlist[i] + ","
                 }
             }
         }
@@ -77,24 +81,24 @@ process runSplicing {
     echo ${string_condition2} > list_condition2.txt
 
     # run rMATS-turbo
-    rmats.py \
-    --task both \
-    --b1 "/home/ttarchi/autoRNAseq/input_lists/list_condition1_hardcoded.txt" \
-    --b2 "/home/ttarchi/autoRNAseq/input_lists/list_condition2_hardcoded.txt" \
-    --gtf $params.annotation_file \
-    -t paired \
-    --libType "\${strand}" \
-    --readLength $params.spl_read_len \
-    --variable-read-length \
-    --cstat $params.spl_cutoff_diff \
-    --allow-clipping \
-    --nthread $params.splicing_nt \
-    --od $params.splicing_dir \
-    --tmp . \
-    $rmats_options \
-    1> rmats.log
+    #rmats.py \
+    #--task both \
+    #--b1 "/home/ttarchi/autoRNAseq/input_lists/list_condition1_hardcoded.txt" \
+    #--b2 "/home/ttarchi/autoRNAseq/input_lists/list_condition2_hardcoded.txt" \
+    #--gtf $params.annotation_file \
+    #-t paired \
+    #--libType "\${strand}" \
+    #--readLength $params.spl_read_len \
+    #--variable-read-length \
+    #--cstat $params.spl_cutoff_diff \
+    #--allow-clipping \
+    #--nthread $params.splicing_nt \
+    #--od $params.splicing_dir \
+    #--tmp . \
+    #$rmats_options \
+    #1> rmats.log
 
     # remove temporary files
-    rm -r "$params.splicing_dir/tmp/"
+    #rm -r "$params.splicing_dir/tmp/"
     """
 }
