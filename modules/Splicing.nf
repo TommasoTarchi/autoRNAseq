@@ -15,7 +15,7 @@ process runSplicing {
     path "*_read_outcomes_by_bam.txt"  // report on used reads
 
     script:
-    // redefine bamlist to avoid conflicts
+    // redefine bamlist and path to avoid conflicts
     def bamlist = bam_list
     def paths = Paths
 

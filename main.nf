@@ -1,6 +1,9 @@
 #! /usr/bin/env nextflow
 
 
+import java.io.File
+
+
 //
 // import processes from definition files
 //
@@ -33,7 +36,7 @@ if (params.help) {
 
 
 //
-// check valid option for gene count algorithm and strandedness
+// check valid options for function call parameters
 //
 def validCountAlgos = ['featureCounts', 'HTSeq']
 def validStrandedness = [0, 1, 2]
@@ -49,6 +52,117 @@ if (!(params.spl_strandedness in validStrandedness)) {
 }
 
 
+//
+// check that needed data path variables were given and are valid
+//
+def input_path = false
+if (params.run_genome_indexing) {
+    input_path = new File(params.index_dir)
+    if (!inputs_path.exists()) {
+        println "data_path variable 'index_dir' does not exist or was not provided"
+	    System.exit(1)
+    }
+    input_path = new File(params.fasta_file)
+    if (!inputs_path.exists()) {
+        println "data_path variable 'fasta_file' does not exist or was not provided"
+	    System.exit(1)
+    }
+    input_path = new File(params.annotation_file)
+    if (!inputs_path.exists()) {
+        println "data_path variable 'annotation_file' does not exist or was not provided"
+	    System.exit(1)
+    }
+}
+if (params.run_trimming){
+    input_path = new File(params.trimmed_fastq_dir)
+    if (!inputs_path.exists()) {
+        println "data_path variable 'trimmed_fastq_dir' does not exist or was not provided"
+	    System.exit(1)
+    }
+}
+if (params.run_alignment){
+    input_path = new File(params.index_dir)
+    if (!inputs_path.exists()) {
+        println "data_path variable 'index_dir' does not exist or was not provided"
+	    System.exit(1)
+    }
+    input_path = new File(params.out_bam_dir)
+    if (!inputs_path.exists()) {
+        println "data_path variable 'out_bam_dir' does not exist or was not provided"
+	    System.exit(1)
+    }
+}
+if (params.run_BAM_sorting){
+    input_path = new File(params.out_bam_dir)
+    if (!inputs_path.exists()) {
+        println "data_path variable 'out_bam_dir' does not exist or was not provided"
+	    System.exit(1)
+    }
+}
+if (params.run_remove_duplicates){
+    input_path = new File(params.out_bam_dir)
+    if (!inputs_path.exists()) {
+        println "data_path variable 'out_bam_dir' does not exist or was not provided"
+	    System.exit(1)
+    }
+}
+if (params.run_BAM_filtering){
+    input_path = new File(params.out_bam_dir)
+    if (!inputs_path.exists()) {
+        println "data_path variable 'out_bam_dir' does not exist or was not provided"
+	    System.exit(1)
+    }
+}
+if (params.run_BAM_indexing){
+    input_path = new File(params.out_bam_dir)
+    if (!inputs_path.exists()) {
+        println "data_path variable 'out_bam_dir' does not exist or was not provided"
+	    System.exit(1)
+    }
+}
+if (params.run_BAM_stats){
+    input_path = new File(params.out_bam_dir)
+    if (!inputs_path.exists()) {
+        println "data_path variable 'out_bam_dir' does not exist or was not provided"
+	    System.exit(1)
+    }
+}
+if (params.run_gene_counts){
+    input_path = new File(params.annotation_file)
+    if (!inputs_path.exists()) {
+        println "data_path variable 'annotation_file' does not exist or was not provided"
+	    System.exit(1)
+    }
+    input_path = new File(params.gene_counts_dir)
+    if (!inputs_path.exists()) {
+        println "data_path variable 'gene_counts_dir' does not exist or was not provided"
+	    System.exit(1)
+    }
+}
+if (params.run_splicing){
+    input_path = new File(params.annotation_file)
+    if (!inputs_path.exists()) {
+        println "data_path variable 'annotation_file' does not exist or was not provided"
+	    System.exit(1)
+    }
+    input_path = new File(params.splicing_dir)
+    if (!inputs_path.exists()) {
+        println "data_path variable 'splicing_dir' does not exist or was not provided"
+	    System.exit(1)
+    }
+}
+if (params.run_summarize_results){
+    input_path = new File(params.report_dir)
+    if (!inputs_path.exists()) {
+        println "data_path variable 'report_dir' does not exist or was not provided"
+	    System.exit(1)
+    }
+}
+
+
+//
+// pipeline
+//
 workflow {
 
     //
