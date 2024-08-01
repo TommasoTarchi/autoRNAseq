@@ -347,11 +347,9 @@ the related variable in `config.json`.
 
     - Set variables in `run_processes` section to true for the processes you wish to execute.
 
-    - Configure `data_paths` to specify paths to your data following the descriptions in [this section](#data-paths).
-      Make sure that:
-      - `trimmed_fastq_dir` contains a subdirectory called "reports/";
-      - `out_bam_dir` contains three subdirectories called "logs/", "stats/" and "tabs/";
-      - if you don't need a path variable set it to an empty string or leave it as it is.
+    - Configure `data_paths` to specify paths to your data following the descriptions in [this section](#data-paths). Path
+      variables not needed by the pipeline will be ignored by the program: you can leave them as they are or set them to
+      empty strings.
       
     - Customize settings for each process you are running under the corresponding `processes` section in `config.json`, see
       [here](#process-specific-parameters) for details. Refer to your cluster's specifications for SLURM settings. Parameters of
