@@ -53,99 +53,58 @@ if (!(params.spl_strandedness in validStrandedness)) {
 
 
 //
-// check that needed data path variables were given and are valid,
-// and build list of data path variables for input_info message
+// list input data path variables and display info message
 //
-def checkPath(path, file_name) {
-    def input = new File(path)
-    
-    if (!input.exists()) {
-        println "ERROR: data_path variable '${file_name}' does not exist or was not provided"
-	    System.exit(1)
-    }
-}
-
 def input_data_paths = []
 
 if (params.run_genome_indexing) {
-    checkPath(params.index_dir, "index_dir")
-    checkPath(params.fasta_file, "fasta_file")
-    checkPath(params.annotation_file, "annotation_file")
-
     input_data_paths << "index_dir"
     input_data_paths << "fasta_file"
     input_data_paths << "annotation_file"
 }
 if (params.run_trimming){
-    checkPath(params.trimmed_fastq_dir, "trimmed_fastq_dir")
-
     input_data_paths << "input_list"
     input_data_paths << "trimmed_fastq_dir"
 }
 if (params.run_alignment){
-    checkPath(params.index_dir, "index_dir")
-    checkPath(params.out_bam_dir, "out_bam_dir")
-
     input_data_paths << "input_list"
     input_data_paths << "index_dir"
     input_data_paths << "out_bam_dir"
 }
 if (params.run_BAM_sorting){
-    checkPath(params.out_bam_dir, "out_bam_dir")
-
     input_data_paths << "input_list"
     input_data_paths << "out_bam_dir"
 }
 if (params.run_remove_duplicates){
-    checkPath(params.out_bam_dir, "out_bam_dir")
-
     input_data_paths << "input_list"
     input_data_paths << "out_bam_dir"
 }
 if (params.run_BAM_filtering){
-    checkPath(params.out_bam_dir, "out_bam_dir")
-
     input_data_paths << "input_list"
     input_data_paths << "out_bam_dir"
 }
 if (params.run_BAM_indexing){
-    checkPath(params.out_bam_dir, "out_bam_dir")
-
     input_data_paths << "input_list"
     input_data_paths << "out_bam_dir"
 }
 if (params.run_BAM_stats){
-    checkPath(params.out_bam_dir, "out_bam_dir")
-
     input_data_paths << "input_list"
     input_data_paths << "out_bam_dir"
 }
 if (params.run_gene_counts){
-    checkPath(params.annotation_file, "annotation_file")
-    checkPath(params.gene_counts_dir, "gene_counts_dir")
-
     input_data_paths << "input_list"
     input_data_paths << "annotation_file"
     input_data_paths << "gene_counts_dir"
 }
 if (params.run_splicing){
-    checkPath(params.annotation_file, "annotation_file")
-    checkPath(params.splicing_dir, "splicing_dir")
-
     input_data_paths << "input_list"
     input_data_paths << "annotation_file"
     input_data_paths << "splicing_dir"
 }
 if (params.run_summarize_results){
-    checkPath(params.report_dir, "report_dir")
-
     input_data_paths << "report_dir"
 }
 
-
-//
-// display info message for input data path variables
-//
 input_data_paths_unique = []  // remove duplicates
 input_data_paths.each { path ->
     if (!(path in input_data_paths_unique)) {
@@ -161,6 +120,58 @@ if (params.input_info) {
     }
 
     exit 0
+}
+
+
+//
+// check that needed data path variables were given and are valid
+//
+def checkPath(path, file_name) {
+    def input = new File(path)
+    
+    if (!input.exists()) {
+        println "ERROR: data_path variable '${file_name}' does not exist or was not provided"
+	    System.exit(1)
+    }
+}
+
+if (params.run_genome_indexing) {
+    checkPath(params.index_dir, "index_dir")
+    checkPath(params.fasta_file, "fasta_file")
+    checkPath(params.annotation_file, "annotation_file")
+}
+if (params.run_trimming){
+    checkPath(params.trimmed_fastq_dir, "trimmed_fastq_dir")
+}
+if (params.run_alignment){
+    checkPath(params.index_dir, "index_dir")
+    checkPath(params.out_bam_dir, "out_bam_dir")
+}
+if (params.run_BAM_sorting){
+    checkPath(params.out_bam_dir, "out_bam_dir")
+}
+if (params.run_remove_duplicates){
+    checkPath(params.out_bam_dir, "out_bam_dir")
+}
+if (params.run_BAM_filtering){
+    checkPath(params.out_bam_dir, "out_bam_dir")
+}
+if (params.run_BAM_indexing){
+    checkPath(params.out_bam_dir, "out_bam_dir")
+}
+if (params.run_BAM_stats){
+    checkPath(params.out_bam_dir, "out_bam_dir")
+}
+if (params.run_gene_counts){
+    checkPath(params.annotation_file, "annotation_file")
+    checkPath(params.gene_counts_dir, "gene_counts_dir")
+}
+if (params.run_splicing){
+    checkPath(params.annotation_file, "annotation_file")
+    checkPath(params.splicing_dir, "splicing_dir")
+}
+if (params.run_summarize_results){
+    checkPath(params.report_dir, "report_dir")
 }
 
 
