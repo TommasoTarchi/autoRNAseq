@@ -182,7 +182,16 @@ There are three possible scenarios:
 Particular care must be taken in setting the `data_path` variables.
 
 If you run only some of the pipeline steps (as it is usually the case), you will only need some of
-these variables. The following list shows for each data path variable which steps of the pipeline need
+these variables.
+
+The easiest way to check which data path variables are needed by your pipeline is to set the variables in `run_processes` section of `config.json` file according
+to the pipeline you wish to execute, then run:
+````
+nextflow run main.nf --input_info
+````
+A list of all data path variables needed will be displayed.
+
+**Alternatively**, you can consult the following list, which shows for each data path variable which steps of the pipeline need
 it to be set (for step reference numbers see [this section](#pipeline-steps)). If **at least one** of the steps you intend to run is listed for a variable, then you
 need to set that variable.
 
