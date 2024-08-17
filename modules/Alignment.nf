@@ -13,10 +13,20 @@ process runAlignment {
     path '*.tab'
 
     script:
+    // define name of output BAM
     fastq_name = fastq1.toString().split("\\.")[0]
     bam = fastq_name + ".Aligned.bam"
 
     """
+    # create needed subdirectories if not existing
+    if [[ ! -d "${params.out_bam_dir}/logs" ]]; then
+        mkdir "${params.out_bam_dir}/logs"
+    fi
+    if [[ ! -d "${params.out_bam_dir}/tabs" ]]; then
+        mkdir "${params.out_bam_dir}/tabs"
+    fi
+
+    # run STAR
     STAR \
     --runMode alignReads \
     --readFilesCommand "gunzip -c" \

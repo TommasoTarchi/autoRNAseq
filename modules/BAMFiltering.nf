@@ -8,6 +8,7 @@ process runBAMFiltering {
     path bam_filtered
 
     script:
+    // define output BAM name
     bam_filtered = ""
     if (params.first_BAM_output == "filtering") {
         bam_filtered = bam.toString().split("\\.")[0] + ".Aligned.filtered.bam"
@@ -16,6 +17,7 @@ process runBAMFiltering {
     }
 
     """
+    # run SAMtools
     samtools view --threads $params.BAM_filtering_nt -b -q $params.BAM_quality_thres ${bam} > ${bam_filtered}
     """
 }

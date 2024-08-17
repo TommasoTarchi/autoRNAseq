@@ -8,9 +8,11 @@ process runBAMIndexing {
     tuple path(bam), path(bai)
 
     script:
+    // define BAM index file name
     bai = bam.toString() + ".bai"
 
     """
+    # run SAMtools
     samtools index -@ $params.BAM_indexing_nt "${bam}"
     """
 }

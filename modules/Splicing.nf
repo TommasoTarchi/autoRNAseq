@@ -81,24 +81,24 @@ process runSplicing {
     echo ${string_condition2} > list_condition2.txt
 
     # run rMATS-turbo
-    #rmats.py \
-    #--task both \
-    #--b1 "/home/ttarchi/autoRNAseq/input_lists/list_condition1_hardcoded.txt" \
-    #--b2 "/home/ttarchi/autoRNAseq/input_lists/list_condition2_hardcoded.txt" \
-    #--gtf $params.annotation_file \
-    #-t paired \
-    #--libType "\${strand}" \
-    #--readLength $params.spl_read_len \
-    #--variable-read-length \
-    #--cstat $params.spl_cutoff_diff \
-    #--allow-clipping \
-    #--nthread $params.splicing_nt \
-    #--od $params.splicing_dir \
-    #--tmp . \
-    #$rmats_options \
-    #1> rmats.log
+    rmats.py \
+    --task both \
+    --b1 list_condition1.txt \
+    --b2 list_condition2.txt \
+    --gtf $params.annotation_file \
+    -t paired \
+    --libType "\${strand}" \
+    --readLength $params.spl_read_len \
+    --variable-read-length \
+    --cstat $params.spl_cutoff_diff \
+    --allow-clipping \
+    --nthread $params.splicing_nt \
+    --od $params.splicing_dir \
+    --tmp . \
+    $rmats_options \
+    1> rmats.log
 
     # remove temporary files
-    #rm -r "$params.splicing_dir/tmp/"
+    rm -r "$params.splicing_dir/tmp/"
     """
 }

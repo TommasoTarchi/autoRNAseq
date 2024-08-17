@@ -7,9 +7,11 @@ process runFeatureCounts {
 
     script:
     """
+    # define output files name
     bam_name=\$(basename "${bam}")
     core_name="\${bam_name%%.*}"
 
+    # run featureCounts
     featureCounts \
     -a $params.annotation_file \
     -g gene_id \

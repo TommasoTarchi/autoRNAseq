@@ -37,6 +37,11 @@ process runTrimming {
     }
 
     """
+    if [[ ! -d "${params.trimmed_fastq_dir}/reports" ]]; then
+        mkdir "${params.trimmed_fastq_dir}/reports"
+    fi
+
+    # run trim galore!
     trim_galore \
     --quality $params.fq_quality_thres \
     --fastqc \

@@ -16,9 +16,11 @@ process runHTSeq {
         strand="reverse"
     fi
 
+    # define output files name
     bam_name=\$(basename "${bam}")
     core_name="\${bam_name%%.*}"
 
+    # run HTSeq
     htseq-count \
     -f bam \
     -r pos \

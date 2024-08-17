@@ -8,6 +8,7 @@ process runBAMSorting {
     path bam_sorted
 
     script:
+    // define output BAM name
     bam_sorted = ""
     if (params.first_BAM_output == "sorting") {
         bam_sorted = bam.toString().split("\\.")[0] + ".Aligned.sortedByCoord.bam"
@@ -16,6 +17,7 @@ process runBAMSorting {
     }
 
     """
+    # run SAMtools if BAMs not already sorted
     if samtools view -H ${bam} | grep -q '@HD.*SO:coordinate'; then
         mv ${bam} ${bam_sorted}
     else

@@ -1,26 +1,26 @@
 {
   "run_processes": {
     "genome_indexing": false,
-    "fastq_trimming": false,
+    "fastq_trimming": true,
     "alignment": false,
     "BAM_sorting": false,
     "remove_duplicates": false,
     "BAM_filtering": false,
-    "BAM_indexing": true,
+    "BAM_indexing": false,
     "BAM_stats": false,
     "gene_counts": false,
-    "splicing_analysis": true,
+    "splicing_analysis": false,
     "summarize_results": false
   },
   "data_paths": {
-    "input_list": "/home/ttarchi/autoRNAseq/input_lists/PTresPT_PTresU.txt",
+    "input_list": "/home/ttarchi/autoRNAseq/input_lists/trimming_list.txt",
     "index_dir": "",
     "fasta_file": "",
     "annotation_file": "/scratch/rimargi/project_CRO/data_may2023/genome_annotations/gencode.v44.annotation.gtf",
     "trimmed_fastq_dir": "/home/ttarchi/fastqc/trimmed_default",
-    "out_bam_dir": "/scratch/ttarchi/data_test/BAM_tmp",
+    "out_bam_dir": "",
     "gene_counts_dir": "",
-    "splicing_dir": "/home/ttarchi/splicing_analysis/may_2023/OVCAR8/PTresPTvsPTresU",
+    "splicing_dir": "",
     "report_dir": ""
   },
   "processes": {

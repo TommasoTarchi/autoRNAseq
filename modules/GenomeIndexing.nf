@@ -7,6 +7,7 @@ process runGenomeIndexing {
 
     script:
     """
+    # run STAR
     STAR \
     --runMode genomeGenerate \
     --genomeDir . \
