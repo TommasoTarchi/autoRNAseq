@@ -2,26 +2,26 @@
   "run_processes": {
     "genome_indexing": false,
     "fastq_trimming": true,
-    "alignment": false,
-    "BAM_sorting": false,
-    "remove_duplicates": false,
-    "BAM_filtering": false,
-    "BAM_indexing": false,
-    "BAM_stats": false,
-    "gene_counts": false,
+    "alignment": true,
+    "BAM_sorting": true,
+    "remove_duplicates": true,
+    "BAM_filtering": true,
+    "BAM_indexing": true,
+    "BAM_stats": true,
+    "gene_counts": true,
     "splicing_analysis": false,
-    "summarize_results": false
+    "summarize_results": true
   },
   "data_paths": {
-    "input_list": "/home/ttarchi/autoRNAseq/input_lists/trimming_list.txt",
-    "index_dir": "",
+    "input_list": "/home/ttarchi/autoRNAseq/input_lists/fq_to_counts.txt",
+    "index_dir": "/scratch/ttarchi/data_may2023/STAR_indexing",
     "fasta_file": "",
     "annotation_file": "/scratch/rimargi/project_CRO/data_may2023/genome_annotations/gencode.v44.annotation.gtf",
-    "trimmed_fastq_dir": "/home/ttarchi/fastqc/trimmed_default",
-    "out_bam_dir": "",
-    "gene_counts_dir": "",
+    "trimmed_fastq_dir": "/scratch/ttarchi/data_may2023/trimmed_fastq",
+    "out_bam_dir": "/scratch/ttarchi/data_may2023/BAM",
+    "gene_counts_dir": "/scratch/ttarchi/data_may2023/counts_htseq",
     "splicing_dir": "",
-    "report_dir": ""
+    "report_dir": "/scratch/ttarchi/data_may2023/multiqc_reports"
   },
   "processes": {
     "genome_indexing": {
@@ -29,27 +29,27 @@
       "queue": "regular1",
       "time": "2h",
       "memory": "180GB",
-      "num_threads": 20
+      "num_threads": 5
     },
     "fastq_trimming": {
       "quality_thres": 20,
-      "min_length": 20,
+      "min_length": 35,
       "queue": "regular1",
       "time": "2h",
-      "memory": "24GB",
+      "memory": "32GB",
       "multithreaded": true
     },
     "alignment": {
       "queue": "regular1",
       "time": "2h",
       "memory": "180GB",
-      "num_threads": 20
+      "num_threads": 5
     },
     "BAM_sorting": {
       "queue": "regular1",
       "time": "2h",
       "memory": "16GB",
-      "num_threads": 10
+      "num_threads": 5
     },
     "remove_duplicates": {
       "remove_seq_duplicates": true,
@@ -62,27 +62,27 @@
       "queue": "regular1",
       "time": "1h",
       "memory": "2GB",
-      "num_threads": 10
+      "num_threads": 5
     },
     "BAM_indexing": {
       "queue": "regular1",
       "time": "1h",
       "memory": "2GB",
-      "num_threads": 10
+      "num_threads": 5
     },
     "BAM_stats": {
       "queue": "regular1",
       "time": "1h",
       "memory": "2GB",
-      "num_threads": 10
+      "num_threads": 5
     },
     "gene_counts": {
-      "algo": "featureCounts",
+      "algo": "HTSeq",
       "strandedness": 2,
       "queue": "regular1",
-      "time": "4h",
+      "time": "6h",
       "memory": "32GB",
-      "num_threads": 10
+      "num_threads": 5
     },
     "splicing_analysis": {
       "treatment": "PTresPT",
@@ -97,7 +97,7 @@
       "queue": "regular1",
       "time": "1h",
       "memory": "2GB",
-      "num_threads": 10
+      "num_threads": 5
     },
     "summarize_results": {
       "queue": "regular1",

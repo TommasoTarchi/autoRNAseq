@@ -38,6 +38,6 @@ process runAlignment {
     --runThreadN $params.alignment_nt
 
     # just rename for nicer output
-    mv "${core_name}.Aligned.out.bam" ${bam}
+    mv "${fastq_name}.Aligned.out.bam" ${bam}
     """
 }
