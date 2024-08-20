@@ -28,6 +28,7 @@ Resources parameters can be adjusted differently for each step of the pipeline.
 - [Requirements](#requirements)
 - [Parameters description](#parameters-description)
   - [Input files](#input-files)
+  - [Comparisons file](#comparisons-file)
   - [Data paths](#data-paths)
   - [Process specific parameters](#process-specific-parameters)
   - [Output files](#output-files)
@@ -155,7 +156,7 @@ All parameters can be set from the `config.json` file. Please, do not modify nei
 
 ### Input files
 
-Input files must be passed through a txt file.
+Paths to input FastQ or BAM files must be passed through a correctly formatted txt file, called `input_list` in this document.
 
 There are three possible scenarios:
 1. If your pipeline contains only steps 1 and/or 11, then you don't need any input files.
@@ -178,6 +179,24 @@ There are three possible scenarios:
 **Please check** that your txt file does not contain any empty lines, as they would most likely produce an error.
 
 
+### Comparisons file
+
+If you are running the splicing analysis step as part of your pipeline, you need to pass the comparisons
+you would like to perform through a correctly formatted txt file, called `comparisons_file` in this document.
+
+The txt file should look like:
+````
+comparison_1_name,treatment_1,control_1
+comparison_2_name,treatment_2,control_2
+...
+````
+i.e. each line should contain the name of the comparison (arbitrary) and the name of the two conditions to be compared, all comma-separated.
+
+The name of the comparison will be used only to organize the output of splicing analysis: it will be the name of the subdirectory containing the output files.
+
+**Notice**: the name of the two conditions to compare **must** correspond to the conditions given in `input_list`. Also, at least one BAM (or FastQ pair) must correspond to each requested condition, otherwise the behaviour of the program is not defined.
+
+
 ### Data paths
 
 Particular care must be taken in setting the `data_path` variables.
@@ -196,8 +215,7 @@ A list of all data path variables needed will be displayed.
 it to be set (for step reference numbers see [this section](#pipeline-steps)). If **at least one** of the steps you intend to run is listed for a variable, then you
 need to set that variable.
 
-- `input_list`: complete path to txt file containing input files described in the previous section.
-  Required by steps: 2, 3, 4, 5, 6, 7, 8, 9, 10.
+- `input_list`: complete path to txt file containing input files described in [this section](#input-files). Required by steps: 2, 3, 4, 5, 6, 7, 8, 9, 10.
 
 - `index_dir`: path to directory for genome index files. Required by steps: 1, 3.
 
@@ -210,6 +228,8 @@ need to set that variable.
 - `out_bam_dir`: path to directory to store output alignment files. Required by steps: 3, 4, 5, 6, 7, 8.
 
 - `gene_counts_dir`: path to directory to store gene counts files. Required by steps: 9.
+
+- `comparisons_file`: complete path to comparisons file described in [this section](#comparisons-file). Required by step: 10.
 
 - `splicing_dir`: path to directory to store results from splicing analysis. Required by steps: 10.
 
@@ -262,8 +282,6 @@ Other process-specific parameteres are:
 }
 
 "splicing_analysis": {
-  "condition1" -> string: first condition to be compared (MUST correspond to at least one input BAM file)
-  "condition2" -> string: second condition to be compared (MUST correspond to at least one input BAM file)
   "strandedness" -> integer: 0 for non-stranded, 1 for forward-stranded, 2 for reverse-stranded
   "read_length" -> integer: reads length (not all reads have to be of this length - rMATS-turbo is set to
                             to handle varying length reads; in this case a reasonable approach is to use
@@ -333,9 +351,9 @@ the related variable in `config.json`.
     `.counts.txt`.
 
 10. Splicing analysis:
-    - Files with differential splicing data, saved into `splicing_dir` with extention `.txt`.
-    - `summary.txt` containing summary of all differential splicing events detected, saved into `splicing_dir`.
-    - `.rmats` files with summary of BAM processing, saved into `splicing_dir`.
+    - Files with differential splicing data, saved into `splicing_dir`/"comparison_name" with extention `.txt`.
+    - `summary.txt` containing summary of all differential splicing events detected, saved into `splicing_dir`/"comparison_name".
+    - `.rmats` files with summary of BAM processing, saved into `splicing_dir`/"comparison_name".
 
 11. Results Summary:
     - html reports of all steps run, saved into `report_dir`.
@@ -350,10 +368,11 @@ the related variable in `config.json`.
    $ git clone git@github.com:TommasoTarchi/autoRNAseq.git
    ````
 
-3. If your pipeline does not contain exclusively steps 1 and/or 11, produce a txt file listing input files, as described in
-   [this section](#input-files).
+3. If your pipeline does not contain exclusively steps 1 and/or 11, produce a txt file listing input files, as described in [this section](#input-files).
 
-4. Edit the `config.json` file as follows:
+4. If your pipeline contains the splicing analysis step, produce a txt file listing all comparisons required with respective pairs of conditions, as described in [this section](#comparisons-file).
+
+5. Edit the `config.json` file as follows:
 
     - Set variables in `run_processes` section to true for the processes you wish to execute.
 

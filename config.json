@@ -20,6 +20,7 @@
     "trimmed_fastq_dir": "/scratch/ttarchi/data_may2023/trimmed_fastq",
     "out_bam_dir": "/scratch/ttarchi/data_may2023/BAM",
     "gene_counts_dir": "/scratch/ttarchi/data_may2023/counts_htseq",
+    "comparisons_file": "",
     "splicing_dir": "",
     "report_dir": "/scratch/ttarchi/data_may2023/multiqc_reports"
   },
@@ -85,8 +86,6 @@
       "num_threads": 5
     },
     "splicing_analysis": {
-      "treatment": "PTresPT",
-      "control": "PTresU",
       "strandedness": 2,
       "read_length": 100,
       "use_paired_stats": false,

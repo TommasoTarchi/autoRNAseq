@@ -8,6 +8,9 @@ process runSplicing {
     input:
     path bam_list  // not single path but list
     path bai_list  // not single path but list
+    val treatment  // first condition to compare
+    val control  // second condition to compare
+    val comparison  // comparison (i.e. name of the folder to store results)
 
     output:
     val true  // for state depencency
@@ -20,8 +23,8 @@ process runSplicing {
     def paths = Paths
 
     // define strings listing BAMs with requested conditions
-    def string_condition1 = ""
-    def string_condition2 = ""
+    def string_treatment = ""
+    def string_control = ""
 
     // extract core names of original input files
     def core_names = []
@@ -42,18 +45,18 @@ process runSplicing {
         for (int j=0; j<core_names.size(); j++) {  // iterate over original inputs
 
             if (current_core_name == core_names[j]) {  // look for matching pattern and condition
-                if (params.conditions[j] == params.spl_condition1) {
-                    string_condition1 = string_condition1 + bamlist[i] + ","
-                } else if (params.conditions[j] == params.spl_condition2) {
-                    string_condition2 = string_condition2 + bamlist[i] + ","
+                if (params.conditions[j] == treatment.toString()) {
+                    string_treatment = string_treatment + bamlist[i] + ","
+                } else if (params.conditions[j] == control.toString()) {
+                    string_control = string_control + bamlist[i] + ","
                 }
             }
         }
     }
 
     // correct strings for commas
-    string_condition1 = string_condition1[0..-2]
-    string_condition2 = string_condition2[0..-2]
+    string_treatment = string_treatment[0..-2]
+    string_control = string_control[0..-2]
 
     // set options for rMATS-turbo (in case paired statistics and/or novel splice
     // sites detection are required)
@@ -77,14 +80,19 @@ process runSplicing {
     fi
 
     # write paths to files matching conditions to files
-    echo ${string_condition1} > list_condition1.txt
-    echo ${string_condition2} > list_condition2.txt
+    echo ${string_treatment} > list_treatment.txt
+    echo ${string_control} > list_control.txt
+
+    # create needed subdirectory if not existing
+    if [[ ! -d "$params.splicing_dir/${comparison}" ]]; then
+        mkdir "$params.splicing_dir/${comparison}"
+    fi
 
     # run rMATS-turbo
     rmats.py \
     --task both \
-    --b1 list_condition1.txt \
-    --b2 list_condition2.txt \
+    --b1 list_treatment.txt \
+    --b2 list_control.txt \
     --gtf $params.annotation_file \
     -t paired \
     --libType "\${strand}" \
@@ -93,12 +101,12 @@ process runSplicing {
     --cstat $params.spl_cutoff_diff \
     --allow-clipping \
     --nthread $params.splicing_nt \
-    --od $params.splicing_dir \
+    --od "$params.splicing_dir/${comparison}" \
     --tmp . \
     $rmats_options \
     1> rmats.log
 
     # remove temporary files
-    rm -r "$params.splicing_dir/tmp/"
+    rm -r "$params.splicing_dir/${comparison}/tmp/"
     """
 }

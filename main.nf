@@ -99,6 +99,7 @@ if (params.run_gene_counts){
 if (params.run_splicing){
     input_data_paths << "input_list"
     input_data_paths << "annotation_file"
+    input_data_paths << "comparisons_file"
     input_data_paths << "splicing_dir"
 }
 if (params.run_summarize_results){
@@ -168,6 +169,7 @@ if (params.run_gene_counts){
 }
 if (params.run_splicing){
     checkPath(params.annotation_file, "annotation_file")
+    checkPath(params.comparisons_file, "comparisons_file")
     checkPath(params.splicing_dir, "splicing_dir")
 }
 if (params.run_summarize_results){
@@ -342,8 +344,20 @@ workflow {
         def bam_list = bam_bai_list.bam.collect()
         def bai_list = bam_bai_list.bai.collect()
 
-        // run proper analysis
-        splicing_ready = runSplicing(bam_list, bai_list)[0]
+        // read comparisons from file
+        def comparisons_file_content = new File(params.comparisons_file)
+        def comparisons = comparisons_file_content.readLines()
+
+        // run proper analysis for each requested comparison
+        for (line in comparisons) {
+            def parts = line.split(",")
+
+            def comparison = parts[0]
+            def treatment = parts[1]
+            def control = parts[2]
+
+            splicing_ready = runSplicing(bam_list, bai_list, treatment, control, comparison)[0]
+        }
     }
 
 
