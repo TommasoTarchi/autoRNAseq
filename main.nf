@@ -220,7 +220,7 @@ workflow {
 
         bam_ch = runAlignment(index_ready, fastq_ch_trimmed)[0]
 
-    } else if (params.run_BAM_sorting || params.run_remove_duplicates || params.run_BAM_filtering || params.run_BAM_indexing || params.run_BAM_stats || params.run_gene_counts){
+    } else if (params.run_BAM_sorting || params.run_remove_duplicates || params.run_BAM_filtering || params.run_BAM_indexing || params.run_BAM_stats || params.run_gene_counts || params.run_splicing) {
 
         bam_ch = channel.fromPath(params.bam_files, checkIfExists: true)
     }
@@ -298,7 +298,7 @@ workflow {
 
         // if indexing not run, extract BAM and corresponding index file and define channel
         if (!bam_ch_indexed) {
-            def bam_bai_pairs = params.bam_files.collect{ path -> return (path.toString() + "{,.bai}") }
+            def bam_bai_pairs = bam_ch.collect{ path -> return (path.toString() + "{,.bai}") }
             bam_ch_indexed = channel.fromFilePairs(bam_bai_pairs, checkIfExists: true).map{baseName, fileList -> fileList}
         }
     }
