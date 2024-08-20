@@ -186,15 +186,15 @@ you would like to perform through a correctly formatted txt file, called `compar
 
 The txt file should look like:
 ````
-comparison_1_name,treatment_1,control_1
-comparison_2_name,treatment_2,control_2
+comparison_1,treatment_1,control_1
+comparison_2,treatment_2,control_2
 ...
 ````
 i.e. each line should contain the name of the comparison (arbitrary) and the name of the two conditions to be compared, all comma-separated.
 
-The name of the comparison will be used only to organize the output of splicing analysis: it will be the name of the subdirectory containing the output files.
+The comparison name will be used only to organize the outputs of the splicing analysis: it will be the name of the subdirectory containing the output files.
 
-**Notice**: the name of the two conditions to compare **must** correspond to the conditions given in `input_list`. Also, at least one BAM (or FastQ pair) must correspond to each requested condition, otherwise the behaviour of the program is not defined.
+**Notice**: the name of the two conditions to compare **must** be equal to those of the conditions given in `input_list`. Also, at least one BAM (or FastQ pair) must correspond to each requested condition, otherwise the behaviour of the program is not defined.
 
 
 ### Data paths
