@@ -8,7 +8,7 @@ process runBAMStats {
     script:
     """
     # create needed subdirectory if not existing
-    if [[ -d "$params.out_bam_dir/stats" ]]; then
+    if [[ ! -d "$params.out_bam_dir/stats" ]]; then
         mkdir "$params.out_bam_dir/stats"
     fi
 
