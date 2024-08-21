@@ -8,9 +8,7 @@ process runSplicing {
     input:
     path bam_list  // not single path but list
     path bai_list  // not single path but list
-    val treatment  // first condition to compare
-    val control  // second condition to compare
-    val comparison  // comparison (i.e. name of the folder to store results)
+    tuple val(comparison), val(treatment), val(control)  // comparison to perform
 
     output:
     val true  // for state depencency

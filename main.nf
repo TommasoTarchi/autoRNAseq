@@ -298,7 +298,7 @@ workflow {
 
         // if indexing not run, extract BAM and corresponding index file and define channel
         if (!bam_ch_indexed) {
-            def bam_bai_pairs = bam_ch.collect{ path -> return (path.toString() + "{,.bai}") }
+            def bam_bai_pairs = params.bam_files.collect{ path -> return (path.toString() + "{,.bai}") }
             bam_ch_indexed = channel.fromFilePairs(bam_bai_pairs, checkIfExists: true).map{baseName, fileList -> fileList}
         }
     }
@@ -344,20 +344,22 @@ workflow {
         def bam_list = bam_bai_list.bam.collect()
         def bai_list = bam_bai_list.bai.collect()
 
-        // read comparisons from file
+        // read comparisons from file and build list
         def comparisons_file_content = new File(params.comparisons_file)
-        def comparisons = comparisons_file_content.readLines()
+        def comparisons_file_lines = comparisons_file_content.readLines()
+
+	comparisons = []
+
+        for (line in comparisons_file_lines) {
+            def parts = line.split(",")
+            comparisons << [parts[0], parts[1], parts[2]]
+	}
+
+	// build channel for comparisons
+	comparison_ch = channel.from(comparisons)
 
         // run proper analysis for each requested comparison
-        for (line in comparisons) {
-            def parts = line.split(",")
-
-            def comparison = parts[0]
-            def treatment = parts[1]
-            def control = parts[2]
-
-            splicing_ready = runSplicing(bam_list, bai_list, treatment, control, comparison)[0]
-        }
+        splicing_ready = runSplicing(bam_list, bai_list, comparison_ch)[0]
     }
 
 
