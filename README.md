@@ -28,7 +28,7 @@ Resources parameters can be adjusted differently for each step of the pipeline.
 - [Requirements](#requirements)
 - [Parameters description](#parameters-description)
   - [Input files](#input-files)
-  - [contrasts file](#contrasts-file)
+  - [Contrasts file](#contrasts-file)
   - [Data paths](#data-paths)
   - [Process specific parameters](#process-specific-parameters)
   - [Output files](#output-files)
