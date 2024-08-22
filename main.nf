@@ -348,7 +348,7 @@ workflow {
         def contrasts_file_content = new File(params.contrasts_file)
         def contrasts_file_lines = contrasts_file_content.readLines()
 
-        contrasts = []
+        def contrasts = []
 
         for (line in contrasts_file_lines) {
             def parts = line.split(",")
@@ -359,7 +359,7 @@ workflow {
 	contrast_ch = channel.from(contrasts)
 
         // run proper analysis for each requested contrast
-        splicing_ready = runSplicing(bam_list, bai_list, contrast_ch)[0]
+        splicing_ready = runSplicing(bam_list, bai_list, contrast_ch)
     }
 
 

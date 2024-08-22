@@ -2,9 +2,6 @@ import java.nio.file.Paths
 
 
 process runSplicing {
-    publishDir "${params.splicing_dir}", mode: 'move', pattern: "*.rmats"
-    publishDir "${params.splicing_dir}", mode: 'move', pattern: "*_read_outcomes_by_bam.txt"
-
     input:
     path bam_list  // not single path but list
     path bai_list  // not single path but list
@@ -12,8 +9,6 @@ process runSplicing {
 
     output:
     val true  // for state depencency
-    path "*.rmats"  // stats files
-    path "*_read_outcomes_by_bam.txt"  // report on used reads
 
     script:
     // redefine bamlist and path to avoid conflicts
@@ -72,9 +67,9 @@ process runSplicing {
     if [ "$params.spl_strandedness" -eq 0 ]; then
         strand="fr-unstranded"
     elif [ "$params.spl_strandedness" -eq 1 ]; then
-        strand="fr-firststrand"
-    elif [ "$params.spl_strandedness" -eq 2 ]; then
         strand="fr-secondstrand"
+    elif [ "$params.spl_strandedness" -eq 2 ]; then
+        strand="fr-firststrand"
     fi
 
     # write paths to files matching conditions to files
@@ -85,10 +80,6 @@ process runSplicing {
     if [[ ! -d "$params.splicing_dir/${contrast}" ]]; then
         mkdir "$params.splicing_dir/${contrast}"
     fi
-
-    # for debugging
-    echo ${string_treatment} > "$params.splicing_dir/${contrast}/list_treatment.txt"
-    echo ${string_control} > "$params.splicing_dir/${contrast}/list_control.txt"
 
     # run rMATS-turbo
     rmats.py \
@@ -107,6 +98,9 @@ process runSplicing {
     --tmp . \
     $rmats_options \
     1> rmats.log
+
+    mv *.rmats "$params.splicing_dir/${contrast}"
+    mv *_read_outcomes_by_bam.txt "$params.splicing_dir/${contrast}"
 
     # remove temporary files
     rm -r "$params.splicing_dir/${contrast}/tmp/"

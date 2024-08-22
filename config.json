@@ -3,10 +3,10 @@
     "genome_indexing": false,
     "fastq_trimming": false,
     "alignment": false,
-    "BAM_sorting": false,
+    "BAM_sorting": true,
     "remove_duplicates": false,
     "BAM_filtering": false,
-    "BAM_indexing": false,
+    "BAM_indexing": true,
     "BAM_stats": false,
     "gene_counts": false,
     "splicing_analysis": true,
@@ -16,12 +16,12 @@
     "input_list": "/home/ttarchi/autoRNAseq/input_lists/OVCAR8_BAM.txt",
     "index_dir": "/scratch/ttarchi/data_may2023/STAR_indexing",
     "fasta_file": "",
-    "annotation_file": "/scratch/rimargi/project_CRO/data_may2023/genome_annotations/gencode.v44.annotation.gtf",
+    "annotation_file": "/scratch/ttarchi/genome_annotations/gencode.v46.annotation.gtf",
     "trimmed_fastq_dir": "",
     "out_bam_dir": "/scratch/ttarchi/data_may2023/BAM",
     "gene_counts_dir": "",
     "contrasts_file": "/home/ttarchi/autoRNAseq/input_lists/OVCAR8_contrasts.txt",
-    "splicing_dir": "/home/ttarchi/splicing_analysis/may_2023/OVCAR8",
+    "splicing_dir": "/home/ttarchi/splicing_analysis/may_2023/OVCAR8_flipped_strand",
     "report_dir": "/scratch/ttarchi/data_may2023/multiqc_reports"
   },
   "processes": {
@@ -95,7 +95,7 @@
       "max_exon_len": 500,
       "queue": "regular1",
       "time": "1h",
-      "memory": "2GB",
+      "memory": "12GB",
       "num_threads": 5
     },
     "summarize_results": {
