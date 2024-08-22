@@ -13,14 +13,14 @@
     "summarize_results": false
   },
   "data_paths": {
-    "input_list": "/home/ttarchi/autoRNAseq/input_lists/PTresPT_PTresU.txt",
+    "input_list": "/home/ttarchi/autoRNAseq/input_lists/OVCAR8_BAM.txt",
     "index_dir": "/scratch/ttarchi/data_may2023/STAR_indexing",
     "fasta_file": "",
     "annotation_file": "/scratch/rimargi/project_CRO/data_may2023/genome_annotations/gencode.v44.annotation.gtf",
-    "trimmed_fastq_dir": "/scratch/ttarchi/data_may2023/trimmed_fastq",
+    "trimmed_fastq_dir": "",
     "out_bam_dir": "/scratch/ttarchi/data_may2023/BAM",
-    "gene_counts_dir": "/scratch/ttarchi/data_may2023/counts_htseq",
-    "comparisons_file": "/home/ttarchi/autoRNAseq/input_lists/comparisons_test.txt",
+    "gene_counts_dir": "",
+    "contrasts_file": "/home/ttarchi/autoRNAseq/input_lists/contrasts.txt",
     "splicing_dir": "/home/ttarchi/splicing_analysis/may_2023/OVCAR8",
     "report_dir": "/scratch/ttarchi/data_may2023/multiqc_reports"
   },
