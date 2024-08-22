@@ -28,7 +28,7 @@ Resources parameters can be adjusted differently for each step of the pipeline.
 - [Requirements](#requirements)
 - [Parameters description](#parameters-description)
   - [Input files](#input-files)
-  - [Comparisons file](#comparisons-file)
+  - [contrasts file](#contrasts-file)
   - [Data paths](#data-paths)
   - [Process specific parameters](#process-specific-parameters)
   - [Output files](#output-files)
@@ -179,20 +179,20 @@ There are three possible scenarios:
 **Please check** that your txt file does not contain any empty lines, as they would most likely produce an error.
 
 
-### Comparisons file
+### Contrasts file
 
-If you are running the splicing analysis step as part of your pipeline, you need to pass the comparisons
-you would like to perform through a correctly formatted txt file, called `comparisons_file` in this document.
+If you are running the splicing analysis step as part of your pipeline, you need to pass the contrasts
+you would like to perform through a correctly formatted txt file, called `contrasts_file` in this document.
 
 The txt file should look like:
 ````
-comparison_1,treatment_1,control_1
-comparison_2,treatment_2,control_2
+contrast_1,treatment_1,control_1
+contrast_2,treatment_2,control_2
 ...
 ````
-i.e. each line should contain the name of the comparison (arbitrary) and the name of the two conditions to be compared, all comma-separated.
+i.e. each line should contain the name of the contrast (arbitrary) and the name of the two conditions to be compared, all comma-separated.
 
-The comparison name will be used only to organize the outputs of the splicing analysis: it will be the name of the subdirectory containing the output files.
+The contrast name will be used only to organize the outputs of the splicing analysis: it will be the name of the subdirectory containing the output files.
 
 **Notice**: the name of the two conditions to compare **must** be equal to those of the conditions given in `input_list`. Also, at least one BAM (or FastQ pair) must correspond to each requested condition, otherwise the behaviour of the program is not defined.
 
@@ -229,7 +229,7 @@ need to set that variable.
 
 - `gene_counts_dir`: path to directory to store gene counts files. Required by steps: 9.
 
-- `comparisons_file`: complete path to comparisons file described in [this section](#comparisons-file). Required by step: 10.
+- `contrats_file`: complete path to contrasts file described in [this section](#contrasts-file). Required by step: 10.
 
 - `splicing_dir`: path to directory to store results from splicing analysis. Required by steps: 10.
 
@@ -351,9 +351,9 @@ the related variable in `config.json`.
     `.counts.txt`.
 
 10. Splicing analysis:
-    - Files with differential splicing data, saved into `splicing_dir`/"comparison_name" with extention `.txt`.
-    - `summary.txt` containing summary of all differential splicing events detected, saved into `splicing_dir`/"comparison_name".
-    - `.rmats` files with summary of BAM processing, saved into `splicing_dir`/"comparison_name".
+    - Files with differential splicing data, saved into `splicing_dir`/"contrast\_name" with extention `.txt`.
+    - `summary.txt` containing summary of all differential splicing events detected, saved into `splicing_dir`/"contrast\_name".
+    - `.rmats` files with summary of BAM processing, saved into `splicing_dir`/"contrast\_name".
 
 11. Results Summary:
     - html reports of all steps run, saved into `report_dir`.
@@ -370,7 +370,7 @@ the related variable in `config.json`.
 
 3. If your pipeline does not contain exclusively steps 1 and/or 11, produce a txt file listing input files, as described in [this section](#input-files).
 
-4. If your pipeline contains the splicing analysis step, produce a txt file listing all comparisons required with respective pairs of conditions, as described in [this section](#comparisons-file).
+4. If your pipeline contains the splicing analysis step, produce a txt file listing all contrasts required with respective pairs of conditions, as described in [this section](#contrasts-file).
 
 5. Edit the `config.json` file as follows:
 

@@ -8,7 +8,7 @@ process runSplicing {
     input:
     path bam_list  // not single path but list
     path bai_list  // not single path but list
-    tuple val(comparison), val(treatment), val(control)  // comparison to perform
+    tuple val(contrast), val(treatment), val(control)  // contrast to perform
 
     output:
     val true  // for state depencency
@@ -81,9 +81,13 @@ process runSplicing {
     echo ${string_treatment} > list_treatment.txt
     echo ${string_control} > list_control.txt
 
+    // for debugging
+    echo ${string_treatment} > "$params.splicing_dir/${contrast}/list_treatment.txt"
+    echo ${string_control} > "$params.splicing_dir/${contrast}/list_control.txt"
+
     # create needed subdirectory if not existing
-    if [[ ! -d "$params.splicing_dir/${comparison}" ]]; then
-        mkdir "$params.splicing_dir/${comparison}"
+    if [[ ! -d "$params.splicing_dir/${contrast}" ]]; then
+        mkdir "$params.splicing_dir/${contrast}"
     fi
 
     # run rMATS-turbo
@@ -99,12 +103,12 @@ process runSplicing {
     --cstat $params.spl_cutoff_diff \
     --allow-clipping \
     --nthread $params.splicing_nt \
-    --od "$params.splicing_dir/${comparison}" \
+    --od "$params.splicing_dir/${contrast}" \
     --tmp . \
     $rmats_options \
     1> rmats.log
 
     # remove temporary files
-    rm -r "$params.splicing_dir/${comparison}/tmp/"
+    rm -r "$params.splicing_dir/${contrast}/tmp/"
     """
 }

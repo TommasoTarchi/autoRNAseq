@@ -344,22 +344,22 @@ workflow {
         def bam_list = bam_bai_list.bam.collect()
         def bai_list = bam_bai_list.bai.collect()
 
-        // read comparisons from file and build list
-        def comparisons_file_content = new File(params.comparisons_file)
-        def comparisons_file_lines = comparisons_file_content.readLines()
+        // read contrasts from file and build list
+        def contrasts_file_content = new File(params.contrasts_file)
+        def contrasts_file_lines = contrasts_file_content.readLines()
 
-	comparisons = []
+        contrasts = []
 
-        for (line in comparisons_file_lines) {
+        for (line in contrasts_file_lines) {
             def parts = line.split(",")
-            comparisons << [parts[0], parts[1], parts[2]]
+            contrasts << [parts[0], parts[1], parts[2]]
 	}
 
-	// build channel for comparisons
-	comparison_ch = channel.from(comparisons)
+	// build channel for contrasts
+	contrast_ch = channel.from(contrasts)
 
-        // run proper analysis for each requested comparison
-        splicing_ready = runSplicing(bam_list, bai_list, comparison_ch)[0]
+        // run proper analysis for each requested contrast
+        splicing_ready = runSplicing(bam_list, bai_list, contrast_ch)[0]
     }
 
 
