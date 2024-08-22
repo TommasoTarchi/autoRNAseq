@@ -99,7 +99,7 @@ if (params.run_gene_counts){
 if (params.run_splicing){
     input_data_paths << "input_list"
     input_data_paths << "annotation_file"
-    input_data_paths << "comparisons_file"
+    input_data_paths << "contrasts_file"
     input_data_paths << "splicing_dir"
 }
 if (params.run_summarize_results){
@@ -169,7 +169,7 @@ if (params.run_gene_counts){
 }
 if (params.run_splicing){
     checkPath(params.annotation_file, "annotation_file")
-    checkPath(params.comparisons_file, "comparisons_file")
+    checkPath(params.contrasts_file, "contrasts_file")
     checkPath(params.splicing_dir, "splicing_dir")
 }
 if (params.run_summarize_results){

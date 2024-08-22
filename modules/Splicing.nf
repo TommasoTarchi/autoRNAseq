@@ -81,7 +81,7 @@ process runSplicing {
     echo ${string_treatment} > list_treatment.txt
     echo ${string_control} > list_control.txt
 
-    // for debugging
+    # for debugging
     echo ${string_treatment} > "$params.splicing_dir/${contrast}/list_treatment.txt"
     echo ${string_control} > "$params.splicing_dir/${contrast}/list_control.txt"
 

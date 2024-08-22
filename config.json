@@ -20,7 +20,7 @@
     "trimmed_fastq_dir": "",
     "out_bam_dir": "/scratch/ttarchi/data_may2023/BAM",
     "gene_counts_dir": "",
-    "contrasts_file": "/home/ttarchi/autoRNAseq/input_lists/contrasts.txt",
+    "contrasts_file": "/home/ttarchi/autoRNAseq/input_lists/OVCAR8_contrasts.txt",
     "splicing_dir": "/home/ttarchi/splicing_analysis/may_2023/OVCAR8",
     "report_dir": "/scratch/ttarchi/data_may2023/multiqc_reports"
   },
