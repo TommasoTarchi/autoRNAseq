@@ -284,11 +284,11 @@ Other process-specific parameteres are:
 "splicing_analysis": {
   "strandedness" -> integer: 0 for non-stranded, 1 for forward-stranded, 2 for reverse-stranded
   "read_length" -> integer: reads length (not all reads have to be of this length - rMATS-turbo is set to
-                            to handle varying length reads; in this case a reasonable approach is to use
-                            the length of reads before trimming)
+                            handle varying length reads; in this case a reasonable approach is to use the
+                            length of reads before trimming)
+  "cutoff_diff" -> float: cutoff difference used in null hypothesis test for differential alternative splicing
+                          (ignored if "use_paired_stats": true); example: 0.0001 for 0.01% difference
   "use_paired_stats" -> boolean: whether to use paired stats model
-  "cutoff_diff" -> float: cutoff difference used in hypothesis test for differential alternative splicing
-                          (ignored if "use_paired_stats": false); example: 0.0001 for 0.01% difference
   "detect_novel_splice" -> boolean: whether to detect unannotated splice sites
   "min_intron_len" -> integer: minimum intron length (ignored if "detect_novel_splice": false)
   "max_exon_len" -> integer: maximum exon length (ignored if "detect_novel_splice": false)
