@@ -95,14 +95,14 @@ process runSplicing {
     --allow-clipping \
     --nthread $params.splicing_nt \
     --od "$params.splicing_dir/${contrast}" \
-    --tmp . \
+    --tmp "$params.splicing_dir/${contrast}" \
     $rmats_options \
     1> rmats.log
 
-    mv *.rmats "$params.splicing_dir/${contrast}"
-    mv *_read_outcomes_by_bam.txt "$params.splicing_dir/${contrast}"
-
-    # remove temporary files
-    rm -r "$params.splicing_dir/${contrast}/tmp/"
+    # move log file to log directory
+    if [[ ! -d "$params.splicing_dir/${contrast}/logs" ]]; then
+        mkdir "$params.splicing_dir/${contrast}/logs"
+    fi
+    mv rmats.log "$params.splicing_dir/${contrast}/logs/"
     """
 }
