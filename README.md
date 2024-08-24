@@ -353,7 +353,8 @@ the related variable in `config.json`.
 10. Splicing analysis:
     - Files with differential splicing data, saved into `splicing_dir`/"contrast\_name/" with extention `.txt`.
     - `summary.txt` containing summary of all differential splicing events detected, saved into `splicing_dir`/"contrast\_name/".
-    - Files with summary of BAM processing, saved into `splicing_dir`/"contrast\_name/tmp/".
+    - Files with summary of BAM processing, saved into `splicing_dir`/"contrast\_name/".
+    - Temporary files of rMATS, saved into `splicing_dir`/"contrast\_name/tmp/"
     - Log file saved into `splicing_dir`/"contrast\_name/logs/".
 
 11. Results Summary:
