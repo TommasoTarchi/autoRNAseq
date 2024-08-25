@@ -36,23 +36,6 @@ if (params.help) {
 
 
 //
-// check valid options for function call parameters
-//
-def validCountAlgos = ['featureCounts', 'HTSeq']
-def validStrandedness = [0, 1, 2]
-
-if (!(params.count_algo in validCountAlgos)) {
-    throw new IllegalArgumentException("Invalid value for 'count_algo'. Allowed values are: ${validCountAlgos.join(', ')}")
-}
-if (!(params.gc_strandedness in validStrandedness)) {
-    throw new IllegalArgumentException("Invalid value for 'strandedness' in gene counts. Allowed values are: ${validStrandedness.join(', ')}")
-}
-if (!(params.spl_strandedness in validStrandedness)) {
-    throw new IllegalArgumentException("Invalid value for 'strandedness' in splicing analysis. Allowed values are: ${validStrandedness.join(', ')}")
-}
-
-
-//
 // list input data path variables and display info message
 //
 def input_data_paths = []
@@ -121,6 +104,23 @@ if (params.input_info) {
     }
 
     exit 0
+}
+
+
+//
+// check valid options for function call parameters
+//
+def validCountAlgos = ['featureCounts', 'HTSeq']
+def validStrandedness = [0, 1, 2]
+
+if (!(params.count_algo in validCountAlgos)) {
+    throw new IllegalArgumentException("Invalid value for 'count_algo'. Allowed values are: ${validCountAlgos.join(', ')}")
+}
+if (!(params.gc_strandedness in validStrandedness)) {
+    throw new IllegalArgumentException("Invalid value for 'strandedness' in gene counts. Allowed values are: ${validStrandedness.join(', ')}")
+}
+if (!(params.spl_strandedness in validStrandedness)) {
+    throw new IllegalArgumentException("Invalid value for 'strandedness' in splicing analysis. Allowed values are: ${validStrandedness.join(', ')}")
 }
 
 
