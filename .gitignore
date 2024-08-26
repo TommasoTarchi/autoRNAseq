@@ -2,8 +2,5 @@
 **/work/
 **/.nextflow*
 
-# lists of input files for testing
-**/input_lists/
-
 # personal notes
 **/notes.txt
