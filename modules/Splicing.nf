@@ -76,10 +76,13 @@ process runSplicing {
     echo ${string_treatment} > list_treatment.txt
     echo ${string_control} > list_control.txt
 
-    # create needed subdirectory if not existing
-    if [[ ! -d "$params.splicing_dir/${contrast}" ]]; then
-        mkdir "$params.splicing_dir/${contrast}"
+    # remove needed subdirectory if already existing (cleaning)
+    if [[ -d "$params.splicing_dir/${contrast}" ]]; then
+        rm -r "$params.splicing_dir/${contrast}"
     fi
+
+    # create needed subdirectory
+    mkdir "$params.splicing_dir/${contrast}"
 
     # run rMATS-turbo
     rmats.py \
