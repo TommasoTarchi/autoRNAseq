@@ -33,7 +33,7 @@ Resources parameters can be adjusted differently for each step of the pipeline.
   - [Process specific parameters](#process-specific-parameters)
   - [Output files](#output-files)
 - [How to run your pipeline](#how-to-run-your-pipeline)
-- [Citing this pipeline](#citing-this-pipeline)
+- [How to cite this pipeline](#how-to-cite-this-pipeline)
 - [References](#references)
 
 
@@ -409,7 +409,7 @@ the related variable in `config.json`.
    less disk possible, however temporary files could still occupy a lot of disk space.
 
 
-## Citing this pipeline
+## How to cite this pipeline
 
 If you use this pipeline in your work, please consider citing the repository:
 ````
