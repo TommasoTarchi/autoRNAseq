@@ -33,6 +33,7 @@ Resources parameters can be adjusted differently for each step of the pipeline.
   - [Process specific parameters](#process-specific-parameters)
   - [Output files](#output-files)
 - [How to run your pipeline](#how-to-run-your-pipeline)
+- [Citing this pipeline](#citing-this-pipeline)
 - [References](#references)
 
 
@@ -406,6 +407,14 @@ the related variable in `config.json`.
 7. (**optional**) If your pipeline was run successfully and you think you will not need any of the temporary files (i.e
    those not included among the outputs), we strongly suggest to clean `nf_work_dir`. The program is optimized to use
    less disk possible, however temporary files could still occupy a lot of disk space.
+
+
+## Citing this pipeline
+
+If you use this pipeline in your work, please consider citing the repository:
+````
+Tarchi, T. (2024). AutoRNAseq: an automated pipeline for paired-end RNAseq data analysis (v0.1.0-alpha). GitHub repository. https://github.com/TommasoTarchi/autoRNAseq
+````
 
 
 ## References
