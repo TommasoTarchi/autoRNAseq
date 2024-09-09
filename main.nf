@@ -25,7 +25,60 @@ include { runSumResults } from './modules/SumResults.nf'
 // help message (can be displayed using --help option)
 //
 def helpMessage() {
-    log.info """
+    log.info """     Description:
+     AutoRNAseq is a Nextflow pipeline designed for paired-end RNAseq data analysis.
+     It automates various steps including alignment, FastQ and BAM processing, gene expression quantification, and splicing analysis.
+     The pipeline leverages Singularity containers to ensure reproducibility and ease of use.
+
+     Pipeline Steps:
+     1. Genome Indexing: STAR
+     2. FastQ Trimming: Trim Galore!
+     3. Alignment: STAR
+     4. BAM Sorting: SAMtools
+     5. Remove Duplicates: Picard
+     6. BAM Filtering: SAMtools
+     7. BAM Indexing: SAMtools
+     8. BAM Stats: SAMtools
+     9. Gene Counts: featureCounts/HTSeq
+     10. Splicing Analysis: rMATS-turbo
+     11. Results Summary: multiQC
+
+     Requirements:
+     - Nextflow
+     - Singularity
+     - Container images for required tools (see README for download links)
+
+     Configuration:
+     The pipeline requires a configuration file (config.json) where all parameters are set. Key sections include:
+     - run_processes: Specify which steps to execute.
+     - data_paths: Define paths to input/output data.
+     - processes: Customize process-specific parameters (e.g., memory, threads, algorithm options).
+     - container_dir: Path to directory with container images.
+     - nf_work_dir: Work directory for Nextflow (default: './work/').
+     - run_locally: Set to true to run locally (not recommended for large datasets).
+     - save_all_bams: Set to true to keep all intermediate BAM files.
+
+     Input Files:
+     - Input FastQ or BAM files should be specified in a txt file as per the README instructions.
+     - Paired-end FastQ files must be zipped and correctly named.
+
+     Running the Pipeline:
+     1. Ensure all requirements are met.
+     2. Prepare input files and a config.json file.
+     3. Run the pipeline with:
+        '''
+        nextflow run main.nf
+        '''
+
+     Clean Up:
+     After successful execution, consider cleaning the Nextflow work directory to free up disk space.
+
+     For more details, refer to the README.md file in the repository or visit the GitHub page:
+     https://github.com/TommasoTarchi/autoRNAseq
+
+     Citation:
+     If you use this pipeline, please cite:
+     Tarchi, T. (2024). AutoRNAseq: an automated pipeline for paired-end RNAseq data analysis (v0.1.0-alpha). GitHub repository. https://github.com/TommasoTarchi/autoRNAseq
     """
 }
 
