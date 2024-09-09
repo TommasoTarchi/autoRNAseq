@@ -13,16 +13,16 @@
     "summarize_results": false
   },
   "data_paths": {
-    "input_list": "/home/ttarchi/input_lists/OVCAR8_BAM.txt",
-    "index_dir": "/scratch/ttarchi/data_may2023/STAR_indexing",
+    "input_list": "/home/ttarchi/input_lists/TOV112D_BAM.txt",
+    "index_dir": "",
     "fasta_file": "",
     "annotation_file": "/scratch/rimargi/project_CRO/data_may2023/genome_annotations/gencode.v44.annotation.gtf",
     "trimmed_fastq_dir": "",
     "out_bam_dir": "/scratch/ttarchi/data_may2023/BAM",
     "gene_counts_dir": "",
-    "contrasts_file": "/home/ttarchi/autoRNAseq/input_lists/OVCAR8_contrasts.txt",
-    "splicing_dir": "/home/ttarchi/splicing_analysis/may_2023/OVCAR8",
-    "report_dir": "/scratch/ttarchi/data_may2023/multiqc_reports"
+    "contrasts_file": "/home/ttarchi/input_lists/TOV112D_contrasts.txt",
+    "splicing_dir": "/home/ttarchi/splicing_analysis/may_2023/TOV112D",
+    "report_dir": ""
   },
   "processes": {
     "genome_indexing": {
