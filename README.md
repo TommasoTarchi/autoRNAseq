@@ -34,6 +34,7 @@ Resources parameters can be adjusted differently for each step of the pipeline.
   - [Process specific parameters](#process-specific-parameters)
   - [Output files](#output-files)
 - [How to run your pipeline](#how-to-run-your-pipeline)
+- [How to handle errors](#how-to-handle-errors)
 - [How to cite this pipeline](#how-to-cite-this-pipeline)
 - [References](#references)
 
@@ -409,6 +410,28 @@ the related variable in `config.json`.
    those not included among the outputs), we strongly suggest to clean `nf_work_dir`. The program is optimized to use
    less disk possible, however temporary files could still occupy a lot of disk space.
 
+8. **Error handling**: for some debugging advice, please look at the [following section](#how-to-handle-errors).
+
+
+## How to handle errors
+
+Because of their complexity, debugging Nextflow programs can often be pretty challenging.
+
+Because of the very high demand for resources by some of the processes implemented in this pipeline, an [automatic failure
+strategy][nextflow_trouble_shooting] could often lead to an excessively large, sometimes impossible to satisfy,
+resources requests. For this reason we chose **not** to implement it. Therefore, is up to the user to find the appropriate amount
+of resources to assign to each process (some defaults can be found in `config.json`, however they are **not guaranteed to work**).
+
+Finally, here are some suggestions on how to debug your pipeline:
+1. Check the output of the nextflow program.
+2. Check the `.nextflow.log` file, which can be found in the same folder as `main.nf`.
+3. Check the files `.command.sh`, `.command.out`, `.command.log` and `.command.err` in the working directory of the failing process
+   (the location of this directory can be found in `.nextflow.log`, around the error message).
+4. If you want to "debug by printing", always print to a file, not to standard output. Consider that all files produced by the
+   process will be placed (unless specified differently) in the corresponding working directory.
+5. If your pipeline fails on a process with exitcode 140, then the error can be usually solved by simply incrementing the resources
+   assigned to the process (usually time and/or memory).
+
 
 ## How to cite this pipeline
 
@@ -449,3 +472,4 @@ Tarchi, T. (2024). AutoRNAseq: an automated pipeline for paired-end RNAseq data 
 [multiQC]: https://multiqc.info/docs/ 
 [wget]: https://www.gnu.org/software/wget/manual/wget.html
 [curl]: https://curl.se/docs/
+[nextflow_trouble_shooting]: https://training.nextflow.io/basic_training/debugging/
