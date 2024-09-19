@@ -4,3 +4,6 @@
 
 # personal notes
 **/notes.txt
+
+# log files
+**/*.log
