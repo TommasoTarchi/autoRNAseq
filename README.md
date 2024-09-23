@@ -64,6 +64,7 @@ for implementation):
 - [`nextflow.config`](./nextflow.config): nextflow configuration file for parameters
 - [`modules/`](./modules/): directory containing definition files of all processes
 - [`config.json`](./config.json): configuration file for user
+- [`sample_configs/`](./sample_configs/): directory containing some examples of valid `config.json`
 
 
 ## Requirements
