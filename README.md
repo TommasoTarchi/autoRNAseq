@@ -75,11 +75,11 @@ related documentation [here][nextflow] and [here][singularity] for instructions.
 - You need to have the container images on which the steps of the pipeline will run (**remember** that you only need
   the containers for the steps you want to run). The images can be downloaded from the assets of this program's release
   (make sure you place **all container images in the same directory**):
-  - STAR v2.7.11b ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/STAR-v2.7.11b.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/STAR-v2.7.11b.sif))
+  - STAR v2.7.10b ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/STAR-v2.7.10b.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/STAR-v2.7.10b.sif))
   - Trim Galore! v0.6.7 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/trim_galore-v0.6.7.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/trim_galore-v0.6.7.sif))
-  - SAMtools v1.3.1 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/SAMtools-v1.3.1.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/SAMtools-v1.3.1.sif))
-  - picard v3.1.1 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/picard-v3.1.1.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/picard-v3.1.1.sif))
-  - featureCounts v2.0.6 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/featureCounts-v2.0.6.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/featureCounts-v2.0.6.sif))
+  - SAMtools v1.11 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/SAMtools-v1.11.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/SAMtools-v1.11.sif))
+  - picard v2.27.4 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/picard-v2.27.4.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/picard-v2.27.4.sif))
+  - featureCounts v2.0.1 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/featureCounts-v2.0.1.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/featureCounts-v2.0.1.sif))
   - HTSeq v2.0.2 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/HTSeq-v2.0.2.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/HTSeq-v2.0.2.sif))
   - rMATS v4.3.0 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/rMATS-v4.3.0.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/rMATS-v4.3.0.sif))
   - multiQC v1.18 ([https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/multiQC-v1.18.sif](https://github.com/TommasoTarchi/autoRNAseq/releases/download/v0.1.0-alpha/multiQC-v1.18.sif))
@@ -441,6 +441,17 @@ If you use this pipeline in your work, please consider citing the repository:
 Tarchi, T. (2024). AutoRNAseq: an automated pipeline for paired-end RNAseq data analysis (v0.1.0-alpha). GitHub repository. https://github.com/TommasoTarchi/autoRNAseq
 ````
 
+## License
+
+The pipeline code in this repository is released under the MIT License (see [LICENSE](LICENSE)).
+
+The container images attached to the releases contain third-party software that is not
+covered by this license. Each tool keeps its own license; see
+[THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md).
+
+**Note:** rMATS-turbo, used in the splicing analysis step, is licensed for academic and
+non-profit research use only. Commercial users must contact its authors before using it.
+
 
 ## References
 
@@ -451,11 +462,6 @@ Tarchi, T. (2024). AutoRNAseq: an automated pipeline for paired-end RNAseq data 
 - Anders S, Pyl PT, Huber W. HTSeq--a Python framework to work with high-throughput sequencing data. Bioinformatics. 2015 Jan 15;31(2):166-9. doi: 10.1093/bioinformatics/btu638. Epub 2014 Sep 25. PMID: 25260700; PMCID: PMC4287950.
 - Shen S, Park JW, Lu ZX, Lin L, Henry MD, Wu YN, Zhou Q, Xing Y. rMATS: robust and flexible detection of differential alternative splicing from replicate RNA-Seq data. Proc Natl Acad Sci U S A. 2014 Dec 23;111(51):E5593-601. doi: 10.1073/pnas.1419161111. Epub 2014 Dec 5. PMID: 25480548; PMCID: PMC4280593.
 - Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PMID: 27312411; PMCID: PMC5039924.
-
-
-
-
-
 
 
 
